@@ -24,7 +24,3 @@ main() {
   print(JSON.encode(doc));
 }
 ```
-
-The source code for this package is at <http://code.google.com/p/dart>.
-Please file issues at <http://dartbug.com>. Other questions or comments can be
-directed to the Dart mailing list at <mailto:misc@dartlang.org>.
