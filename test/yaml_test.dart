@@ -4,7 +4,7 @@
 
 library yaml.test;
 
-import 'package:unittest/unittest.dart';
+import 'package:test/test.dart';
 import 'package:yaml/yaml.dart';
 
 import 'utils.dart';

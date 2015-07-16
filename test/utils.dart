@@ -4,7 +4,7 @@
 
 library yaml.test.utils;
 
-import 'package:unittest/unittest.dart';
+import 'package:test/test.dart';
 import 'package:yaml/src/equality.dart' as equality;
 import 'package:yaml/yaml.dart';
 
