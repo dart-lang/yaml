@@ -4,11 +4,12 @@ author: "Dart Team <misc@dartlang.org>"
 homepage: https://github.com/dart-lang/yaml
 description: A parser for YAML.
 dependencies:
+  charcode: "^1.1.0"
   collection: ">=1.1.0 <2.0.0"
   path: ">=1.2.0 <2.0.0"
-  string_scanner: ">=0.1.3 <0.2.0"
+  string_scanner: "^0.1.4"
   source_span: ">=1.0.0 <2.0.0"
 dev_dependencies:
   test: ">=0.12.0 <0.13.0"
 environment:
-  sdk: '>=1.5.0 <2.0.0'
+  sdk: '>=1.8.0 <2.0.0'
