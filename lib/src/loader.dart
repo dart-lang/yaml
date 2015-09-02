@@ -13,6 +13,31 @@ import 'yaml_document.dart';
 import 'yaml_exception.dart';
 import 'yaml_node.dart';
 
+/// Matches YAML null.
+final _nullRegExp = new RegExp(r"^(null|Null|NULL|~|)$");
+
+/// Matches a YAML bool.
+final _boolRegExp = new RegExp(r"^(?:(true|True|TRUE)|(false|False|FALSE))$");
+
+/// Matches a YAML decimal integer like `+1234`.
+final _decimalIntRegExp = new RegExp(r"^[-+]?[0-9]+$");
+
+/// Matches a YAML octal integer like `0o123`.
+final _octalIntRegExp = new RegExp(r"^0o([0-7]+)$");
+
+/// Matches a YAML hexidecimal integer like `0x123abc`.
+final _hexIntRegExp = new RegExp(r"^0x[0-9a-fA-F]+$");
+
+/// Matches a YAML floating point number like `12.34+e56`.
+final _floatRegExp = new RegExp(
+    r"^[-+]?(\.[0-9]+|[0-9]+(\.[0-9]*)?)([eE][-+]?[0-9]+)?$");
+
+/// Matches YAML infinity.
+final _infinityRegExp = new RegExp(r"^([+-]?)\.(inf|Inf|INF)$");
+
+/// Matches YAML NaN.
+final _nanRegExp = new RegExp(r"^\.(nan|NaN|NAN)$");
+
 /// A loader that reads [Event]s emitted by a [Parser] and emits
 /// [YamlDocument]s.
 ///
@@ -183,9 +208,8 @@ class Loader {
 
   /// Parses a null scalar.
   YamlScalar _parseNull(ScalarEvent scalar) {
-    // TODO(nweiz): stop using regexps.
     // TODO(nweiz): add ScalarStyle and implicit metadata to the scalars.
-    if (new RegExp(r"^(null|Null|NULL|~|)$").hasMatch(scalar.value)) {
+    if (_nullRegExp.hasMatch(scalar.value)) {
       return new YamlScalar.internal(null, scalar.span, scalar.style);
     } else {
       return null;
@@ -194,8 +218,7 @@ class Loader {
 
   /// Parses a boolean scalar.
   YamlScalar _parseBool(ScalarEvent scalar) {
-    var match = new RegExp(r"^(?:(true|True|TRUE)|(false|False|FALSE))$").
-        firstMatch(scalar.value);
+    var match = _boolRegExp.firstMatch(scalar.value);
     if (match == null) return null;
     return new YamlScalar.internal(
         match.group(1) != null, scalar.span, scalar.style);
@@ -203,19 +226,19 @@ class Loader {
 
   /// Parses an integer scalar.
   YamlScalar _parseInt(ScalarEvent scalar) {
-    var match = new RegExp(r"^[-+]?[0-9]+$").firstMatch(scalar.value);
+    var match = _decimalIntRegExp.firstMatch(scalar.value);
     if (match != null) {
       return new YamlScalar.internal(
           int.parse(match.group(0)), scalar.span, scalar.style);
     }
 
-    match = new RegExp(r"^0o([0-7]+)$").firstMatch(scalar.value);
+    match = _octalIntRegExp.firstMatch(scalar.value);
     if (match != null) {
       var n = int.parse(match.group(1), radix: 8);
       return new YamlScalar.internal(n, scalar.span, scalar.style);
     }
 
-    match = new RegExp(r"^0x[0-9a-fA-F]+$").firstMatch(scalar.value);
+    match = _hexIntRegExp.firstMatch(scalar.value);
     if (match != null) {
       return new YamlScalar.internal(
           int.parse(match.group(0)), scalar.span, scalar.style);
@@ -226,9 +249,7 @@ class Loader {
 
   /// Parses a floating-point scalar.
   YamlScalar _parseFloat(ScalarEvent scalar) {
-    var match = new RegExp(
-          r"^[-+]?(\.[0-9]+|[0-9]+(\.[0-9]*)?)([eE][-+]?[0-9]+)?$").
-        firstMatch(scalar.value);
+    var match = _floatRegExp.firstMatch(scalar.value);
     if (match != null) {
       // YAML allows floats of the form "0.", but Dart does not. Fix up those
       // floats by removing the trailing dot.
@@ -237,13 +258,13 @@ class Loader {
           double.parse(matchStr), scalar.span, scalar.style);
     }
 
-    match = new RegExp(r"^([+-]?)\.(inf|Inf|INF)$").firstMatch(scalar.value);
+    match = _infinityRegExp.firstMatch(scalar.value);
     if (match != null) {
       var value = match.group(1) == "-" ? -double.INFINITY : double.INFINITY;
       return new YamlScalar.internal(value, scalar.span, scalar.style);
     }
 
-    match = new RegExp(r"^\.(nan|NaN|NAN)$").firstMatch(scalar.value);
+    match = _nanRegExp.firstMatch(scalar.value);
     if (match != null) {
       return new YamlScalar.internal(double.NAN, scalar.span, scalar.style);
     }
