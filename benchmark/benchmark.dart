@@ -11,7 +11,7 @@ import 'package:path/path.dart' as p;
 
 import 'package:yaml/yaml.dart';
 
-const numTrials = 10000000;
+const numTrials = 100;
 const runsPerTrial = 1000;
 
 final source = loadFile("input.yaml");
