@@ -1,3 +1,8 @@
+## 2.1.5
+
+* Fix a bug with 2.1.4 where source span information was being discarded for
+  scalar values.
+
 ## 2.1.4
 
 * Substantially improve performance.

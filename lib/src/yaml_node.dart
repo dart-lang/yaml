@@ -166,7 +166,7 @@ class YamlScalar extends YamlNode {
   /// Users of the library should not use this constructor.
   YamlScalar.internal(this.value, ScalarEvent scalar)
       : style = scalar.style {
-    _span = span;
+    _span = scalar.span;
   }
 
   /// Users of the library should not use this constructor.

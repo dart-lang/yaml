@@ -54,6 +54,43 @@ main() {
     });
   });
 
+  test("includes source span information", () {
+    var yaml = loadYamlNode(r"""
+- foo:
+    bar
+- 123
+""");
+
+    expect(yaml.span.start.line, equals(0));
+    expect(yaml.span.start.column, equals(0));
+    expect(yaml.span.end.line, equals(3));
+    expect(yaml.span.end.column, equals(0));
+
+    var map = yaml.nodes.first;
+    expect(map.span.start.line, equals(0));
+    expect(map.span.start.column, equals(2));
+    expect(map.span.end.line, equals(2));
+    expect(map.span.end.column, equals(0));
+
+    var key = map.nodes.keys.first;
+    expect(key.span.start.line, equals(0));
+    expect(key.span.start.column, equals(2));
+    expect(key.span.end.line, equals(0));
+    expect(key.span.end.column, equals(5));
+
+    var value = map.nodes.values.first;
+    expect(value.span.start.line, equals(1));
+    expect(value.span.start.column, equals(4));
+    expect(value.span.end.line, equals(1));
+    expect(value.span.end.column, equals(7));
+
+    var scalar = yaml.nodes.last;
+    expect(scalar.span.start.line, equals(2));
+    expect(scalar.span.start.column, equals(2));
+    expect(scalar.span.end.line, equals(2));
+    expect(scalar.span.end.column, equals(5));
+  });
+
   // The following tests are all taken directly from the YAML spec
   // (http://www.yaml.org/spec/1.2/spec.html). Most of them are code examples
   // that are directly included in the spec, but additional tests are derived
