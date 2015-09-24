@@ -63,7 +63,7 @@ class Loader {
   YamlDocument _loadDocument(DocumentStartEvent firstEvent) {
     var contents = _loadNode(_parser.parse());
 
-    var lastEvent = _parser.parse();
+    var lastEvent = _parser.parse() as DocumentEndEvent;
     assert(lastEvent.type == EventType.DOCUMENT_END);
 
     return new YamlDocument.internal(

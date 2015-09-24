@@ -1,3 +1,7 @@
+## 2.1.6
+
+* Fix two analysis issues with DDC's strong mode.
+
 ## 2.1.5
 
 * Fix a bug with 2.1.4 where source span information was being discarded for
