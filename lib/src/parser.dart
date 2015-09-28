@@ -115,7 +115,7 @@ class Parser {
   ///
   ///     stream ::=
   ///       STREAM-START implicit_document? explicit_document* STREAM-END
-  ///       ************  
+  ///       ************
   Event _parseStreamStart() {
     var token = _scanner.scan();
     assert(token.type == TokenType.STREAM_START);
@@ -183,7 +183,7 @@ class Parser {
   ///
   ///     explicit_document    ::=
   ///       DIRECTIVE* DOCUMENT-START block_node? DOCUMENT-END*
-  ///                                 ***********  
+  ///                                 ***********
   Event _parseDocumentContent() {
     var token = _scanner.peek();
 
@@ -462,7 +462,7 @@ class Parser {
   ///
   ///                              (VALUE block_node_or_indentless_sequence?)?)*
   ///                               ***** *
-  ///                              BLOCK-END  
+  ///                              BLOCK-END
   ///
   Event _parseBlockMappingValue() {
     var token = _scanner.peek();
@@ -527,7 +527,7 @@ class Parser {
     _scanner.scan();
     _state = _states.removeLast();
     return new Event(EventType.SEQUENCE_END, token.span);
-  }  
+  }
 
   /// Parses the productions:
   ///
@@ -670,7 +670,7 @@ class Parser {
     var token = _scanner.peek();
 
     var versionDirective;
-    var tagDirectives = [];
+    var tagDirectives = <TagDirective>[];
     while (token.type == TokenType.VERSION_DIRECTIVE ||
            token.type == TokenType.TAG_DIRECTIVE) {
       if (token is VersionDirectiveToken) {
@@ -699,7 +699,7 @@ class Parser {
 
       token = _scanner.advance();
     }
-    
+
     _appendTagDirective(
         new TagDirective("!", "!"),
         token.span.start.pointSpan(),
