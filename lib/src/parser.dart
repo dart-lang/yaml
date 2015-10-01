@@ -260,24 +260,24 @@ class Parser {
     var anchor;
     var tagToken;
     var span = token.span.start.pointSpan();
-    parseAnchor() {
+    parseAnchor(token) {
       anchor = token.name;
       span = span.expand(token.span);
-      token = _scanner.advance();
+      return _scanner.advance();
     }
 
-    parseTag() {
+    parseTag(token) {
       tagToken = token;
       span = span.expand(token.span);
-      token = _scanner.advance();
+      return _scanner.advance();
     }
 
     if (token is AnchorToken) {
-      parseAnchor();
-      if (token is TagToken) parseTag();
+      token = parseAnchor(token);
+      if (token is TagToken) token = parseTag(token);
     } else if (token is TagToken) {
-      parseTag();
-      if (token is AnchorToken) parseAnchor();
+      token = parseTag(token);
+      if (token is AnchorToken) token = parseAnchor(token);
     }
 
     var tag;

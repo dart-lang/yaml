@@ -1,3 +1,7 @@
+## 2.1.7
+
+* Fix more strong mode warnings.
+
 ## 2.1.6
 
 * Fix two analysis issues with DDC's strong mode.
