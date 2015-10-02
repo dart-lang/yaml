@@ -443,7 +443,8 @@ class Scanner {
           var token = _tokens.last;
           if (token.type == TokenType.FLOW_SEQUENCE_END ||
               token.type == TokenType.FLOW_MAPPING_END ||
-              (token.type == TokenType.SCALAR && token.style.isQuoted)) {
+              (token.type == TokenType.SCALAR &&
+                  (token as ScalarToken).style.isQuoted)) {
             _fetchValue();
             return;
           }

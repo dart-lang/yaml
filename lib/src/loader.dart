@@ -127,7 +127,7 @@ class Loader {
       throw new YamlException("Invalid tag for sequence.", firstEvent.span);
     }
 
-    var children = [];
+    var children = <YamlNode>[];
     var node = new YamlList.internal(
         children, firstEvent.span, firstEvent.style);
     _registerAnchor(firstEvent.anchor, node);
