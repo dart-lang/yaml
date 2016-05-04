@@ -1,3 +1,7 @@
+## 2.1.9
+
+* Fix all strong-mode warnings.
+
 ## 2.1.8
 
 * Remove the dependency on `path`, since we don't actually import it.

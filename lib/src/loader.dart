@@ -147,7 +147,7 @@ class Loader {
       throw new YamlException("Invalid tag for mapping.", firstEvent.span);
     }
 
-    var children = deepEqualsMap();
+    var children = deepEqualsMap/*<dynamic, YamlNode>*/();
     var node = new YamlMap.internal(
         children, firstEvent.span, firstEvent.style);
     _registerAnchor(firstEvent.anchor, node);

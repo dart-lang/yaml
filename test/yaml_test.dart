@@ -57,14 +57,14 @@ main() {
 - foo:
     bar
 - 123
-""");
+""") as YamlList;
 
     expect(yaml.span.start.line, equals(0));
     expect(yaml.span.start.column, equals(0));
     expect(yaml.span.end.line, equals(3));
     expect(yaml.span.end.column, equals(0));
 
-    var map = yaml.nodes.first;
+    var map = yaml.nodes.first as YamlMap;
     expect(map.span.start.line, equals(0));
     expect(map.span.start.column, equals(2));
     expect(map.span.end.line, equals(2));
