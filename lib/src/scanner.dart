@@ -324,6 +324,9 @@ class Scanner {
       if (_tokens.isNotEmpty) {
         _staleSimpleKeys();
 
+        // If there are no more tokens to fetch, break.
+        if (_tokens.last.type == TokenType.STREAM_END) break;
+
         // If the current token could be a simple key, we need to scan more
         // tokens until we determine whether it is or not. Otherwise we might
         // not emit the `KEY` token before we emit the value of the key.
