@@ -30,8 +30,8 @@ main() {
   });
 
   group("refuses", () {
+    // Regression test for #19.
     test("invalid contents", () {
-      // This caused the scanner to hang in an infinite loop.
       expectYamlFails("{");
     });
 
