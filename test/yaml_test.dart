@@ -43,18 +43,19 @@ main() {
          """);
       });
 
-    test("1.3", () {
-      expectYamlFails("""
-         %YAML 1.3
-         --- text
-         """);
-    });
+      test("1.3", () {
+        expectYamlFails("""
+           %YAML 1.3
+           --- text
+           """);
+      });
 
-    test("2.0", () {
-      expectYamlFails("""
-         %YAML 2.0
-         --- text
-         """);
+      test("2.0", () {
+        expectYamlFails("""
+           %YAML 2.0
+           --- text
+           """);
+      });
     });
   });
 
