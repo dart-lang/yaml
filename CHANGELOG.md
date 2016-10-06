@@ -1,3 +1,7 @@
+## 2.1.11
+
+* Fix an infinite loop when parsing some invalid documents.
+
 ## 2.1.10
 
 * Support `string_scanner` 1.0.0.

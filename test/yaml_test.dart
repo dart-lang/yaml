@@ -29,26 +29,33 @@ main() {
     });
   });
 
-  group("refuses documents that declare version", () {
-    test("1.0", () {
-      expectYamlFails("""
+  group("refuses", () {
+    // Regression test for #19.
+    test("invalid contents", () {
+      expectYamlFails("{");
+    });
+
+    group("documents that declare version", () {
+      test("1.0", () {
+        expectYamlFails("""
          %YAML 1.0
          --- text
          """);
-    });
+      });
 
-    test("1.3", () {
-      expectYamlFails("""
-         %YAML 1.3
-         --- text
-         """);
-    });
+      test("1.3", () {
+        expectYamlFails("""
+           %YAML 1.3
+           --- text
+           """);
+      });
 
-    test("2.0", () {
-      expectYamlFails("""
-         %YAML 2.0
-         --- text
-         """);
+      test("2.0", () {
+        expectYamlFails("""
+           %YAML 2.0
+           --- text
+           """);
+      });
     });
   });
 
