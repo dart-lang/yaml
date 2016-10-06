@@ -29,7 +29,7 @@ main() {
     });
   });
 
-  group("refuses ", () {
+  group("refuses", () {
     test("invalid contents", () {
       // This caused the scanner to hang in an infinite loop.
       expectYamlFails("{");
