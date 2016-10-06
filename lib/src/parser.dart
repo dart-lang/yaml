@@ -667,7 +667,7 @@ class Parser {
   Pair<VersionDirective, List<TagDirective>> _processDirectives() {
     var token = _scanner.peek();
 
-    var versionDirective;
+    VersionDirective versionDirective;
     var tagDirectives = <TagDirective>[];
     while (token.type == TokenType.VERSION_DIRECTIVE ||
            token.type == TokenType.TAG_DIRECTIVE) {
