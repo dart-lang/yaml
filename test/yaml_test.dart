@@ -29,13 +29,19 @@ main() {
     });
   });
 
-  group("refuses documents that declare version", () {
-    test("1.0", () {
-      expectYamlFails("""
+  group("refuses ", () {
+    test("invalid contents", () {
+      // This caused the scanner to hang in an infinite loop.
+      expectYamlFails("{");
+    });
+
+    group("documents that declare version", () {
+      test("1.0", () {
+        expectYamlFails("""
          %YAML 1.0
          --- text
          """);
-    });
+      });
 
     test("1.3", () {
       expectYamlFails("""
