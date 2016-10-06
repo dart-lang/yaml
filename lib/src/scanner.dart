@@ -460,8 +460,6 @@ class Scanner {
         _fetchPlainScalar();
         return;
     }
-
-    throw 'Inaccessible';
   }
 
   /// Throws an error about a disallowed character.
