@@ -156,6 +156,10 @@ class Loader {
     while (event.type != EventType.MAPPING_END) {
       var key = _loadNode(event);
       var value = _loadNode(_parser.parse());
+      if (children.containsKey(key)) {
+        throw new YamlException("Duplicate mapping key.", key.span);
+      }
+
       children[key] = value;
       event = _parser.parse();
     }

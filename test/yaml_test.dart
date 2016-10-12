@@ -35,6 +35,10 @@ main() {
       expectYamlFails("{");
     });
 
+    test("duplicate mapping keys", () {
+      expectYamlFails("{a: 1, a: 2}");
+    });
+
     group("documents that declare version", () {
       test("1.0", () {
         expectYamlFails("""
