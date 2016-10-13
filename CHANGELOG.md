@@ -1,3 +1,7 @@
+## 2.1.12
+
+* Properly refuse mappings with duplicate keys.
+
 ## 2.1.11
 
 * Fix an infinite loop when parsing some invalid documents.
