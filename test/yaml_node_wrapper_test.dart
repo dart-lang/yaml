@@ -5,6 +5,7 @@
 import 'package:source_span/source_span.dart';
 import 'package:test/test.dart';
 import 'package:yaml/yaml.dart';
+import 'dart:io';
 
 main() {
   test("YamlMap() with no sourceUrl", () {
@@ -13,6 +14,7 @@ main() {
     expect(map.nodes, isEmpty);
     expect(map.span, isNullSpan(isNull));
   });
+
 
   test("YamlMap() with a sourceUrl", () {
     var map = new YamlMap(sourceUrl: "source");
@@ -145,6 +147,12 @@ main() {
     expect(list[1] == list[1], isTrue);
     expect(list[1].nodes == list[1].nodes, isTrue);
     expect(list[1] == new YamlMap.wrap({"foo": "bar"}), isFalse);
+  });
+
+  test('LoadYamlFromDocument() thingy works', () {
+    var map = loadYamlFromFile("test/test_yaml.yaml");
+    expect(map, isNotNull);
+    expect(map, isNotEmpty);
   });
 }
 
