@@ -7,6 +7,7 @@ import 'src/style.dart';
 import 'src/yaml_document.dart';
 import 'src/yaml_exception.dart';
 import 'src/yaml_node.dart';
+import 'dart:io';
 
 export 'src/style.dart';
 export 'src/utils.dart' show YamlWarningCallback, yamlWarningCallback;
@@ -40,6 +41,11 @@ loadYaml(String yaml, {sourceUrl}) =>
 /// to be confident that the return value will always be a [YamlNode].
 YamlNode loadYamlNode(String yaml, {sourceUrl}) =>
     loadYamlDocument(yaml, sourceUrl: sourceUrl).contents;
+
+Map loadYamlFromFile(String yamlFilePath, {sourceUrl}) {
+  var yamlDocument = new File(yamlFilePath);
+  return loadYaml(yamlDocument.readAsStringSync());
+}
 
 /// Loads a single document from a YAML string as a [YamlDocument].
 ///

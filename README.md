@@ -12,6 +12,16 @@ main() {
 }
 ```
 
+You can also use `loadYamlFromFile` to load a yaml file directly as a map.
+```dart
+import 'package:yaml/yaml.dart';
+
+main() {
+  var doc = loadYamlFromFile("./my_yaml");
+  print(doc['YAML']);
+}
+```
+
 This library currently doesn't support dumping to YAML. You should use
 `JSON.encode` from `dart:convert` instead:
 
