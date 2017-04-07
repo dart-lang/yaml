@@ -12,8 +12,8 @@ final Matcher throwsYamlException = throwsA(new isInstanceOf<YamlException>());
 /// Returns a matcher that asserts that the value equals [expected].
 ///
 /// This handles recursive loops and considers `NaN` to equal itself.
-Matcher deepEquals(expected) => predicate((actual) =>
-    equality.deepEquals(actual, expected), "equals $expected");
+Matcher deepEquals(expected) => predicate(
+    (actual) => equality.deepEquals(actual, expected), "equals $expected");
 
 /// Constructs a new yaml.YamlMap, optionally from a normal Map.
 Map deepEqualsMap([Map from]) {

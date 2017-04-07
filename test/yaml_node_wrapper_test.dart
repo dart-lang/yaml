@@ -41,14 +41,16 @@ main() {
       "scalar": "value"
     });
 
-    expect(map, equals({
-      "list": [1, 2, 3],
-      "map": {
-        "foo": "bar",
-        "nested": [4, 5, 6]
-      },
-      "scalar": "value"
-    }));
+    expect(
+        map,
+        equals({
+          "list": [1, 2, 3],
+          "map": {
+            "foo": "bar",
+            "nested": [4, 5, 6]
+          },
+          "scalar": "value"
+        }));
 
     expect(map.span, isNullSpan(isNull));
     expect(map["list"], new isInstanceOf<YamlList>());
@@ -94,14 +96,16 @@ main() {
       "value"
     ]);
 
-    expect(list, equals([
-      [1, 2, 3],
-      {
-        "foo": "bar",
-        "nested": [4, 5, 6]
-      },
-      "value"
-    ]));
+    expect(
+        list,
+        equals([
+          [1, 2, 3],
+          {
+            "foo": "bar",
+            "nested": [4, 5, 6]
+          },
+          "value"
+        ]));
 
     expect(list.span, isNullSpan(isNull));
     expect(list[0], new isInstanceOf<YamlList>());
@@ -149,13 +153,13 @@ main() {
 }
 
 Matcher isNullSpan(sourceUrl) => predicate((span) {
-  expect(span, new isInstanceOf<SourceSpan>());
-  expect(span.length, equals(0));
-  expect(span.text, isEmpty);
-  expect(span.start, equals(span.end));
-  expect(span.start.offset, equals(0));
-  expect(span.start.line, equals(0));
-  expect(span.start.column, equals(0));
-  expect(span.sourceUrl, sourceUrl);
-  return true;
-});
+      expect(span, new isInstanceOf<SourceSpan>());
+      expect(span.length, equals(0));
+      expect(span.text, isEmpty);
+      expect(span.start, equals(span.end));
+      expect(span.start.offset, equals(0));
+      expect(span.start.line, equals(0));
+      expect(span.start.column, equals(0));
+      expect(span.sourceUrl, sourceUrl);
+      return true;
+    });
