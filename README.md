@@ -1,10 +1,6 @@
-# yaml
+A parser for [YAML](http://www.yaml.org/).
 
 [![Build Status](https://travis-ci.org/dart-lang/yaml.svg?branch=master)](https://travis-ci.org/dart-lang/yaml)
-
-## package:yaml
-
-A parser for [YAML](http://www.yaml.org/).
 
 Use `loadYaml` to load a single document, or `loadYamlStream` to load a
 stream of documents. For example:
