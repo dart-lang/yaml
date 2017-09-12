@@ -1,8 +1,10 @@
 name: yaml
-version: 2.1.12
+version: 2.1.13-dev
 author: "Dart Team <misc@dartlang.org>"
 homepage: https://github.com/dart-lang/yaml
 description: A parser for YAML.
+environment:
+  sdk: '>=1.23.0 <2.0.0-dev.infinity'
 dependencies:
   charcode: "^1.1.0"
   collection: ">=1.1.0 <2.0.0"
@@ -11,5 +13,3 @@ dependencies:
 dev_dependencies:
   path: ">=1.2.0 <2.0.0"
   test: ">=0.12.0 <0.13.0"
-environment:
-  sdk: '>=1.12.0 <2.0.0-dev.infinity'
