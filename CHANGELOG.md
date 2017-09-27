@@ -1,3 +1,7 @@
+## 2.1.13
+
+* Stop using comment-based generic syntax.
+
 ## 2.1.12
 
 * Properly refuse mappings with duplicate keys.
