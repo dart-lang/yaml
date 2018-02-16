@@ -1,15 +1,13 @@
 language: dart
-sudo: false
+
 dart:
   - dev
   - stable
-  - 1.23.0
+
 dart_task:
   - test: -p vm
     xvfb: false
   - test: -p firefox
-  - test: -p dartium
-    install_dartium: true
   - dartanalyzer
 
 matrix:
