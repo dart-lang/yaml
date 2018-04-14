@@ -69,6 +69,7 @@ Map<K, V> coerceMap<K, V>(dynamic any) {
   }
   return any as Map<K, V>;
 }
+
 /// Returns [any], coerced to the expected `Map<K, List<V>>`.
 ///
 /// This may return a _new_ instance of the [Map], not the existing one.
