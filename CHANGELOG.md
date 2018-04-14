@@ -1,3 +1,10 @@
+## 2.2.0-dev
+
+* Introduces `read`, `readList`, `readMap`, and `readMapList` to the `YamlMap`
+  interface. These methods help reading typed values in Dart2 without violating
+  soundness. For example, `readList<String>('x')` will return a properly reified
+  `List<String>` by reading the key `'x'` from the map.
+
 ## 2.1.13
 
 * Stop using comment-based generic syntax.
