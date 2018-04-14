@@ -7,13 +7,14 @@ import 'dart:collection';
 import 'package:collection/collection.dart' as pkg_collection;
 import 'package:source_span/source_span.dart';
 
+import 'casts.dart';
 import 'null_span.dart';
 import 'style.dart';
 import 'yaml_node.dart';
 
 /// A wrapper that makes a normal Dart map behave like a [YamlMap].
 class YamlMapWrapper extends MapBase
-    with pkg_collection.UnmodifiableMapMixin
+    with CoerceReadMap, pkg_collection.UnmodifiableMapMixin
     implements YamlMap {
   final CollectionStyle style = CollectionStyle.ANY;
 
@@ -46,6 +47,33 @@ class YamlMapWrapper extends MapBase
 
   operator ==(Object other) =>
       other is YamlMapWrapper && other._dartMap == _dartMap;
+
+  /// Reads the value of [key], and returns as the expected type [T].
+  ///
+  /// If [any] is a common collection type (`Iterable` or `Map`), and the user
+  /// expects [T] to be a collection type, then an [UnsupportedError] is thrown.
+  T read<T>(dynamic key) => coercePrimitive(this[key]);
+
+  /// Reads the value of [key], coerced to the expected `List<T>`.
+  ///
+  /// **NOTE**: [T] must be non-generic, otherwise runtime cast errors may
+  /// occur.
+  List<T> readList<T>(dynamic key) => coerceList(this[key]);
+
+  /// Reads the value of [key], coerced to the expected `Map<K, V>`.
+  ///
+  /// **NOTE**: [K], [V] must be non-generic, otherwise runtime cast errors may
+  /// occur. The [coerceMapList] method may be used when [V] is expected to be a
+  /// list type.
+  Map<K, V> readMap<K, V>(dynamic key) => coerceMap(this[key]);
+
+  /// Reads the value of [key], coerced to the expected `Map<K, List<V>>`.
+  ///
+  /// This may return a _new_ instance of the [Map], not the existing one.
+  ///
+  /// **NOTE**: [K], [V] must be non-generic, otherwise runtime cast errors may
+  /// occur.
+  Map<K, List<V>> readMapList<K, V>(dynamic key) => coerceMapList(this[key]);
 }
 
 /// The implementation of [YamlMapWrapper.nodes] as a wrapper around the Dart

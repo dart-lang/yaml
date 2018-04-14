@@ -7,6 +7,7 @@ import 'dart:collection' as collection;
 import 'package:collection/collection.dart';
 import 'package:source_span/source_span.dart';
 
+import 'casts.dart';
 import 'event.dart';
 import 'null_span.dart';
 import 'style.dart';
@@ -39,7 +40,8 @@ abstract class YamlNode {
 }
 
 /// A read-only [Map] parsed from YAML.
-class YamlMap extends YamlNode with collection.MapMixin, UnmodifiableMapMixin {
+class YamlMap extends YamlNode
+    with CoerceReadMap, collection.MapMixin, UnmodifiableMapMixin {
   /// A view of [this] where the keys and values are guaranteed to be
   /// [YamlNode]s.
   ///

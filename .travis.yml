@@ -2,7 +2,6 @@ language: dart
 
 dart:
   - dev
-  - stable
 
 dart_task:
   - test: -p vm
@@ -12,8 +11,10 @@ dart_task:
 
 matrix:
   include:
-  - dart: stable
-    dart_task: dartfmt
+  - dart_task: dartfmt
+
+  # There is no other simple way to run using Dart2 at this time.
+  - script: dart --preview-dart-2 test/yaml_map_dart2_test.dart
 
 # Only building master means that we don't run two builds for each pull request.
 branches:
