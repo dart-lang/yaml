@@ -18,7 +18,7 @@ final source = loadFile("input.yaml");
 final expected = loadFile("output.json");
 
 void main(List<String> args) {
-  var best = double.INFINITY;
+  var best = double.infinity;
 
   // Run the benchmark several times. This ensures the VM is warmed up and lets
   // us see how much variance there is.
@@ -40,8 +40,8 @@ void main(List<String> args) {
 
     // Sanity check to make sure the output is what we expect and to make sure
     // the VM doesn't optimize "dead" code away.
-    if (JSON.encode(result) != expected) {
-      print("Incorrect output:\n${JSON.encode(result)}");
+    if (jsonEncode(result) != expected) {
+      print("Incorrect output:\n${jsonEncode(result)}");
       exit(1);
     }
 

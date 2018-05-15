@@ -340,11 +340,11 @@ class Loader {
           case "+.inf":
           case "+.Inf":
           case "+.INF":
-            return double.INFINITY;
+            return double.infinity;
           case "-.inf":
           case "-.Inf":
           case "-.INF":
-            return -double.INFINITY;
+            return -double.infinity;
         }
       }
 
@@ -356,11 +356,11 @@ class Loader {
         case ".inf":
         case ".Inf":
         case ".INF":
-          return double.INFINITY;
+          return double.infinity;
         case ".nan":
         case ".NaN":
         case ".NAN":
-          return double.NAN;
+          return double.nan;
       }
     }
 
