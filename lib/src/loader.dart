@@ -302,12 +302,12 @@ class Loader {
 
     // Hexadecimal or octal integers.
     if (allowInt && firstChar == $0) {
-      // int.parse supports 0x natively.
-      if (secondChar == $x) return int.parse(contents, onError: (_) => null);
+      // int.tryParse supports 0x natively.
+      if (secondChar == $x) return int.tryParse(contents);
 
       if (secondChar == $o) {
         var afterRadix = contents.substring(2);
-        return int.parse(afterRadix, radix: 8, onError: (_) => null);
+        return int.tryParse(afterRadix, radix: 8);
       }
     }
 
@@ -321,10 +321,10 @@ class Loader {
       if (allowInt) {
         // Pass "radix: 10" explicitly to ensure that "-0x10", which is valid
         // Dart but invalid YAML, doesn't get parsed.
-        result = int.parse(contents, radix: 10, onError: (_) => null);
+        result = int.tryParse(contents, radix: 10);
       }
 
-      if (allowFloat) result ??= double.parse(contents, (_) => null);
+      if (allowFloat) result ??= double.tryParse(contents);
       return result;
     }
 
@@ -348,7 +348,7 @@ class Loader {
         }
       }
 
-      return double.parse(contents, (_) => null);
+      return double.tryParse(contents);
     }
 
     if (length == 4 && firstChar == $dot) {
