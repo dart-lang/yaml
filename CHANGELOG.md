@@ -1,3 +1,7 @@
+## 2.1.15
+
+* Set max SDK version to `<3.0.0`, and adjust other dependencies.
+
 ## 2.1.14
 
 * Remove use of deprecated features.
