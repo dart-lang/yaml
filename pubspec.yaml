@@ -1,5 +1,5 @@
 name: yaml
-version: 2.1.15
+version: 2.1.16-dev
 
 description: A parser for YAML.
 author: Dart Team <misc@dartlang.org>
@@ -16,4 +16,4 @@ dependencies:
 
 dev_dependencies:
   path: '>=1.2.0 <2.0.0'
-  test: '>=0.12.0 <0.13.0'
+  test: '>=0.12.0 <2.0.0'
