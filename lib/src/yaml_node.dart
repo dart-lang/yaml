@@ -64,7 +64,7 @@ class YamlMap extends YamlNode with collection.MapMixin, UnmodifiableMapMixin {
   /// is passed, it's used as the [SourceSpan.sourceUrl].
   ///
   /// [sourceUrl] may be either a [String], a [Uri], or `null`.
-  factory YamlMap({sourceUrl}) => new YamlMapWrapper(const {}, sourceUrl);
+  factory YamlMap({sourceUrl}) => YamlMapWrapper(const {}, sourceUrl);
 
   /// Wraps a Dart map so that it can be accessed (recursively) like a
   /// [YamlMap].
@@ -76,11 +76,11 @@ class YamlMap extends YamlNode with collection.MapMixin, UnmodifiableMapMixin {
   ///
   /// [sourceUrl] may be either a [String], a [Uri], or `null`.
   factory YamlMap.wrap(Map dartMap, {sourceUrl}) =>
-      new YamlMapWrapper(dartMap, sourceUrl);
+      YamlMapWrapper(dartMap, sourceUrl);
 
   /// Users of the library should not use this constructor.
   YamlMap.internal(Map<dynamic, YamlNode> nodes, SourceSpan span, this.style)
-      : nodes = new UnmodifiableMapView<dynamic, YamlNode>(nodes) {
+      : nodes = UnmodifiableMapView<dynamic, YamlNode>(nodes) {
     _span = span;
   }
 
@@ -103,7 +103,7 @@ class YamlList extends YamlNode with collection.ListMixin {
   int get length => nodes.length;
 
   set length(int index) {
-    throw new UnsupportedError("Cannot modify an unmodifiable List");
+    throw UnsupportedError("Cannot modify an unmodifiable List");
   }
 
   /// Creates an empty YamlList.
@@ -113,7 +113,7 @@ class YamlList extends YamlNode with collection.ListMixin {
   /// [sourceUrl] is passed, it's used as the [SourceSpan.sourceUrl].
   ///
   /// [sourceUrl] may be either a [String], a [Uri], or `null`.
-  factory YamlList({sourceUrl}) => new YamlListWrapper(const [], sourceUrl);
+  factory YamlList({sourceUrl}) => YamlListWrapper(const [], sourceUrl);
 
   /// Wraps a Dart list so that it can be accessed (recursively) like a
   /// [YamlList].
@@ -125,18 +125,18 @@ class YamlList extends YamlNode with collection.ListMixin {
   ///
   /// [sourceUrl] may be either a [String], a [Uri], or `null`.
   factory YamlList.wrap(List dartList, {sourceUrl}) =>
-      new YamlListWrapper(dartList, sourceUrl);
+      YamlListWrapper(dartList, sourceUrl);
 
   /// Users of the library should not use this constructor.
   YamlList.internal(List<YamlNode> nodes, SourceSpan span, this.style)
-      : nodes = new UnmodifiableListView<YamlNode>(nodes) {
+      : nodes = UnmodifiableListView<YamlNode>(nodes) {
     _span = span;
   }
 
   operator [](int index) => nodes[index].value;
 
   operator []=(int index, value) {
-    throw new UnsupportedError("Cannot modify an unmodifiable List");
+    throw UnsupportedError("Cannot modify an unmodifiable List");
   }
 }
 
@@ -155,7 +155,7 @@ class YamlScalar extends YamlNode {
   ///
   /// [sourceUrl] may be either a [String], a [Uri], or `null`.
   YamlScalar.wrap(this.value, {sourceUrl}) : style = ScalarStyle.ANY {
-    _span = new NullSpan(sourceUrl);
+    _span = NullSpan(sourceUrl);
   }
 
   /// Users of the library should not use this constructor.

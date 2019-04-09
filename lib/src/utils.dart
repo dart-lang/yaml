@@ -25,7 +25,7 @@ void warn(String message, [SourceSpan span]) =>
 /// [message] is the text of the warning. If [span] is passed, it's the portion
 /// of the document that the warning is associated with and should be included
 /// in the printed warning.
-typedef YamlWarningCallback(String message, [SourceSpan span]);
+typedef YamlWarningCallback = Function(String message, [SourceSpan span]);
 
 /// A callback for emitting a warning.
 ///

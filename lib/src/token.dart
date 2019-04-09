@@ -111,32 +111,32 @@ class ScalarToken implements Token {
 
 /// An enum of types of [Token] object.
 class TokenType {
-  static const STREAM_START = const TokenType._("STREAM_START");
-  static const STREAM_END = const TokenType._("STREAM_END");
+  static const STREAM_START = TokenType._("STREAM_START");
+  static const STREAM_END = TokenType._("STREAM_END");
 
-  static const VERSION_DIRECTIVE = const TokenType._("VERSION_DIRECTIVE");
-  static const TAG_DIRECTIVE = const TokenType._("TAG_DIRECTIVE");
-  static const DOCUMENT_START = const TokenType._("DOCUMENT_START");
-  static const DOCUMENT_END = const TokenType._("DOCUMENT_END");
+  static const VERSION_DIRECTIVE = TokenType._("VERSION_DIRECTIVE");
+  static const TAG_DIRECTIVE = TokenType._("TAG_DIRECTIVE");
+  static const DOCUMENT_START = TokenType._("DOCUMENT_START");
+  static const DOCUMENT_END = TokenType._("DOCUMENT_END");
 
-  static const BLOCK_SEQUENCE_START = const TokenType._("BLOCK_SEQUENCE_START");
-  static const BLOCK_MAPPING_START = const TokenType._("BLOCK_MAPPING_START");
-  static const BLOCK_END = const TokenType._("BLOCK_END");
+  static const BLOCK_SEQUENCE_START = TokenType._("BLOCK_SEQUENCE_START");
+  static const BLOCK_MAPPING_START = TokenType._("BLOCK_MAPPING_START");
+  static const BLOCK_END = TokenType._("BLOCK_END");
 
-  static const FLOW_SEQUENCE_START = const TokenType._("FLOW_SEQUENCE_START");
-  static const FLOW_SEQUENCE_END = const TokenType._("FLOW_SEQUENCE_END");
-  static const FLOW_MAPPING_START = const TokenType._("FLOW_MAPPING_START");
-  static const FLOW_MAPPING_END = const TokenType._("FLOW_MAPPING_END");
+  static const FLOW_SEQUENCE_START = TokenType._("FLOW_SEQUENCE_START");
+  static const FLOW_SEQUENCE_END = TokenType._("FLOW_SEQUENCE_END");
+  static const FLOW_MAPPING_START = TokenType._("FLOW_MAPPING_START");
+  static const FLOW_MAPPING_END = TokenType._("FLOW_MAPPING_END");
 
-  static const BLOCK_ENTRY = const TokenType._("BLOCK_ENTRY");
-  static const FLOW_ENTRY = const TokenType._("FLOW_ENTRY");
-  static const KEY = const TokenType._("KEY");
-  static const VALUE = const TokenType._("VALUE");
+  static const BLOCK_ENTRY = TokenType._("BLOCK_ENTRY");
+  static const FLOW_ENTRY = TokenType._("FLOW_ENTRY");
+  static const KEY = TokenType._("KEY");
+  static const VALUE = TokenType._("VALUE");
 
-  static const ALIAS = const TokenType._("ALIAS");
-  static const ANCHOR = const TokenType._("ANCHOR");
-  static const TAG = const TokenType._("TAG");
-  static const SCALAR = const TokenType._("SCALAR");
+  static const ALIAS = TokenType._("ALIAS");
+  static const ANCHOR = TokenType._("ANCHOR");
+  static const TAG = TokenType._("TAG");
+  static const SCALAR = TokenType._("SCALAR");
 
   final String name;
 

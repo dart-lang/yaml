@@ -47,18 +47,16 @@ YamlNode loadYamlNode(String yaml, {sourceUrl}) =>
 /// normal Dart value this returns a [YamlDocument] instead. This allows the
 /// caller to access document metadata.
 YamlDocument loadYamlDocument(String yaml, {sourceUrl}) {
-  var loader = new Loader(yaml, sourceUrl: sourceUrl);
+  var loader = Loader(yaml, sourceUrl: sourceUrl);
   var document = loader.load();
   if (document == null) {
-    return new YamlDocument.internal(
-        new YamlScalar.internalWithSpan(null, loader.span),
-        loader.span,
-        null, const []);
+    return YamlDocument.internal(YamlScalar.internalWithSpan(null, loader.span),
+        loader.span, null, const []);
   }
 
   var nextDocument = loader.load();
   if (nextDocument != null) {
-    throw new YamlException("Only expected one document.", nextDocument.span);
+    throw YamlException("Only expected one document.", nextDocument.span);
   }
 
   return document;
@@ -78,7 +76,7 @@ YamlDocument loadYamlDocument(String yaml, {sourceUrl}) {
 /// If [sourceUrl] is passed, it's used as the URL from which the YAML
 /// originated for error reporting. It can be a [String], a [Uri], or `null`.
 YamlList loadYamlStream(String yaml, {sourceUrl}) {
-  var loader = new Loader(yaml, sourceUrl: sourceUrl);
+  var loader = Loader(yaml, sourceUrl: sourceUrl);
 
   var documents = <YamlDocument>[];
   var document = loader.load();
@@ -89,7 +87,7 @@ YamlList loadYamlStream(String yaml, {sourceUrl}) {
 
   // TODO(jmesserly): the type on the `document` parameter is a workaround for:
   // https://github.com/dart-lang/dev_compiler/issues/203
-  return new YamlList.internal(
+  return YamlList.internal(
       documents.map((YamlDocument document) => document.contents).toList(),
       loader.span,
       CollectionStyle.ANY);
@@ -100,7 +98,7 @@ YamlList loadYamlStream(String yaml, {sourceUrl}) {
 /// This is like [loadYamlStream], except that it returns [YamlDocument]s with
 /// metadata wrapping the document contents.
 List<YamlDocument> loadYamlDocuments(String yaml, {sourceUrl}) {
-  var loader = new Loader(yaml, sourceUrl: sourceUrl);
+  var loader = Loader(yaml, sourceUrl: sourceUrl);
 
   var documents = <YamlDocument>[];
   var document = loader.load();
