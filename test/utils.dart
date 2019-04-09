@@ -7,7 +7,7 @@ import 'package:yaml/src/equality.dart' as equality;
 import 'package:yaml/yaml.dart';
 
 /// A matcher that validates that a closure or Future throws a [YamlException].
-final Matcher throwsYamlException = throwsA(new TypeMatcher<YamlException>());
+final Matcher throwsYamlException = throwsA(TypeMatcher<YamlException>());
 
 /// Returns a matcher that asserts that the value equals [expected].
 ///

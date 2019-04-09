@@ -10,13 +10,13 @@ import 'yaml_node.dart';
 
 /// Returns a [Map] that compares its keys based on [deepEquals].
 Map<K, V> deepEqualsMap<K, V>() =>
-    new HashMap(equals: deepEquals, hashCode: deepHashCode);
+    HashMap(equals: deepEquals, hashCode: deepHashCode);
 
 /// Returns whether two objects are structurally equivalent.
 ///
 /// This considers `NaN` values to be equivalent, handles self-referential
 /// structures, and considers [YamlScalar]s to be equal to their values.
-bool deepEquals(obj1, obj2) => new _DeepEquals().equals(obj1, obj2);
+bool deepEquals(obj1, obj2) => _DeepEquals().equals(obj1, obj2);
 
 /// A class that provides access to the list of parent objects used for loop
 /// detection.

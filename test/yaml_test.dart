@@ -476,19 +476,19 @@ main() {
   // Chapter 5: Characters
   group('5.1: Character Set', () {
     expectAllowsCharacter(int charCode) {
-      var char = new String.fromCharCodes([charCode]);
+      var char = String.fromCharCodes([charCode]);
       expectYamlLoads('The character "$char" is allowed',
           'The character "$char" is allowed');
     }
 
     expectAllowsQuotedCharacter(int charCode) {
-      var char = new String.fromCharCodes([charCode]);
+      var char = String.fromCharCodes([charCode]);
       expectYamlLoads("The character '$char' is allowed",
           '"The character \'$char\' is allowed"');
     }
 
     expectDisallowsCharacter(int charCode) {
-      var char = new String.fromCharCodes([charCode]);
+      var char = String.fromCharCodes([charCode]);
       expectYamlFails('The character "$char" is disallowed');
     }
 
@@ -635,10 +635,10 @@ main() {
     test('[Example 5.13]', () {
       expectYamlLoads(
           "Fun with \x5C "
-          "\x22 \x07 \x08 \x1B \x0C "
-          "\x0A \x0D \x09 \x0B \x00 "
-          "\x20 \xA0 \x85 \u2028 \u2029 "
-          "A A A",
+              "\x22 \x07 \x08 \x1B \x0C "
+              "\x0A \x0D \x09 \x0B \x00 "
+              "\x20 \xA0 \x85 \u2028 \u2029 "
+              "A A A",
           '''
         "Fun with \\\\
         \\" \\a \\b \\e \\f \\

@@ -3,8 +3,8 @@
 // BSD-style license that can be found in the LICENSE file.
 
 import 'package:collection/collection.dart';
-import 'package:string_scanner/string_scanner.dart';
 import 'package:source_span/source_span.dart';
+import 'package:string_scanner/string_scanner.dart';
 
 import 'style.dart';
 import 'token.dart';
@@ -108,7 +108,7 @@ class Scanner {
   /// These are queued up in advance so that [TokenType.KEY] tokens can be
   /// inserted once the scanner determines that a series of tokens represents a
   /// mapping key.
-  final _tokens = new QueueList<Token>();
+  final _tokens = QueueList<Token>();
 
   /// The number of tokens that have been emitted.
   ///
@@ -291,11 +291,11 @@ class Scanner {
   ///
   /// [sourceUrl] can be a String or a [Uri].
   Scanner(String source, {sourceUrl})
-      : _scanner = new SpanScanner.eager(source, sourceUrl: sourceUrl);
+      : _scanner = SpanScanner.eager(source, sourceUrl: sourceUrl);
 
   /// Consumes and returns the next token.
   Token scan() {
-    if (_streamEndProduced) throw new StateError("Out of tokens.");
+    if (_streamEndProduced) throw StateError("Out of tokens.");
     if (!_tokenAvailable) _fetchMoreTokens();
 
     var token = _tokens.removeFirst();
@@ -488,7 +488,7 @@ class Scanner {
       if (key.line == _scanner.line) continue;
 
       if (key.required) {
-        throw new YamlException("Expected ':'.", _scanner.emptySpan);
+        throw YamlException("Expected ':'.", _scanner.emptySpan);
       }
 
       _simpleKeys[i] = null;
@@ -511,7 +511,7 @@ class Scanner {
 
     // If the current position may start a simple key, save it.
     _removeSimpleKey();
-    _simpleKeys[_simpleKeys.length - 1] = new _SimpleKey(
+    _simpleKeys[_simpleKeys.length - 1] = _SimpleKey(
         _tokensParsed + _tokens.length,
         _scanner.line,
         _scanner.column,
@@ -523,7 +523,7 @@ class Scanner {
   void _removeSimpleKey() {
     var key = _simpleKeys.last;
     if (key != null && key.required) {
-      throw new YamlException("Could not find expected ':' for simple key.",
+      throw YamlException("Could not find expected ':' for simple key.",
           key.location.pointSpan());
     }
 
@@ -557,7 +557,7 @@ class Scanner {
     _indents.add(column);
 
     // Create a token and insert it into the queue.
-    var token = new Token(type, location.pointSpan());
+    var token = Token(type, location.pointSpan() as FileSpan);
     if (tokenNumber == null) {
       _tokens.add(token);
     } else {
@@ -573,7 +573,7 @@ class Scanner {
     if (!_inBlockContext) return;
 
     while (_indent > column) {
-      _tokens.add(new Token(TokenType.BLOCK_END, _scanner.emptySpan));
+      _tokens.add(Token(TokenType.BLOCK_END, _scanner.emptySpan));
       _indents.removeLast();
     }
   }
@@ -589,7 +589,7 @@ class Scanner {
     // Much of libyaml's initialization logic here is done in variable
     // initializers instead.
     _streamStartProduced = true;
-    _tokens.add(new Token(TokenType.STREAM_START, _scanner.emptySpan));
+    _tokens.add(Token(TokenType.STREAM_START, _scanner.emptySpan));
   }
 
   /// Produces a [TokenType.STREAM_END] token.
@@ -597,7 +597,7 @@ class Scanner {
     _resetIndent();
     _removeSimpleKey();
     _simpleKeyAllowed = false;
-    _tokens.add(new Token(TokenType.STREAM_END, _scanner.emptySpan));
+    _tokens.add(Token(TokenType.STREAM_END, _scanner.emptySpan));
   }
 
   /// Produces a [TokenType.VERSION_DIRECTIVE] or [TokenType.TAG_DIRECTIVE]
@@ -622,7 +622,7 @@ class Scanner {
     _scanner.readChar();
     _scanner.readChar();
 
-    _tokens.add(new Token(type, _scanner.spanFrom(start)));
+    _tokens.add(Token(type, _scanner.spanFrom(start)));
   }
 
   /// Produces a [TokenType.FLOW_SEQUENCE_START] or
@@ -654,7 +654,7 @@ class Scanner {
   void _fetchBlockEntry() {
     if (_inBlockContext) {
       if (!_simpleKeyAllowed) {
-        throw new YamlException(
+        throw YamlException(
             "Block sequence entries are not allowed here.", _scanner.emptySpan);
       }
 
@@ -675,7 +675,7 @@ class Scanner {
   void _fetchKey() {
     if (_inBlockContext) {
       if (!_simpleKeyAllowed) {
-        throw new YamlException(
+        throw YamlException(
             "Mapping keys are not allowed here.", _scanner.emptySpan);
       }
 
@@ -695,7 +695,7 @@ class Scanner {
       // Add a [TokenType.KEY] directive before the first token of the simple
       // key so the parser knows that it's part of a key/value pair.
       _tokens.insert(simpleKey.tokenNumber - _tokensParsed,
-          new Token(TokenType.KEY, simpleKey.location.pointSpan()));
+          Token(TokenType.KEY, simpleKey.location.pointSpan() as FileSpan));
 
       // In the block context, we may need to add the
       // [TokenType.BLOCK_MAPPING_START] token.
@@ -710,7 +710,7 @@ class Scanner {
       _simpleKeyAllowed = false;
     } else if (_inBlockContext) {
       if (!_simpleKeyAllowed) {
-        throw new YamlException(
+        throw YamlException(
             "Mapping values are not allowed here. Did you miss a colon "
             "earlier?",
             _scanner.emptySpan);
@@ -737,11 +737,11 @@ class Scanner {
   void _addCharToken(TokenType type) {
     var start = _scanner.state;
     _scanner.readChar();
-    _tokens.add(new Token(type, _scanner.spanFrom(start)));
+    _tokens.add(Token(type, _scanner.spanFrom(start)));
   }
 
   /// Produces a [TokenType.ALIAS] or [TokenType.ANCHOR] token.
-  void _fetchAnchor({bool anchor: true}) {
+  void _fetchAnchor({bool anchor = true}) {
     _saveSimpleKey();
     _simpleKeyAllowed = false;
     _tokens.add(_scanAnchor(anchor: anchor));
@@ -756,7 +756,7 @@ class Scanner {
 
   /// Produces a [TokenType.SCALAR] token with style [ScalarStyle.LITERAL] or
   /// [ScalarStyle.FOLDED].
-  void _fetchBlockScalar({bool literal: false}) {
+  void _fetchBlockScalar({bool literal = false}) {
     _removeSimpleKey();
     _simpleKeyAllowed = true;
     _tokens.add(_scanBlockScalar(literal: literal));
@@ -764,7 +764,7 @@ class Scanner {
 
   /// Produces a [TokenType.SCALAR] token with style [ScalarStyle.SINGLE_QUOTED]
   /// or [ScalarStyle.DOUBLE_QUOTED].
-  void _fetchFlowScalar({bool singleQuote: false}) {
+  void _fetchFlowScalar({bool singleQuote = false}) {
     _saveSimpleKey();
     _simpleKeyAllowed = false;
     _tokens.add(_scanFlowScalar(singleQuote: singleQuote));
@@ -828,7 +828,7 @@ class Scanner {
     // Eat '%'.
     _scanner.readChar();
 
-    var token;
+    Token token;
     var name = _scanDirectiveName();
     if (name == "YAML") {
       token = _scanVersionDirectiveValue(start);
@@ -851,7 +851,7 @@ class Scanner {
     _skipComment();
 
     if (!_isBreakOrEnd) {
-      throw new YamlException("Expected comment or line break after directive.",
+      throw YamlException("Expected comment or line break after directive.",
           _scanner.spanFrom(start));
     }
 
@@ -875,9 +875,9 @@ class Scanner {
 
     var name = _scanner.substring(start);
     if (name.isEmpty) {
-      throw new YamlException("Expected directive name.", _scanner.emptySpan);
+      throw YamlException("Expected directive name.", _scanner.emptySpan);
     } else if (!_isBlankOrEnd) {
-      throw new YamlException(
+      throw YamlException(
           "Unexpected character in directive name.", _scanner.emptySpan);
     }
 
@@ -895,7 +895,7 @@ class Scanner {
     _scanner.expect('.');
     var minor = _scanVersionDirectiveNumber();
 
-    return new VersionDirectiveToken(_scanner.spanFrom(start), major, minor);
+    return VersionDirectiveToken(_scanner.spanFrom(start), major, minor);
   }
 
   /// Scans the version number of a version directive.
@@ -912,7 +912,7 @@ class Scanner {
 
     var number = _scanner.substring(start);
     if (number.isEmpty) {
-      throw new YamlException("Expected version number.", _scanner.emptySpan);
+      throw YamlException("Expected version number.", _scanner.emptySpan);
     }
 
     return int.parse(number);
@@ -927,21 +927,21 @@ class Scanner {
 
     var handle = _scanTagHandle(directive: true);
     if (!_isBlank) {
-      throw new YamlException("Expected whitespace.", _scanner.emptySpan);
+      throw YamlException("Expected whitespace.", _scanner.emptySpan);
     }
 
     _skipBlanks();
 
     var prefix = _scanTagUri();
     if (!_isBlankOrEnd) {
-      throw new YamlException("Expected whitespace.", _scanner.emptySpan);
+      throw YamlException("Expected whitespace.", _scanner.emptySpan);
     }
 
-    return new TagDirectiveToken(_scanner.spanFrom(start), handle, prefix);
+    return TagDirectiveToken(_scanner.spanFrom(start), handle, prefix);
   }
 
   /// Scans a [TokenType.ANCHOR] token.
-  Token _scanAnchor({bool anchor: true}) {
+  Token _scanAnchor({bool anchor = true}) {
     var start = _scanner.state;
 
     // Eat the indicator character.
@@ -966,21 +966,21 @@ class Scanner {
             next != PERCENT &&
             next != AT &&
             next != GRAVE_ACCENT)) {
-      throw new YamlException(
+      throw YamlException(
           "Expected alphanumeric character.", _scanner.emptySpan);
     }
 
     if (anchor) {
-      return new AnchorToken(_scanner.spanFrom(start), name);
+      return AnchorToken(_scanner.spanFrom(start), name);
     } else {
-      return new AliasToken(_scanner.spanFrom(start), name);
+      return AliasToken(_scanner.spanFrom(start), name);
     }
   }
 
   /// Scans a [TokenType.TAG] token.
   Token _scanTag() {
-    var handle;
-    var suffix;
+    String handle;
+    String suffix;
     var start = _scanner.state;
 
     // Check if the tag is in the canonical form.
@@ -1018,14 +1018,14 @@ class Scanner {
     // libyaml insists on whitespace after a tag, but example 7.2 indicates
     // that it's not required: http://yaml.org/spec/1.2/spec.html#id2786720.
 
-    return new TagToken(_scanner.spanFrom(start), handle, suffix);
+    return TagToken(_scanner.spanFrom(start), handle, suffix);
   }
 
   /// Scans a tag handle.
-  String _scanTagHandle({bool directive: false}) {
+  String _scanTagHandle({bool directive = false}) {
     _scanner.expect('!');
 
-    var buffer = new StringBuffer('!');
+    var buffer = StringBuffer('!');
 
     // libyaml only allows word characters in tags, but the spec disagrees:
     // http://yaml.org/spec/1.2/spec.html#ns-tag-char.
@@ -1052,9 +1052,9 @@ class Scanner {
   /// [head] is the initial portion of the tag that's already been scanned.
   /// [flowSeparators] indicates whether the tag URI can contain flow
   /// separators.
-  String _scanTagUri({String head, bool flowSeparators: true}) {
+  String _scanTagUri({String head, bool flowSeparators = true}) {
     var length = head == null ? 0 : head.length;
-    var buffer = new StringBuffer();
+    var buffer = StringBuffer();
 
     // Copy the head if needed.
     //
@@ -1083,7 +1083,7 @@ class Scanner {
   }
 
   /// Scans a block scalar.
-  Token _scanBlockScalar({bool literal: false}) {
+  Token _scanBlockScalar({bool literal = false}) {
     var start = _scanner.state;
 
     // Eat the indicator '|' or '>'.
@@ -1101,8 +1101,7 @@ class Scanner {
       if (_isDigit) {
         // Check that the indentation is greater than 0.
         if (_scanner.peekChar() == NUMBER_0) {
-          throw new YamlException(
-              "0 may not be used as an indentation indicator.",
+          throw YamlException("0 may not be used as an indentation indicator.",
               _scanner.spanFrom(start));
         }
 
@@ -1111,8 +1110,7 @@ class Scanner {
     } else if (_isDigit) {
       // Do the same as above, but in the opposite order.
       if (_scanner.peekChar() == NUMBER_0) {
-        throw new YamlException(
-            "0 may not be used as an indentation indicator.",
+        throw YamlException("0 may not be used as an indentation indicator.",
             _scanner.spanFrom(start));
       }
 
@@ -1131,7 +1129,7 @@ class Scanner {
 
     // Check if we're at the end of the line.
     if (!_isBreakOrEnd) {
-      throw new YamlException(
+      throw YamlException(
           "Expected comment or line break.", _scanner.emptySpan);
     }
 
@@ -1152,7 +1150,7 @@ class Scanner {
     var trailingBreaks = pair.last;
 
     // Scan the block scalar contents.
-    var buffer = new StringBuffer();
+    var buffer = StringBuffer();
     var leadingBreak = '';
     var leadingBlank = false;
     var trailingBlank = false;
@@ -1208,7 +1206,7 @@ class Scanner {
     if (chomping != _Chomping.STRIP) buffer.write(leadingBreak);
     if (chomping == _Chomping.KEEP) buffer.write(trailingBreaks);
 
-    return new ScalarToken(_scanner.spanFrom(start, end), buffer.toString(),
+    return ScalarToken(_scanner.spanFrom(start, end), buffer.toString(),
         literal ? ScalarStyle.LITERAL : ScalarStyle.FOLDED);
   }
 
@@ -1218,7 +1216,7 @@ class Scanner {
   /// level and the text of the line breaks.
   Pair<int, String> _scanBlockScalarBreaks(int indent) {
     var maxIndent = 0;
-    var breaks = new StringBuffer();
+    var breaks = StringBuffer();
 
     while (true) {
       while ((indent == 0 || _scanner.column < indent) &&
@@ -1244,13 +1242,13 @@ class Scanner {
       // be supported by the spec.
     }
 
-    return new Pair(indent, breaks.toString());
+    return Pair(indent, breaks.toString());
   }
 
   // Scans a quoted scalar.
-  Token _scanFlowScalar({bool singleQuote: false}) {
+  Token _scanFlowScalar({bool singleQuote = false}) {
     var start = _scanner.state;
-    var buffer = new StringBuffer();
+    var buffer = StringBuffer();
 
     // Eat the left quote.
     _scanner.readChar();
@@ -1263,7 +1261,7 @@ class Scanner {
       }
 
       if (_scanner.isDone) {
-        throw new YamlException("Unexpected end of file.", _scanner.emptySpan);
+        throw YamlException("Unexpected end of file.", _scanner.emptySpan);
       }
 
       var leadingBlanks = false;
@@ -1289,7 +1287,7 @@ class Scanner {
           var escapeStart = _scanner.state;
 
           // An escape sequence.
-          var codeLength = null;
+          int codeLength;
           switch (_scanner.peekChar(1)) {
             case NUMBER_0:
               buffer.writeCharCode(NULL);
@@ -1350,7 +1348,7 @@ class Scanner {
               codeLength = 8;
               break;
             default:
-              throw new YamlException(
+              throw YamlException(
                   "Unknown escape character.", _scanner.spanFrom(escapeStart));
           }
 
@@ -1362,7 +1360,7 @@ class Scanner {
             for (var i = 0; i < codeLength; i++) {
               if (!_isHex) {
                 _scanner.readChar();
-                throw new YamlException(
+                throw YamlException(
                     "Expected $codeLength-digit hexidecimal number.",
                     _scanner.spanFrom(escapeStart));
               }
@@ -1372,7 +1370,7 @@ class Scanner {
 
             // Check the value and write the character.
             if ((value >= 0xD800 && value <= 0xDFFF) || value > 0x10FFFF) {
-              throw new YamlException("Invalid Unicode character escape code.",
+              throw YamlException("Invalid Unicode character escape code.",
                   _scanner.spanFrom(escapeStart));
             }
 
@@ -1388,9 +1386,9 @@ class Scanner {
         break;
       }
 
-      var whitespace = new StringBuffer();
+      var whitespace = StringBuffer();
       var leadingBreak = '';
-      var trailingBreaks = new StringBuffer();
+      var trailingBreaks = StringBuffer();
       while (_isBlank || _isBreak) {
         if (_isBlank) {
           // Consume a space or a tab.
@@ -1427,7 +1425,7 @@ class Scanner {
     // Eat the right quote.
     _scanner.readChar();
 
-    return new ScalarToken(_scanner.spanFrom(start), buffer.toString(),
+    return ScalarToken(_scanner.spanFrom(start), buffer.toString(),
         singleQuote ? ScalarStyle.SINGLE_QUOTED : ScalarStyle.DOUBLE_QUOTED);
   }
 
@@ -1435,10 +1433,10 @@ class Scanner {
   Token _scanPlainScalar() {
     var start = _scanner.state;
     var end = _scanner.state;
-    var buffer = new StringBuffer();
+    var buffer = StringBuffer();
     var leadingBreak = '';
     var trailingBreaks = '';
-    var whitespace = new StringBuffer();
+    var whitespace = StringBuffer();
     var indent = _indent + 1;
 
     while (true) {
@@ -1508,7 +1506,7 @@ class Scanner {
     // Allow a simple key after a plain scalar with leading blanks.
     if (leadingBreak.isNotEmpty) _simpleKeyAllowed = true;
 
-    return new ScalarToken(
+    return ScalarToken(
         _scanner.spanFrom(start, end), buffer.toString(), ScalarStyle.PLAIN);
   }
 
@@ -1527,7 +1525,7 @@ class Scanner {
     // libyaml supports NEL, PS, and LS characters as line separators, but this
     // is explicitly forbidden in section 5.4 of the YAML spec.
     if (char != CR && char != LF) {
-      throw new YamlException("Expected newline.", _scanner.emptySpan);
+      throw YamlException("Expected newline.", _scanner.emptySpan);
     }
 
     _scanner.readChar();
@@ -1670,13 +1668,13 @@ class _SimpleKey {
 /// See http://yaml.org/spec/1.2/spec.html#id2794534.
 class _Chomping {
   /// All trailing whitespace is discarded.
-  static const STRIP = const _Chomping("STRIP");
+  static const STRIP = _Chomping("STRIP");
 
   /// A single trailing newline is retained.
-  static const CLIP = const _Chomping("CLIP");
+  static const CLIP = _Chomping("CLIP");
 
   /// All trailing whitespace is preserved.
-  static const KEEP = const _Chomping("KEEP");
+  static const KEEP = _Chomping("KEEP");
 
   final String name;
 

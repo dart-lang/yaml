@@ -27,18 +27,17 @@ class YamlMapWrapper extends MapBase
 
   Iterable get keys => _dartMap.keys;
 
-  YamlMapWrapper(Map dartMap, sourceUrl)
-      : this._(dartMap, new NullSpan(sourceUrl));
+  YamlMapWrapper(Map dartMap, sourceUrl) : this._(dartMap, NullSpan(sourceUrl));
 
   YamlMapWrapper._(Map dartMap, SourceSpan span)
       : _dartMap = dartMap,
         span = span,
-        nodes = new _YamlMapNodes(dartMap, span);
+        nodes = _YamlMapNodes(dartMap, span);
 
   operator [](Object key) {
     var value = _dartMap[key];
-    if (value is Map) return new YamlMapWrapper._(value, span);
-    if (value is List) return new YamlListWrapper._(value, span);
+    if (value is Map) return YamlMapWrapper._(value, span);
+    if (value is List) return YamlListWrapper._(value, span);
     return value;
   }
 
@@ -57,7 +56,7 @@ class _YamlMapNodes extends MapBase<dynamic, YamlNode>
   final SourceSpan _span;
 
   Iterable get keys =>
-      _dartMap.keys.map((key) => new YamlScalar.internalWithSpan(key, _span));
+      _dartMap.keys.map((key) => YamlScalar.internalWithSpan(key, _span));
 
   _YamlMapNodes(this._dartMap, this._span);
 
@@ -90,26 +89,26 @@ class YamlListWrapper extends ListBase implements YamlList {
   int get length => _dartList.length;
 
   set length(int index) {
-    throw new UnsupportedError("Cannot modify an unmodifiable List.");
+    throw UnsupportedError("Cannot modify an unmodifiable List.");
   }
 
   YamlListWrapper(List dartList, sourceUrl)
-      : this._(dartList, new NullSpan(sourceUrl));
+      : this._(dartList, NullSpan(sourceUrl));
 
   YamlListWrapper._(List dartList, SourceSpan span)
       : _dartList = dartList,
         span = span,
-        nodes = new _YamlListNodes(dartList, span);
+        nodes = _YamlListNodes(dartList, span);
 
   operator [](int index) {
     var value = _dartList[index];
-    if (value is Map) return new YamlMapWrapper._(value, span);
-    if (value is List) return new YamlListWrapper._(value, span);
+    if (value is Map) return YamlMapWrapper._(value, span);
+    if (value is List) return YamlListWrapper._(value, span);
     return value;
   }
 
   operator []=(int index, value) {
-    throw new UnsupportedError("Cannot modify an unmodifiable List.");
+    throw UnsupportedError("Cannot modify an unmodifiable List.");
   }
 
   int get hashCode => _dartList.hashCode;
@@ -129,7 +128,7 @@ class _YamlListNodes extends ListBase<YamlNode> {
   int get length => _dartList.length;
 
   set length(int index) {
-    throw new UnsupportedError("Cannot modify an unmodifiable List.");
+    throw UnsupportedError("Cannot modify an unmodifiable List.");
   }
 
   _YamlListNodes(this._dartList, this._span);
@@ -137,7 +136,7 @@ class _YamlListNodes extends ListBase<YamlNode> {
   YamlNode operator [](int index) => _nodeForValue(_dartList[index], _span);
 
   operator []=(int index, value) {
-    throw new UnsupportedError("Cannot modify an unmodifiable List.");
+    throw UnsupportedError("Cannot modify an unmodifiable List.");
   }
 
   int get hashCode => _dartList.hashCode;
@@ -147,7 +146,7 @@ class _YamlListNodes extends ListBase<YamlNode> {
 }
 
 YamlNode _nodeForValue(value, SourceSpan span) {
-  if (value is Map) return new YamlMapWrapper._(value, span);
-  if (value is List) return new YamlListWrapper._(value, span);
-  return new YamlScalar.internalWithSpan(value, span);
+  if (value is Map) return YamlMapWrapper._(value, span);
+  if (value is List) return YamlListWrapper._(value, span);
+  return YamlScalar.internalWithSpan(value, span);
 }

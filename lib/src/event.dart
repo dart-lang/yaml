@@ -38,7 +38,7 @@ class DocumentStartEvent implements Event {
   DocumentStartEvent(this.span,
       {this.versionDirective,
       List<TagDirective> tagDirectives,
-      this.isImplicit: true})
+      this.isImplicit = true})
       : tagDirectives = tagDirectives == null ? [] : tagDirectives;
 
   String toString() => "DOCUMENT_START";
@@ -53,7 +53,7 @@ class DocumentEndEvent implements Event {
   /// `...` sequence).
   final bool isImplicit;
 
-  DocumentEndEvent(this.span, {this.isImplicit: true});
+  DocumentEndEvent(this.span, {this.isImplicit = true});
 
   String toString() => "DOCUMENT_END";
 }
@@ -81,7 +81,7 @@ abstract class _ValueEvent implements Event {
   String get tag;
 
   String toString() {
-    var buffer = new StringBuffer('$type');
+    var buffer = StringBuffer('$type');
     if (anchor != null) buffer.write(" &$anchor");
     if (tag != null) buffer.write(" $tag");
     return buffer.toString();
@@ -134,20 +134,20 @@ class MappingStartEvent extends _ValueEvent {
 
 /// An enum of types of [Event] object.
 class EventType {
-  static const STREAM_START = const EventType._("STREAM_START");
-  static const STREAM_END = const EventType._("STREAM_END");
+  static const STREAM_START = EventType._("STREAM_START");
+  static const STREAM_END = EventType._("STREAM_END");
 
-  static const DOCUMENT_START = const EventType._("DOCUMENT_START");
-  static const DOCUMENT_END = const EventType._("DOCUMENT_END");
+  static const DOCUMENT_START = EventType._("DOCUMENT_START");
+  static const DOCUMENT_END = EventType._("DOCUMENT_END");
 
-  static const ALIAS = const EventType._("ALIAS");
-  static const SCALAR = const EventType._("SCALAR");
+  static const ALIAS = EventType._("ALIAS");
+  static const SCALAR = EventType._("SCALAR");
 
-  static const SEQUENCE_START = const EventType._("SEQUENCE_START");
-  static const SEQUENCE_END = const EventType._("SEQUENCE_END");
+  static const SEQUENCE_START = EventType._("SEQUENCE_START");
+  static const SEQUENCE_END = EventType._("SEQUENCE_END");
 
-  static const MAPPING_START = const EventType._("MAPPING_START");
-  static const MAPPING_END = const EventType._("MAPPING_END");
+  static const MAPPING_START = EventType._("MAPPING_START");
+  static const MAPPING_END = EventType._("MAPPING_END");
 
   final String name;
 
