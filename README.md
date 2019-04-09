@@ -15,7 +15,7 @@ main() {
 ```
 
 This library currently doesn't support dumping to YAML. You should use
-`JSON.encode` from `dart:convert` instead:
+`json.encode` from `dart:convert` instead:
 
 ```dart
 import 'dart:convert';
@@ -23,6 +23,6 @@ import 'package:yaml/yaml.dart';
 
 main() {
   var doc = loadYaml("YAML: YAML Ain't Markup Language");
-  print(JSON.encode(doc));
+  print(json.encode(doc));
 }
 ```
