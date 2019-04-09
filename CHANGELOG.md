@@ -1,3 +1,8 @@
+## 2.1.16
+
+* Improve the `span` associated with `YamlScalar` values with trailing
+  whitespace.
+
 ## 2.1.15
 
 * Set max SDK version to `<3.0.0`, and adjust other dependencies.
@@ -110,11 +115,9 @@
   constructors make it possible to use the same API to access non-YAML data as
   YAML data.
 
-* Make `YamlException` inherit from source_map's [`SpanFormatException`][]. This
+* Make `YamlException` inherit from source_map's `SpanFormatException`. This
   improves the error formatting and allows callers access to source range
   information.
-
-[SpanFormatException]: (http://www.dartdocs.org/documentation/source_maps/0.9.2/index.html#source_maps/source_maps.SpanFormatException)
 
 ## 1.0.0+1
 
