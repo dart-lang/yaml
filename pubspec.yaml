@@ -6,7 +6,7 @@ author: Dart Team <misc@dartlang.org>
 homepage: https://github.com/dart-lang/yaml
 
 environment:
-  sdk: '>=2.0.0-dev.49.0 <3.0.0'
+  sdk: '>=2.0.0 <3.0.0'
   
 dependencies:
   charcode: ^1.1.0

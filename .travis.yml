@@ -1,12 +1,14 @@
 language: dart
 
 dart:
+  - 2.0.0
   - dev
+
 dart_task:
   - test: -p vm
     xvfb: false
   - test: -p firefox
-  - dartanalyzer
+  - dartanalyzer: --fatal-warnings --fatal-infos .
 
 matrix:
   include:
