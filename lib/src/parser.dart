@@ -303,22 +303,7 @@ class Parser {
 
       _state = _states.removeLast();
       _scanner.scan();
-
-      span = span.expand(token.span);
-      if (span.text != token.value) {
-        // If the only difference between the span and the token is trailing
-        // whitespace
-        if (span.text.trimRight() == token.value) {
-          span = span.file.span(
-            span.start.offset,
-            // TODO(kevmoo): The length of `token.value` may be incorrect
-            // with some UNICODE values. Find a more clean solution.
-            span.start.offset + token.value.length,
-          );
-        }
-      }
-
-      return ScalarEvent(span, token.value, token.style,
+      return ScalarEvent(span.expand(token.span), token.value, token.style,
           anchor: anchor, tag: tag);
     }
 
