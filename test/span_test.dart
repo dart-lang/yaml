@@ -8,13 +8,6 @@ import 'package:source_span/source_span.dart';
 import 'package:test/test.dart';
 import 'package:yaml/yaml.dart';
 
-void _expectSpan(SourceSpan source, String expected) {
-  final result = source.message('message');
-  printOnFailure("r'''\n$result'''");
-
-  expect(result, expected);
-}
-
 void main() {
   YamlMap yaml;
 
@@ -33,7 +26,6 @@ void main() {
     _expectSpan(
       yaml.nodes['num'].span,
       r'''
-line 2, column 9: message
   ╷
 2 │  "num": 42,
   │         ^^
@@ -45,7 +37,6 @@ line 2, column 9: message
     _expectSpan(
       yaml.nodes['null'].span,
       r'''
-line 7, column 10: message
   ╷
 7 │  "null": null
   │          ^^^^
@@ -64,7 +55,6 @@ line 7, column 10: message
       _expectSpan(
         nestedMap.nodes['null'].span,
         r'''
-line 4, column 11: message
   ╷
 4 │   "null": null,
   │           ^^^^
@@ -76,14 +66,15 @@ line 4, column 11: message
       _expectSpan(
         nestedMap.nodes['num'].span,
         r'''
-line 5, column 10: message
   ╷
-5 │     "num": 42
-  │ ┌──────────^
-6 │ │  },
-  │ └─^
+5 │   "num": 42
+  │          ^^
   ╵''',
       );
     });
   });
+}
+
+void _expectSpan(SourceSpan source, String expected) {
+  expect(source.highlight(), expected);
 }
