@@ -1,9 +1,7 @@
 name: yaml
 version: 2.1.16
 
-description: >-
-  A Dart parser for the YAML data format.
-  Includes rich information linking elements to the input source.
+description: A parser for YAML, a human-friendly data serialization standard
 author: Dart Team <misc@dartlang.org>
 homepage: https://github.com/dart-lang/yaml
 
