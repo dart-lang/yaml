@@ -36,6 +36,9 @@ abstract class YamlNode {
   /// [YamlList], it will return [this], since they already implement [Map] and
   /// [List], respectively.
   get value;
+
+  /// Returns a copy of this YAML node as a JSON-compatible type.
+  dynamic asJsonType();
 }
 
 /// A read-only [Map] parsed from YAML.
@@ -77,6 +80,18 @@ class YamlMap extends YamlNode with collection.MapMixin, UnmodifiableMapMixin {
   /// [sourceUrl] may be either a [String], a [Uri], or `null`.
   factory YamlMap.wrap(Map dartMap, {sourceUrl}) =>
       YamlMapWrapper(dartMap, sourceUrl);
+
+  @override
+  Map<String, dynamic> asJsonType() {
+    final Map<String, dynamic> result = <String, dynamic>{};
+    for (MapEntry<dynamic, YamlNode> entry in nodes.entries) {
+      if (entry.key is! YamlScalar) {
+        throw FormatException('YAML cannot be formatted as JSON');
+      }
+      result[entry.key.value.toString()] = entry.value.asJsonType();
+    }
+    return result;
+  }
 
   /// Users of the library should not use this constructor.
   YamlMap.internal(Map<dynamic, YamlNode> nodes, SourceSpan span, this.style)
@@ -133,6 +148,10 @@ class YamlList extends YamlNode with collection.ListMixin {
     _span = span;
   }
 
+  @override
+  List<dynamic> asJsonType() =>
+      nodes.map((YamlNode node) => node.asJsonType()).toList();
+
   operator [](int index) => nodes[index].value;
 
   operator []=(int index, value) {
@@ -168,6 +187,9 @@ class YamlScalar extends YamlNode {
       : style = ScalarStyle.ANY {
     _span = span;
   }
+
+  @override
+  dynamic asJsonType() => value;
 
   String toString() => value.toString();
 }

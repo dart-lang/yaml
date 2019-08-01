@@ -41,6 +41,10 @@ class YamlMapWrapper extends MapBase
     return value;
   }
 
+  @override
+  Map<String, dynamic> asJsonType() =>
+      Map<String, dynamic>.from(_dartMap.cast<String, dynamic>());
+
   int get hashCode => _dartMap.hashCode;
 
   operator ==(Object other) =>
@@ -110,6 +114,9 @@ class YamlListWrapper extends ListBase implements YamlList {
   operator []=(int index, value) {
     throw UnsupportedError("Cannot modify an unmodifiable List.");
   }
+
+  @override
+  List<dynamic> asJsonType() => List<dynamic>.from(_dartList);
 
   int get hashCode => _dartList.hashCode;
 
