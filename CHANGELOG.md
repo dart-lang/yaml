@@ -1,6 +1,6 @@
 ## 2.2.0
 
-* BREAKING CHANGE: Make `YamlMap` preserve parsed key order.
+* POSSIBLY BREAKING CHANGE: Make `YamlMap` preserve parsed key order.
   This is breaking because some programs may rely on the
   `HashMap` sort order.
 
