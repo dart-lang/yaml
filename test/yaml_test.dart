@@ -1815,7 +1815,8 @@ main() {
       expect(loadYaml(yaml).keys.toList(), permutation);
       sanityCheckCount++;
     }
-    final expectedPermutationCount = List.generate(keys.length, (i) => i + 1).reduce((n, i) => n * i);
+    final expectedPermutationCount =
+        List.generate(keys.length, (i) => i + 1).reduce((n, i) => n * i);
     expect(sanityCheckCount, expectedPermutationCount);
   });
 }
@@ -1827,7 +1828,9 @@ Iterable<List<String>> _generatePermutations(List<String> keys) sync* {
   }
   for (int i = 0; i < keys.length; i++) {
     final first = keys[i];
-    final rest = <String>[]..addAll(keys.sublist(0, i))..addAll(keys.sublist(i + 1));
+    final rest = <String>[]
+      ..addAll(keys.sublist(0, i))
+      ..addAll(keys.sublist(i + 1));
     for (List<String> subPermutation in _generatePermutations(rest)) {
       yield <String>[first]..addAll(subPermutation);
     }
