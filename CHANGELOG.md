@@ -1,3 +1,9 @@
+## 2.2.0
+
+* POSSIBLY BREAKING CHANGE: Make `YamlMap` preserve parsed key order.
+  This is breaking because some programs may rely on the
+  `HashMap` sort order.
+
 ## 2.1.16
 
 * Fixed deprecated API usage in README.

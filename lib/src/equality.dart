@@ -10,7 +10,7 @@ import 'yaml_node.dart';
 
 /// Returns a [Map] that compares its keys based on [deepEquals].
 Map<K, V> deepEqualsMap<K, V>() =>
-    HashMap(equals: deepEquals, hashCode: deepHashCode);
+    LinkedHashMap(equals: deepEquals, hashCode: deepHashCode);
 
 /// Returns whether two objects are structurally equivalent.
 ///
