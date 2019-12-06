@@ -17,12 +17,15 @@ class Event {
 
   Event(this.type, this.span);
 
+  @override
   String toString() => type.toString();
 }
 
 /// An event indicating the beginning of a YAML document.
 class DocumentStartEvent implements Event {
-  get type => EventType.DOCUMENT_START;
+  @override
+  EventType get type => EventType.DOCUMENT_START;
+  @override
   final FileSpan span;
 
   /// The document's `%YAML` directive, or `null` if there was none.
@@ -39,14 +42,17 @@ class DocumentStartEvent implements Event {
       {this.versionDirective,
       List<TagDirective> tagDirectives,
       this.isImplicit = true})
-      : tagDirectives = tagDirectives == null ? [] : tagDirectives;
+      : tagDirectives = tagDirectives ?? [];
 
-  String toString() => "DOCUMENT_START";
+  @override
+  String toString() => 'DOCUMENT_START';
 }
 
 /// An event indicating the end of a YAML document.
 class DocumentEndEvent implements Event {
-  get type => EventType.DOCUMENT_END;
+  @override
+  EventType get type => EventType.DOCUMENT_END;
+  @override
   final FileSpan span;
 
   /// Whether the document ended implicitly (that is, without an explicit
@@ -55,12 +61,15 @@ class DocumentEndEvent implements Event {
 
   DocumentEndEvent(this.span, {this.isImplicit = true});
 
-  String toString() => "DOCUMENT_END";
+  @override
+  String toString() => 'DOCUMENT_END';
 }
 
 /// An event indicating that an alias was referenced.
 class AliasEvent implements Event {
-  get type => EventType.ALIAS;
+  @override
+  EventType get type => EventType.ALIAS;
+  @override
   final FileSpan span;
 
   /// The name of the anchor.
@@ -68,7 +77,8 @@ class AliasEvent implements Event {
 
   AliasEvent(this.span, this.name);
 
-  String toString() => "ALIAS $name";
+  @override
+  String toString() => 'ALIAS $name';
 }
 
 /// A base class for events that can have anchor and tag properties associated
@@ -80,19 +90,24 @@ abstract class _ValueEvent implements Event {
   /// The text of the value's tag, or `null` if it wasn't tagged.
   String get tag;
 
+  @override
   String toString() {
     var buffer = StringBuffer('$type');
-    if (anchor != null) buffer.write(" &$anchor");
-    if (tag != null) buffer.write(" $tag");
+    if (anchor != null) buffer.write(' &$anchor');
+    if (tag != null) buffer.write(' $tag');
     return buffer.toString();
   }
 }
 
 /// An event indicating a single scalar value.
 class ScalarEvent extends _ValueEvent {
-  get type => EventType.SCALAR;
+  @override
+  EventType get type => EventType.SCALAR;
+  @override
   final FileSpan span;
+  @override
   final String anchor;
+  @override
   final String tag;
 
   /// The contents of the scalar.
@@ -103,14 +118,19 @@ class ScalarEvent extends _ValueEvent {
 
   ScalarEvent(this.span, this.value, this.style, {this.anchor, this.tag});
 
-  String toString() => "${super.toString()} \"$value\"";
+  @override
+  String toString() => '${super.toString()} "$value"';
 }
 
 /// An event indicating the beginning of a sequence.
 class SequenceStartEvent extends _ValueEvent {
-  get type => EventType.SEQUENCE_START;
+  @override
+  EventType get type => EventType.SEQUENCE_START;
+  @override
   final FileSpan span;
+  @override
   final String anchor;
+  @override
   final String tag;
 
   /// The style of the collection in the original source.
@@ -121,9 +141,13 @@ class SequenceStartEvent extends _ValueEvent {
 
 /// An event indicating the beginning of a mapping.
 class MappingStartEvent extends _ValueEvent {
-  get type => EventType.MAPPING_START;
+  @override
+  EventType get type => EventType.MAPPING_START;
+  @override
   final FileSpan span;
+  @override
   final String anchor;
+  @override
   final String tag;
 
   /// The style of the collection in the original source.
@@ -134,24 +158,25 @@ class MappingStartEvent extends _ValueEvent {
 
 /// An enum of types of [Event] object.
 class EventType {
-  static const STREAM_START = EventType._("STREAM_START");
-  static const STREAM_END = EventType._("STREAM_END");
+  static const STREAM_START = EventType._('STREAM_START');
+  static const STREAM_END = EventType._('STREAM_END');
 
-  static const DOCUMENT_START = EventType._("DOCUMENT_START");
-  static const DOCUMENT_END = EventType._("DOCUMENT_END");
+  static const DOCUMENT_START = EventType._('DOCUMENT_START');
+  static const DOCUMENT_END = EventType._('DOCUMENT_END');
 
-  static const ALIAS = EventType._("ALIAS");
-  static const SCALAR = EventType._("SCALAR");
+  static const ALIAS = EventType._('ALIAS');
+  static const SCALAR = EventType._('SCALAR');
 
-  static const SEQUENCE_START = EventType._("SEQUENCE_START");
-  static const SEQUENCE_END = EventType._("SEQUENCE_END");
+  static const SEQUENCE_START = EventType._('SEQUENCE_START');
+  static const SEQUENCE_END = EventType._('SEQUENCE_END');
 
-  static const MAPPING_START = EventType._("MAPPING_START");
-  static const MAPPING_END = EventType._("MAPPING_END");
+  static const MAPPING_START = EventType._('MAPPING_START');
+  static const MAPPING_END = EventType._('MAPPING_END');
 
   final String name;
 
   const EventType._(this.name);
 
+  @override
   String toString() => name;
 }

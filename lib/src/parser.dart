@@ -23,13 +23,13 @@ class Parser {
   final Scanner _scanner;
 
   /// The stack of parse states for nested contexts.
-  final _states = List<_State>();
+  final _states = <_State>[];
 
   /// The current parse state.
   var _state = _State.STREAM_START;
 
   /// The custom tag directives, by tag handle.
-  final _tagDirectives = Map<String, TagDirective>();
+  final _tagDirectives = <String, TagDirective>{};
 
   /// Whether the parser has finished parsing.
   bool get isDone => _state == _State.END;
@@ -43,7 +43,7 @@ class Parser {
   /// Consumes and returns the next event.
   Event parse() {
     try {
-      if (isDone) throw StateError("No more events.");
+      if (isDone) throw StateError('No more events.');
       var event = _stateMachine();
       return event;
     } on StringScannerException catch (error) {
@@ -105,7 +105,7 @@ class Parser {
       case _State.FLOW_MAPPING_EMPTY_VALUE:
         return _parseFlowMappingValue(empty: true);
       default:
-        throw "Unreachable";
+        throw 'Unreachable';
     }
   }
 
@@ -165,7 +165,7 @@ class Parser {
     var tagDirectives = pair.last;
     token = _scanner.peek();
     if (token.type != TokenType.DOCUMENT_START) {
-      throw YamlException("Expected document start.", token.span);
+      throw YamlException('Expected document start.', token.span);
     }
 
     _states.add(_State.DOCUMENT_END);
@@ -284,7 +284,7 @@ class Parser {
       } else {
         var tagDirective = _tagDirectives[tagToken.handle];
         if (tagDirective == null) {
-          throw YamlException("Undefined tag handle.", tagToken.span);
+          throw YamlException('Undefined tag handle.', tagToken.span);
         }
 
         tag = tagDirective.prefix + tagToken.suffix;
@@ -299,7 +299,7 @@ class Parser {
 
     if (token is ScalarToken) {
       // All non-plain scalars have the "!" tag by default.
-      if (tag == null && token.style != ScalarStyle.PLAIN) tag = "!";
+      if (tag == null && token.style != ScalarStyle.PLAIN) tag = '!';
 
       _state = _states.removeLast();
       _scanner.scan();
@@ -336,7 +336,7 @@ class Parser {
       return ScalarEvent(span, '', ScalarStyle.PLAIN, anchor: anchor, tag: tag);
     }
 
-    throw YamlException("Expected node content.", span);
+    throw YamlException('Expected node content.', span);
   }
 
   /// Parses the productions:
@@ -438,7 +438,7 @@ class Parser {
       return Event(EventType.MAPPING_END, token.span);
     }
 
-    throw YamlException("Expected a key while parsing a block mapping.",
+    throw YamlException('Expected a key while parsing a block mapping.',
         token.span.start.pointSpan());
   }
 
@@ -661,18 +661,18 @@ class Parser {
         token.type == TokenType.TAG_DIRECTIVE) {
       if (token is VersionDirectiveToken) {
         if (versionDirective != null) {
-          throw YamlException("Duplicate %YAML directive.", token.span);
+          throw YamlException('Duplicate %YAML directive.', token.span);
         }
 
         if (token.major != 1 || token.minor == 0) {
           throw YamlException(
-              "Incompatible YAML document. This parser only supports YAML 1.1 "
-              "and 1.2.",
+              'Incompatible YAML document. This parser only supports YAML 1.1 '
+              'and 1.2.',
               token.span);
         } else if (token.minor > 2) {
           // TODO(nweiz): Print to stderr when issue 6943 is fixed and dart:io
           // is available.
-          warn("Warning: this parser only supports YAML 1.1 and 1.2.",
+          warn('Warning: this parser only supports YAML 1.1 and 1.2.',
               token.span);
         }
 
@@ -686,10 +686,10 @@ class Parser {
       token = _scanner.advance();
     }
 
-    _appendTagDirective(TagDirective("!", "!"), token.span.start.pointSpan(),
+    _appendTagDirective(TagDirective('!', '!'), token.span.start.pointSpan(),
         allowDuplicates: true);
     _appendTagDirective(
-        TagDirective("!!", "tag:yaml.org,2002:"), token.span.start.pointSpan(),
+        TagDirective('!!', 'tag:yaml.org,2002:'), token.span.start.pointSpan(),
         allowDuplicates: true);
 
     return Pair(versionDirective, tagDirectives);
@@ -700,7 +700,7 @@ class Parser {
       {bool allowDuplicates = false}) {
     if (_tagDirectives.containsKey(newDirective.handle)) {
       if (allowDuplicates) return;
-      throw YamlException("Duplicate %TAG directive.", span);
+      throw YamlException('Duplicate %TAG directive.', span);
     }
 
     _tagDirectives[newDirective.handle] = newDirective;
@@ -710,85 +710,86 @@ class Parser {
 /// The possible states for the parser.
 class _State {
   /// Expect [TokenType.STREAM_START].
-  static const STREAM_START = _State("STREAM_START");
+  static const STREAM_START = _State('STREAM_START');
 
   /// Expect the beginning of an implicit document.
-  static const IMPLICIT_DOCUMENT_START = _State("IMPLICIT_DOCUMENT_START");
+  static const IMPLICIT_DOCUMENT_START = _State('IMPLICIT_DOCUMENT_START');
 
   /// Expect [TokenType.DOCUMENT_START].
-  static const DOCUMENT_START = _State("DOCUMENT_START");
+  static const DOCUMENT_START = _State('DOCUMENT_START');
 
   /// Expect the content of a document.
-  static const DOCUMENT_CONTENT = _State("DOCUMENT_CONTENT");
+  static const DOCUMENT_CONTENT = _State('DOCUMENT_CONTENT');
 
   /// Expect [TokenType.DOCUMENT_END].
-  static const DOCUMENT_END = _State("DOCUMENT_END");
+  static const DOCUMENT_END = _State('DOCUMENT_END');
 
   /// Expect a block node.
-  static const BLOCK_NODE = _State("BLOCK_NODE");
+  static const BLOCK_NODE = _State('BLOCK_NODE');
 
   /// Expect a block node or indentless sequence.
   static const BLOCK_NODE_OR_INDENTLESS_SEQUENCE =
-      _State("BLOCK_NODE_OR_INDENTLESS_SEQUENCE");
+      _State('BLOCK_NODE_OR_INDENTLESS_SEQUENCE');
 
   /// Expect a flow node.
-  static const FLOW_NODE = _State("FLOW_NODE");
+  static const FLOW_NODE = _State('FLOW_NODE');
 
   /// Expect the first entry of a block sequence.
   static const BLOCK_SEQUENCE_FIRST_ENTRY =
-      _State("BLOCK_SEQUENCE_FIRST_ENTRY");
+      _State('BLOCK_SEQUENCE_FIRST_ENTRY');
 
   /// Expect an entry of a block sequence.
-  static const BLOCK_SEQUENCE_ENTRY = _State("BLOCK_SEQUENCE_ENTRY");
+  static const BLOCK_SEQUENCE_ENTRY = _State('BLOCK_SEQUENCE_ENTRY');
 
   /// Expect an entry of an indentless sequence.
-  static const INDENTLESS_SEQUENCE_ENTRY = _State("INDENTLESS_SEQUENCE_ENTRY");
+  static const INDENTLESS_SEQUENCE_ENTRY = _State('INDENTLESS_SEQUENCE_ENTRY');
 
   /// Expect the first key of a block mapping.
-  static const BLOCK_MAPPING_FIRST_KEY = _State("BLOCK_MAPPING_FIRST_KEY");
+  static const BLOCK_MAPPING_FIRST_KEY = _State('BLOCK_MAPPING_FIRST_KEY');
 
   /// Expect a block mapping key.
-  static const BLOCK_MAPPING_KEY = _State("BLOCK_MAPPING_KEY");
+  static const BLOCK_MAPPING_KEY = _State('BLOCK_MAPPING_KEY');
 
   /// Expect a block mapping value.
-  static const BLOCK_MAPPING_VALUE = _State("BLOCK_MAPPING_VALUE");
+  static const BLOCK_MAPPING_VALUE = _State('BLOCK_MAPPING_VALUE');
 
   /// Expect the first entry of a flow sequence.
-  static const FLOW_SEQUENCE_FIRST_ENTRY = _State("FLOW_SEQUENCE_FIRST_ENTRY");
+  static const FLOW_SEQUENCE_FIRST_ENTRY = _State('FLOW_SEQUENCE_FIRST_ENTRY');
 
   /// Expect an entry of a flow sequence.
-  static const FLOW_SEQUENCE_ENTRY = _State("FLOW_SEQUENCE_ENTRY");
+  static const FLOW_SEQUENCE_ENTRY = _State('FLOW_SEQUENCE_ENTRY');
 
   /// Expect a key of an ordered mapping.
   static const FLOW_SEQUENCE_ENTRY_MAPPING_KEY =
-      _State("FLOW_SEQUENCE_ENTRY_MAPPING_KEY");
+      _State('FLOW_SEQUENCE_ENTRY_MAPPING_KEY');
 
   /// Expect a value of an ordered mapping.
   static const FLOW_SEQUENCE_ENTRY_MAPPING_VALUE =
-      _State("FLOW_SEQUENCE_ENTRY_MAPPING_VALUE");
+      _State('FLOW_SEQUENCE_ENTRY_MAPPING_VALUE');
 
   /// Expect the and of an ordered mapping entry.
   static const FLOW_SEQUENCE_ENTRY_MAPPING_END =
-      _State("FLOW_SEQUENCE_ENTRY_MAPPING_END");
+      _State('FLOW_SEQUENCE_ENTRY_MAPPING_END');
 
   /// Expect the first key of a flow mapping.
-  static const FLOW_MAPPING_FIRST_KEY = _State("FLOW_MAPPING_FIRST_KEY");
+  static const FLOW_MAPPING_FIRST_KEY = _State('FLOW_MAPPING_FIRST_KEY');
 
   /// Expect a key of a flow mapping.
-  static const FLOW_MAPPING_KEY = _State("FLOW_MAPPING_KEY");
+  static const FLOW_MAPPING_KEY = _State('FLOW_MAPPING_KEY');
 
   /// Expect a value of a flow mapping.
-  static const FLOW_MAPPING_VALUE = _State("FLOW_MAPPING_VALUE");
+  static const FLOW_MAPPING_VALUE = _State('FLOW_MAPPING_VALUE');
 
   /// Expect an empty value of a flow mapping.
-  static const FLOW_MAPPING_EMPTY_VALUE = _State("FLOW_MAPPING_EMPTY_VALUE");
+  static const FLOW_MAPPING_EMPTY_VALUE = _State('FLOW_MAPPING_EMPTY_VALUE');
 
   /// Expect nothing.
-  static const END = _State("END");
+  static const END = _State('END');
 
   final String name;
 
   const _State(this.name);
 
+  @override
   String toString() => name;
 }

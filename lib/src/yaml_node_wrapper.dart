@@ -15,16 +15,21 @@ import 'yaml_node.dart';
 class YamlMapWrapper extends MapBase
     with pkg_collection.UnmodifiableMapMixin
     implements YamlMap {
-  final CollectionStyle style = CollectionStyle.ANY;
+  @override
+  final style = CollectionStyle.ANY;
 
   final Map _dartMap;
 
+  @override
   final SourceSpan span;
 
+  @override
   final Map<dynamic, YamlNode> nodes;
 
+  @override
   Map get value => this;
 
+  @override
   Iterable get keys => _dartMap.keys;
 
   YamlMapWrapper(Map dartMap, sourceUrl) : this._(dartMap, NullSpan(sourceUrl));
@@ -34,16 +39,19 @@ class YamlMapWrapper extends MapBase
         span = span,
         nodes = _YamlMapNodes(dartMap, span);
 
-  operator [](Object key) {
+  @override
+  dynamic operator [](Object key) {
     var value = _dartMap[key];
     if (value is Map) return YamlMapWrapper._(value, span);
     if (value is List) return YamlListWrapper._(value, span);
     return value;
   }
 
+  @override
   int get hashCode => _dartMap.hashCode;
 
-  operator ==(Object other) =>
+  @override
+  bool operator ==(Object other) =>
       other is YamlMapWrapper && other._dartMap == _dartMap;
 }
 
@@ -55,11 +63,13 @@ class _YamlMapNodes extends MapBase<dynamic, YamlNode>
 
   final SourceSpan _span;
 
+  @override
   Iterable get keys =>
       _dartMap.keys.map((key) => YamlScalar.internalWithSpan(key, _span));
 
   _YamlMapNodes(this._dartMap, this._span);
 
+  @override
   YamlNode operator [](Object key) {
     // Use "as" here because key being assigned to invalidates type propagation.
     if (key is YamlScalar) key = (key as YamlScalar).value;
@@ -67,29 +77,37 @@ class _YamlMapNodes extends MapBase<dynamic, YamlNode>
     return _nodeForValue(_dartMap[key], _span);
   }
 
+  @override
   int get hashCode => _dartMap.hashCode;
 
-  operator ==(Object other) =>
+  @override
+  bool operator ==(Object other) =>
       other is _YamlMapNodes && other._dartMap == _dartMap;
 }
 
 // TODO(nweiz): Use UnmodifiableListMixin when issue 18970 is fixed.
 /// A wrapper that makes a normal Dart list behave like a [YamlList].
 class YamlListWrapper extends ListBase implements YamlList {
-  final CollectionStyle style = CollectionStyle.ANY;
+  @override
+  final style = CollectionStyle.ANY;
 
   final List _dartList;
 
+  @override
   final SourceSpan span;
 
+  @override
   final List<YamlNode> nodes;
 
+  @override
   List get value => this;
 
+  @override
   int get length => _dartList.length;
 
+  @override
   set length(int index) {
-    throw UnsupportedError("Cannot modify an unmodifiable List.");
+    throw UnsupportedError('Cannot modify an unmodifiable List.');
   }
 
   YamlListWrapper(List dartList, sourceUrl)
@@ -100,20 +118,24 @@ class YamlListWrapper extends ListBase implements YamlList {
         span = span,
         nodes = _YamlListNodes(dartList, span);
 
-  operator [](int index) {
+  @override
+  dynamic operator [](int index) {
     var value = _dartList[index];
     if (value is Map) return YamlMapWrapper._(value, span);
     if (value is List) return YamlListWrapper._(value, span);
     return value;
   }
 
+  @override
   operator []=(int index, value) {
-    throw UnsupportedError("Cannot modify an unmodifiable List.");
+    throw UnsupportedError('Cannot modify an unmodifiable List.');
   }
 
+  @override
   int get hashCode => _dartList.hashCode;
 
-  operator ==(Object other) =>
+  @override
+  bool operator ==(Object other) =>
       other is YamlListWrapper && other._dartList == _dartList;
 }
 
@@ -125,23 +147,29 @@ class _YamlListNodes extends ListBase<YamlNode> {
 
   final SourceSpan _span;
 
+  @override
   int get length => _dartList.length;
 
+  @override
   set length(int index) {
-    throw UnsupportedError("Cannot modify an unmodifiable List.");
+    throw UnsupportedError('Cannot modify an unmodifiable List.');
   }
 
   _YamlListNodes(this._dartList, this._span);
 
+  @override
   YamlNode operator [](int index) => _nodeForValue(_dartList[index], _span);
 
+  @override
   operator []=(int index, value) {
-    throw UnsupportedError("Cannot modify an unmodifiable List.");
+    throw UnsupportedError('Cannot modify an unmodifiable List.');
   }
 
+  @override
   int get hashCode => _dartList.hashCode;
 
-  operator ==(Object other) =>
+  @override
+  bool operator ==(Object other) =>
       other is _YamlListNodes && other._dartList == _dartList;
 }
 

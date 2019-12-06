@@ -13,7 +13,7 @@ final Matcher throwsYamlException = throwsA(TypeMatcher<YamlException>());
 ///
 /// This handles recursive loops and considers `NaN` to equal itself.
 Matcher deepEquals(expected) => predicate(
-    (actual) => equality.deepEquals(actual, expected), "equals $expected");
+    (actual) => equality.deepEquals(actual, expected), 'equals $expected');
 
 /// Constructs a new yaml.YamlMap, optionally from a normal Map.
 Map deepEqualsMap([Map from]) {
@@ -77,8 +77,8 @@ String indentLiteral(String text) {
   if (lines.length <= 1) return text;
 
   for (var i = 0; i < lines.length; i++) {
-    lines[i] = "        ${lines[i]}";
+    lines[i] = '        ${lines[i]}';
   }
 
-  return lines.join("\n");
+  return lines.join('\n');
 }

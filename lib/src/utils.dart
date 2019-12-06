@@ -11,6 +11,7 @@ class Pair<E, F> {
 
   Pair(this.first, this.last);
 
+  @override
   String toString() => '($first, $last)';
 }
 

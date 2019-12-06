@@ -23,7 +23,7 @@ class Loader {
   final Parser _parser;
 
   /// Aliases by the alias name.
-  final _aliases = Map<String, YamlNode>();
+  final _aliases = <String, YamlNode>{};
 
   /// The span of the entire stream emitted so far.
   FileSpan get span => _span;
@@ -85,7 +85,7 @@ class Loader {
       case EventType.MAPPING_START:
         return _loadMapping(firstEvent as MappingStartEvent);
       default:
-        throw "Unreachable";
+        throw 'Unreachable';
     }
   }
 
@@ -105,13 +105,13 @@ class Loader {
     var alias = _aliases[event.name];
     if (alias != null) return alias;
 
-    throw YamlException("Undefined alias.", event.span);
+    throw YamlException('Undefined alias.', event.span);
   }
 
   /// Composes a scalar node.
   YamlNode _loadScalar(ScalarEvent scalar) {
     YamlNode node;
-    if (scalar.tag == "!") {
+    if (scalar.tag == '!') {
       node = YamlScalar.internal(scalar.value, scalar);
     } else if (scalar.tag != null) {
       node = _parseByTag(scalar);
@@ -125,10 +125,10 @@ class Loader {
 
   /// Composes a sequence node.
   YamlNode _loadSequence(SequenceStartEvent firstEvent) {
-    if (firstEvent.tag != "!" &&
+    if (firstEvent.tag != '!' &&
         firstEvent.tag != null &&
-        firstEvent.tag != "tag:yaml.org,2002:seq") {
-      throw YamlException("Invalid tag for sequence.", firstEvent.span);
+        firstEvent.tag != 'tag:yaml.org,2002:seq') {
+      throw YamlException('Invalid tag for sequence.', firstEvent.span);
     }
 
     var children = <YamlNode>[];
@@ -147,10 +147,10 @@ class Loader {
 
   /// Composes a mapping node.
   YamlNode _loadMapping(MappingStartEvent firstEvent) {
-    if (firstEvent.tag != "!" &&
+    if (firstEvent.tag != '!' &&
         firstEvent.tag != null &&
-        firstEvent.tag != "tag:yaml.org,2002:map") {
-      throw YamlException("Invalid tag for mapping.", firstEvent.span);
+        firstEvent.tag != 'tag:yaml.org,2002:map') {
+      throw YamlException('Invalid tag for mapping.', firstEvent.span);
     }
 
     var children = deepEqualsMap<dynamic, YamlNode>();
@@ -162,7 +162,7 @@ class Loader {
       var key = _loadNode(event);
       var value = _loadNode(_parser.parse());
       if (children.containsKey(key)) {
-        throw YamlException("Duplicate mapping key.", key.span);
+        throw YamlException('Duplicate mapping key.', key.span);
       }
 
       children[key] = value;
@@ -176,23 +176,23 @@ class Loader {
   /// Parses a scalar according to its tag name.
   YamlScalar _parseByTag(ScalarEvent scalar) {
     switch (scalar.tag) {
-      case "tag:yaml.org,2002:null":
+      case 'tag:yaml.org,2002:null':
         var result = _parseNull(scalar);
         if (result != null) return result;
-        throw YamlException("Invalid null scalar.", scalar.span);
-      case "tag:yaml.org,2002:bool":
+        throw YamlException('Invalid null scalar.', scalar.span);
+      case 'tag:yaml.org,2002:bool':
         var result = _parseBool(scalar);
         if (result != null) return result;
-        throw YamlException("Invalid bool scalar.", scalar.span);
-      case "tag:yaml.org,2002:int":
+        throw YamlException('Invalid bool scalar.', scalar.span);
+      case 'tag:yaml.org,2002:int':
         var result = _parseNumber(scalar, allowFloat: false);
         if (result != null) return result;
-        throw YamlException("Invalid int scalar.", scalar.span);
-      case "tag:yaml.org,2002:float":
+        throw YamlException('Invalid int scalar.', scalar.span);
+      case 'tag:yaml.org,2002:float':
         var result = _parseNumber(scalar, allowInt: false);
         if (result != null) return result;
-        throw YamlException("Invalid float scalar.", scalar.span);
-      case "tag:yaml.org,2002:str":
+        throw YamlException('Invalid float scalar.', scalar.span);
+      case 'tag:yaml.org,2002:str':
         return YamlScalar.internal(scalar.value, scalar);
       default:
         throw YamlException('Undefined tag: ${scalar.tag}.', scalar.span);
@@ -241,11 +241,11 @@ class Loader {
   /// Returns a Dart `null` if parsing fails.
   YamlScalar _parseNull(ScalarEvent scalar) {
     switch (scalar.value) {
-      case "":
-      case "null":
-      case "Null":
-      case "NULL":
-      case "~":
+      case '':
+      case 'null':
+      case 'Null':
+      case 'NULL':
+      case '~':
         return YamlScalar.internal(null, scalar);
       default:
         return null;
@@ -257,13 +257,13 @@ class Loader {
   /// Returns `null` if parsing fails.
   YamlScalar _parseBool(ScalarEvent scalar) {
     switch (scalar.value) {
-      case "true":
-      case "True":
-      case "TRUE":
+      case 'true':
+      case 'True':
+      case 'TRUE':
         return YamlScalar.internal(true, scalar);
-      case "false":
-      case "False":
-      case "FALSE":
+      case 'false':
+      case 'False':
+      case 'FALSE':
         return YamlScalar.internal(false, scalar);
       default:
         return null;
@@ -335,13 +335,13 @@ class Loader {
       // Starting with a . and a number or a sign followed by a dot.
       if (length == 5) {
         switch (contents) {
-          case "+.inf":
-          case "+.Inf":
-          case "+.INF":
+          case '+.inf':
+          case '+.Inf':
+          case '+.INF':
             return double.infinity;
-          case "-.inf":
-          case "-.Inf":
-          case "-.INF":
+          case '-.inf':
+          case '-.Inf':
+          case '-.INF':
             return -double.infinity;
         }
       }
@@ -351,13 +351,13 @@ class Loader {
 
     if (length == 4 && firstChar == $dot) {
       switch (contents) {
-        case ".inf":
-        case ".Inf":
-        case ".INF":
+        case '.inf':
+        case '.Inf':
+        case '.INF':
           return double.infinity;
-        case ".nan":
-        case ".NaN":
-        case ".NAN":
+        case '.nan':
+        case '.NaN':
+        case '.NAN':
           return double.nan;
       }
     }

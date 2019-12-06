@@ -295,7 +295,7 @@ class Scanner {
 
   /// Consumes and returns the next token.
   Token scan() {
-    if (_streamEndProduced) throw StateError("Out of tokens.");
+    if (_streamEndProduced) throw StateError('Out of tokens.');
     if (!_tokenAvailable) _fetchMoreTokens();
 
     var token = _tokens.removeFirst();
@@ -467,7 +467,7 @@ class Scanner {
 
   /// Throws an error about a disallowed character.
   void _invalidScalarCharacter() =>
-      _scanner.error("Unexpected character.", length: 1);
+      _scanner.error('Unexpected character.', length: 1);
 
   /// Checks the list of potential simple keys and remove the positions that
   /// cannot contain simple keys anymore.
@@ -655,7 +655,7 @@ class Scanner {
     if (_inBlockContext) {
       if (!_simpleKeyAllowed) {
         throw YamlException(
-            "Block sequence entries are not allowed here.", _scanner.emptySpan);
+            'Block sequence entries are not allowed here.', _scanner.emptySpan);
       }
 
       _rollIndent(
@@ -676,7 +676,7 @@ class Scanner {
     if (_inBlockContext) {
       if (!_simpleKeyAllowed) {
         throw YamlException(
-            "Mapping keys are not allowed here.", _scanner.emptySpan);
+            'Mapping keys are not allowed here.', _scanner.emptySpan);
       }
 
       _rollIndent(
@@ -711,8 +711,8 @@ class Scanner {
     } else if (_inBlockContext) {
       if (!_simpleKeyAllowed) {
         throw YamlException(
-            "Mapping values are not allowed here. Did you miss a colon "
-            "earlier?",
+            'Mapping values are not allowed here. Did you miss a colon '
+            'earlier?',
             _scanner.emptySpan);
       }
 
@@ -782,7 +782,7 @@ class Scanner {
     var afterLineBreak = false;
     while (true) {
       // Allow the BOM to start a line.
-      if (_scanner.column == 0) _scanner.scan("\uFEFF");
+      if (_scanner.column == 0) _scanner.scan('\uFEFF');
 
       // Eat whitespace.
       //
@@ -795,7 +795,7 @@ class Scanner {
       }
 
       if (_scanner.peekChar() == TAB) {
-        _scanner.error("Tab characters are not allowed as indentation.",
+        _scanner.error('Tab characters are not allowed as indentation.',
             length: 1);
       }
 
@@ -830,12 +830,12 @@ class Scanner {
 
     Token token;
     var name = _scanDirectiveName();
-    if (name == "YAML") {
+    if (name == 'YAML') {
       token = _scanVersionDirectiveValue(start);
-    } else if (name == "TAG") {
+    } else if (name == 'TAG') {
       token = _scanTagDirectiveValue(start);
     } else {
-      warn("Warning: unknown directive.", _scanner.spanFrom(start));
+      warn('Warning: unknown directive.', _scanner.spanFrom(start));
 
       // libyaml doesn't support unknown directives, but the spec says to ignore
       // them and warn: http://yaml.org/spec/1.2/spec.html#id2781147.
@@ -851,7 +851,7 @@ class Scanner {
     _skipComment();
 
     if (!_isBreakOrEnd) {
-      throw YamlException("Expected comment or line break after directive.",
+      throw YamlException('Expected comment or line break after directive.',
           _scanner.spanFrom(start));
     }
 
@@ -875,10 +875,10 @@ class Scanner {
 
     var name = _scanner.substring(start);
     if (name.isEmpty) {
-      throw YamlException("Expected directive name.", _scanner.emptySpan);
+      throw YamlException('Expected directive name.', _scanner.emptySpan);
     } else if (!_isBlankOrEnd) {
       throw YamlException(
-          "Unexpected character in directive name.", _scanner.emptySpan);
+          'Unexpected character in directive name.', _scanner.emptySpan);
     }
 
     return name;
@@ -912,7 +912,7 @@ class Scanner {
 
     var number = _scanner.substring(start);
     if (number.isEmpty) {
-      throw YamlException("Expected version number.", _scanner.emptySpan);
+      throw YamlException('Expected version number.', _scanner.emptySpan);
     }
 
     return int.parse(number);
@@ -927,14 +927,14 @@ class Scanner {
 
     var handle = _scanTagHandle(directive: true);
     if (!_isBlank) {
-      throw YamlException("Expected whitespace.", _scanner.emptySpan);
+      throw YamlException('Expected whitespace.', _scanner.emptySpan);
     }
 
     _skipBlanks();
 
     var prefix = _scanTagUri();
     if (!_isBlankOrEnd) {
-      throw YamlException("Expected whitespace.", _scanner.emptySpan);
+      throw YamlException('Expected whitespace.', _scanner.emptySpan);
     }
 
     return TagDirectiveToken(_scanner.spanFrom(start), handle, prefix);
@@ -967,7 +967,7 @@ class Scanner {
             next != AT &&
             next != GRAVE_ACCENT)) {
       throw YamlException(
-          "Expected alphanumeric character.", _scanner.emptySpan);
+          'Expected alphanumeric character.', _scanner.emptySpan);
     }
 
     if (anchor) {
@@ -1101,7 +1101,7 @@ class Scanner {
       if (_isDigit) {
         // Check that the indentation is greater than 0.
         if (_scanner.peekChar() == NUMBER_0) {
-          throw YamlException("0 may not be used as an indentation indicator.",
+          throw YamlException('0 may not be used as an indentation indicator.',
               _scanner.spanFrom(start));
         }
 
@@ -1110,7 +1110,7 @@ class Scanner {
     } else if (_isDigit) {
       // Do the same as above, but in the opposite order.
       if (_scanner.peekChar() == NUMBER_0) {
-        throw YamlException("0 may not be used as an indentation indicator.",
+        throw YamlException('0 may not be used as an indentation indicator.',
             _scanner.spanFrom(start));
       }
 
@@ -1130,7 +1130,7 @@ class Scanner {
     // Check if we're at the end of the line.
     if (!_isBreakOrEnd) {
       throw YamlException(
-          "Expected comment or line break.", _scanner.emptySpan);
+          'Expected comment or line break.', _scanner.emptySpan);
     }
 
     _skipLine();
@@ -1257,11 +1257,11 @@ class Scanner {
       // Check that there are no document indicators at the beginning of the
       // line.
       if (_isDocumentIndicator) {
-        _scanner.error("Unexpected document indicator.");
+        _scanner.error('Unexpected document indicator.');
       }
 
       if (_scanner.isDone) {
-        throw YamlException("Unexpected end of file.", _scanner.emptySpan);
+        throw YamlException('Unexpected end of file.', _scanner.emptySpan);
       }
 
       var leadingBlanks = false;
@@ -1349,7 +1349,7 @@ class Scanner {
               break;
             default:
               throw YamlException(
-                  "Unknown escape character.", _scanner.spanFrom(escapeStart));
+                  'Unknown escape character.', _scanner.spanFrom(escapeStart));
           }
 
           _scanner.readChar();
@@ -1361,7 +1361,7 @@ class Scanner {
               if (!_isHex) {
                 _scanner.readChar();
                 throw YamlException(
-                    "Expected $codeLength-digit hexidecimal number.",
+                    'Expected $codeLength-digit hexidecimal number.',
                     _scanner.spanFrom(escapeStart));
               }
 
@@ -1370,7 +1370,7 @@ class Scanner {
 
             // Check the value and write the character.
             if ((value >= 0xD800 && value <= 0xDFFF) || value > 0x10FFFF) {
-              throw YamlException("Invalid Unicode character escape code.",
+              throw YamlException('Invalid Unicode character escape code.',
                   _scanner.spanFrom(escapeStart));
             }
 
@@ -1480,7 +1480,7 @@ class Scanner {
           if (leadingBreak.isNotEmpty &&
               _scanner.column < indent &&
               _scanner.peekChar() == TAB) {
-            _scanner.error("Expected a space but found a tab.", length: 1);
+            _scanner.error('Expected a space but found a tab.', length: 1);
           }
 
           if (leadingBreak.isEmpty) {
@@ -1525,13 +1525,13 @@ class Scanner {
     // libyaml supports NEL, PS, and LS characters as line separators, but this
     // is explicitly forbidden in section 5.4 of the YAML spec.
     if (char != CR && char != LF) {
-      throw YamlException("Expected newline.", _scanner.emptySpan);
+      throw YamlException('Expected newline.', _scanner.emptySpan);
     }
 
     _scanner.readChar();
     // CR LF | CR | LF -> LF
     if (char == CR && _scanner.peekChar() == LF) _scanner.readChar();
-    return "\n";
+    return '\n';
   }
 
   // Returns whether the character at [offset] is whitespace.
@@ -1668,17 +1668,18 @@ class _SimpleKey {
 /// See http://yaml.org/spec/1.2/spec.html#id2794534.
 class _Chomping {
   /// All trailing whitespace is discarded.
-  static const STRIP = _Chomping("STRIP");
+  static const STRIP = _Chomping('STRIP');
 
   /// A single trailing newline is retained.
-  static const CLIP = _Chomping("CLIP");
+  static const CLIP = _Chomping('CLIP');
 
   /// All trailing whitespace is preserved.
-  static const KEEP = _Chomping("KEEP");
+  static const KEEP = _Chomping('KEEP');
 
   final String name;
 
   const _Chomping(this.name);
 
+  @override
   String toString() => name;
 }

@@ -16,12 +16,15 @@ class Token {
 
   Token(this.type, this.span);
 
+  @override
   String toString() => type.toString();
 }
 
 /// A token representing a `%YAML` directive.
 class VersionDirectiveToken implements Token {
-  get type => TokenType.VERSION_DIRECTIVE;
+  @override
+  TokenType get type => TokenType.VERSION_DIRECTIVE;
+  @override
   final FileSpan span;
 
   /// The declared major version of the document.
@@ -32,12 +35,15 @@ class VersionDirectiveToken implements Token {
 
   VersionDirectiveToken(this.span, this.major, this.minor);
 
-  String toString() => "VERSION_DIRECTIVE $major.$minor";
+  @override
+  String toString() => 'VERSION_DIRECTIVE $major.$minor';
 }
 
 /// A token representing a `%TAG` directive.
 class TagDirectiveToken implements Token {
-  get type => TokenType.TAG_DIRECTIVE;
+  @override
+  TokenType get type => TokenType.TAG_DIRECTIVE;
+  @override
   final FileSpan span;
 
   /// The tag handle used in the document.
@@ -48,12 +54,15 @@ class TagDirectiveToken implements Token {
 
   TagDirectiveToken(this.span, this.handle, this.prefix);
 
-  String toString() => "TAG_DIRECTIVE $handle $prefix";
+  @override
+  String toString() => 'TAG_DIRECTIVE $handle $prefix';
 }
 
 /// A token representing an anchor (`&foo`).
 class AnchorToken implements Token {
-  get type => TokenType.ANCHOR;
+  @override
+  TokenType get type => TokenType.ANCHOR;
+  @override
   final FileSpan span;
 
   /// The name of the anchor.
@@ -61,12 +70,15 @@ class AnchorToken implements Token {
 
   AnchorToken(this.span, this.name);
 
-  String toString() => "ANCHOR $name";
+  @override
+  String toString() => 'ANCHOR $name';
 }
 
 /// A token representing an alias (`*foo`).
 class AliasToken implements Token {
-  get type => TokenType.ALIAS;
+  @override
+  TokenType get type => TokenType.ALIAS;
+  @override
   final FileSpan span;
 
   /// The name of the anchor.
@@ -74,12 +86,15 @@ class AliasToken implements Token {
 
   AliasToken(this.span, this.name);
 
-  String toString() => "ALIAS $name";
+  @override
+  String toString() => 'ALIAS $name';
 }
 
 /// A token representing a tag (`!foo`).
 class TagToken implements Token {
-  get type => TokenType.TAG;
+  @override
+  TokenType get type => TokenType.TAG;
+  @override
   final FileSpan span;
 
   /// The tag handle.
@@ -90,12 +105,15 @@ class TagToken implements Token {
 
   TagToken(this.span, this.handle, this.suffix);
 
-  String toString() => "TAG $handle $suffix";
+  @override
+  String toString() => 'TAG $handle $suffix';
 }
 
 /// A tkoen representing a scalar value.
 class ScalarToken implements Token {
-  get type => TokenType.SCALAR;
+  @override
+  TokenType get type => TokenType.SCALAR;
+  @override
   final FileSpan span;
 
   /// The contents of the scalar.
@@ -106,41 +124,43 @@ class ScalarToken implements Token {
 
   ScalarToken(this.span, this.value, this.style);
 
-  String toString() => "SCALAR $style \"$value\"";
+  @override
+  String toString() => 'SCALAR $style "$value"';
 }
 
 /// An enum of types of [Token] object.
 class TokenType {
-  static const STREAM_START = TokenType._("STREAM_START");
-  static const STREAM_END = TokenType._("STREAM_END");
+  static const STREAM_START = TokenType._('STREAM_START');
+  static const STREAM_END = TokenType._('STREAM_END');
 
-  static const VERSION_DIRECTIVE = TokenType._("VERSION_DIRECTIVE");
-  static const TAG_DIRECTIVE = TokenType._("TAG_DIRECTIVE");
-  static const DOCUMENT_START = TokenType._("DOCUMENT_START");
-  static const DOCUMENT_END = TokenType._("DOCUMENT_END");
+  static const VERSION_DIRECTIVE = TokenType._('VERSION_DIRECTIVE');
+  static const TAG_DIRECTIVE = TokenType._('TAG_DIRECTIVE');
+  static const DOCUMENT_START = TokenType._('DOCUMENT_START');
+  static const DOCUMENT_END = TokenType._('DOCUMENT_END');
 
-  static const BLOCK_SEQUENCE_START = TokenType._("BLOCK_SEQUENCE_START");
-  static const BLOCK_MAPPING_START = TokenType._("BLOCK_MAPPING_START");
-  static const BLOCK_END = TokenType._("BLOCK_END");
+  static const BLOCK_SEQUENCE_START = TokenType._('BLOCK_SEQUENCE_START');
+  static const BLOCK_MAPPING_START = TokenType._('BLOCK_MAPPING_START');
+  static const BLOCK_END = TokenType._('BLOCK_END');
 
-  static const FLOW_SEQUENCE_START = TokenType._("FLOW_SEQUENCE_START");
-  static const FLOW_SEQUENCE_END = TokenType._("FLOW_SEQUENCE_END");
-  static const FLOW_MAPPING_START = TokenType._("FLOW_MAPPING_START");
-  static const FLOW_MAPPING_END = TokenType._("FLOW_MAPPING_END");
+  static const FLOW_SEQUENCE_START = TokenType._('FLOW_SEQUENCE_START');
+  static const FLOW_SEQUENCE_END = TokenType._('FLOW_SEQUENCE_END');
+  static const FLOW_MAPPING_START = TokenType._('FLOW_MAPPING_START');
+  static const FLOW_MAPPING_END = TokenType._('FLOW_MAPPING_END');
 
-  static const BLOCK_ENTRY = TokenType._("BLOCK_ENTRY");
-  static const FLOW_ENTRY = TokenType._("FLOW_ENTRY");
-  static const KEY = TokenType._("KEY");
-  static const VALUE = TokenType._("VALUE");
+  static const BLOCK_ENTRY = TokenType._('BLOCK_ENTRY');
+  static const FLOW_ENTRY = TokenType._('FLOW_ENTRY');
+  static const KEY = TokenType._('KEY');
+  static const VALUE = TokenType._('VALUE');
 
-  static const ALIAS = TokenType._("ALIAS");
-  static const ANCHOR = TokenType._("ANCHOR");
-  static const TAG = TokenType._("TAG");
-  static const SCALAR = TokenType._("SCALAR");
+  static const ALIAS = TokenType._('ALIAS');
+  static const ANCHOR = TokenType._('ANCHOR');
+  static const TAG = TokenType._('TAG');
+  static const SCALAR = TokenType._('SCALAR');
 
   final String name;
 
   const TokenType._(this.name);
 
+  @override
   String toString() => name;
 }

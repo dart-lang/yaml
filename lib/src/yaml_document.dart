@@ -35,6 +35,7 @@ class YamlDocument {
       {this.startImplicit = false, this.endImplicit = false})
       : tagDirectives = UnmodifiableListView(tagDirectives);
 
+  @override
   String toString() => contents.toString();
 }
 
@@ -48,7 +49,8 @@ class VersionDirective {
 
   VersionDirective(this.major, this.minor);
 
-  String toString() => "%YAML $major.$minor";
+  @override
+  String toString() => '%YAML $major.$minor';
 }
 
 /// A directive describing a custom tag handle.
@@ -61,5 +63,6 @@ class TagDirective {
 
   TagDirective(this.handle, this.prefix);
 
-  String toString() => "%TAG $handle $prefix";
+  @override
+  String toString() => '%TAG $handle $prefix';
 }

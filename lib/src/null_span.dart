@@ -10,9 +10,12 @@ import 'package:source_span/source_span.dart';
 /// accessing a non-YAML map that behaves transparently like a map parsed from
 /// YAML.
 class NullSpan extends SourceSpanMixin {
+  @override
   final SourceLocation start;
+  @override
   SourceLocation get end => start;
-  final text = "";
+  @override
+  final text = '';
 
   NullSpan(sourceUrl) : start = SourceLocation(0, sourceUrl: sourceUrl);
 }

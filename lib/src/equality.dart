@@ -100,7 +100,7 @@ class _DeepEquals {
 int deepHashCode(obj) {
   var parents = [];
 
-  _deepHashCode(value) {
+  int _deepHashCode(value) {
     if (parents.any((parent) => identical(parent, value))) return -1;
 
     parents.add(value);
