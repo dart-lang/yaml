@@ -1828,7 +1828,7 @@ Iterable<List<String>> _generatePermutations(List<String> keys) sync* {
   }
   for (var i = 0; i < keys.length; i++) {
     final first = keys[i];
-    final rest = <String>[...keys.sublist(0, 1), ...keys.sublist(i + 1)];
+    final rest = <String>[...keys.sublist(0, i), ...keys.sublist(i + 1)];
     for (var subPermutation in _generatePermutations(rest)) {
       yield <String>[first, ...subPermutation];
     }
