@@ -30,7 +30,7 @@ export 'src/yaml_node.dart' hide setSpan;
 ///
 /// If [sourceUrl] is passed, it's used as the URL from which the YAML
 /// originated for error reporting. It can be a [String], a [Uri], or `null`.
-loadYaml(String yaml, {sourceUrl}) =>
+dynamic loadYaml(String yaml, {sourceUrl}) =>
     loadYamlNode(yaml, sourceUrl: sourceUrl).value;
 
 /// Loads a single document from a YAML string as a [YamlNode].
@@ -56,7 +56,7 @@ YamlDocument loadYamlDocument(String yaml, {sourceUrl}) {
 
   var nextDocument = loader.load();
   if (nextDocument != null) {
-    throw YamlException("Only expected one document.", nextDocument.span);
+    throw YamlException('Only expected one document.', nextDocument.span);
   }
 
   return document;

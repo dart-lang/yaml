@@ -7,32 +7,32 @@ class ScalarStyle {
   /// No source style was specified.
   ///
   /// This usually indicates a scalar constructed with [YamlScalar.wrap].
-  static const ANY = ScalarStyle._("ANY");
+  static const ANY = ScalarStyle._('ANY');
 
   /// The plain scalar style, unquoted and without a prefix.
   ///
   /// See http://yaml.org/spec/1.2/spec.html#style/flow/plain.
-  static const PLAIN = ScalarStyle._("PLAIN");
+  static const PLAIN = ScalarStyle._('PLAIN');
 
   /// The literal scalar style, with a `|` prefix.
   ///
   /// See http://yaml.org/spec/1.2/spec.html#id2795688.
-  static const LITERAL = ScalarStyle._("LITERAL");
+  static const LITERAL = ScalarStyle._('LITERAL');
 
   /// The folded scalar style, with a `>` prefix.
   ///
   /// See http://yaml.org/spec/1.2/spec.html#id2796251.
-  static const FOLDED = ScalarStyle._("FOLDED");
+  static const FOLDED = ScalarStyle._('FOLDED');
 
   /// The single-quoted scalar style.
   ///
   /// See http://yaml.org/spec/1.2/spec.html#style/flow/single-quoted.
-  static const SINGLE_QUOTED = ScalarStyle._("SINGLE_QUOTED");
+  static const SINGLE_QUOTED = ScalarStyle._('SINGLE_QUOTED');
 
   /// The double-quoted scalar style.
   ///
   /// See http://yaml.org/spec/1.2/spec.html#style/flow/double-quoted.
-  static const DOUBLE_QUOTED = ScalarStyle._("DOUBLE_QUOTED");
+  static const DOUBLE_QUOTED = ScalarStyle._('DOUBLE_QUOTED');
 
   final String name;
 
@@ -41,6 +41,7 @@ class ScalarStyle {
 
   const ScalarStyle._(this.name);
 
+  @override
   String toString() => name;
 }
 
@@ -50,21 +51,22 @@ class CollectionStyle {
   ///
   /// This usually indicates a collection constructed with [YamlList.wrap] or
   /// [YamlMap.wrap].
-  static const ANY = CollectionStyle._("ANY");
+  static const ANY = CollectionStyle._('ANY');
 
   /// The indentation-based block style.
   ///
   /// See http://yaml.org/spec/1.2/spec.html#id2797293.
-  static const BLOCK = CollectionStyle._("BLOCK");
+  static const BLOCK = CollectionStyle._('BLOCK');
 
   /// The delimiter-based block style.
   ///
   /// See http://yaml.org/spec/1.2/spec.html#id2790088.
-  static const FLOW = CollectionStyle._("FLOW");
+  static const FLOW = CollectionStyle._('FLOW');
 
   final String name;
 
   const CollectionStyle._(this.name);
 
+  @override
   String toString() => name;
 }

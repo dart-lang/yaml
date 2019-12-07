@@ -14,8 +14,8 @@ import 'package:yaml/yaml.dart';
 const numTrials = 100;
 const runsPerTrial = 1000;
 
-final source = loadFile("input.yaml");
-final expected = loadFile("output.json");
+final source = loadFile('input.yaml');
+final expected = loadFile('output.json');
 
 void main(List<String> args) {
   var best = double.infinity;
@@ -41,7 +41,7 @@ void main(List<String> args) {
     // Sanity check to make sure the output is what we expect and to make sure
     // the VM doesn't optimize "dead" code away.
     if (jsonEncode(result) != expected) {
-      print("Incorrect output:\n${jsonEncode(result)}");
+      print('Incorrect output:\n${jsonEncode(result)}');
       exit(1);
     }
 
@@ -51,7 +51,7 @@ void main(List<String> args) {
     printResult("Run ${padLeft('#$i', 3)}", elapsed);
   }
 
-  printResult("Best   ", best);
+  printResult('Best   ', best);
 }
 
 String loadFile(String name) {
@@ -60,14 +60,14 @@ String loadFile(String name) {
 }
 
 void printResult(String label, double time) {
-  print("$label: ${padLeft(time.toStringAsFixed(3), 4)}ms "
+  print('$label: ${padLeft(time.toStringAsFixed(3), 4)}ms '
       "${'=' * ((time * 100).toInt())}");
 }
 
 String padLeft(input, int length) {
   var result = input.toString();
   if (result.length < length) {
-    result = " " * (length - result.length) + result;
+    result = ' ' * (length - result.length) + result;
   }
 
   return result;

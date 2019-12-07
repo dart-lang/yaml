@@ -35,7 +35,7 @@ abstract class YamlNode {
   /// For [YamlScalar]s, this will return the wrapped value. For [YamlMap] and
   /// [YamlList], it will return [this], since they already implement [Map] and
   /// [List], respectively.
-  get value;
+  dynamic get value;
 }
 
 /// A read-only [Map] parsed from YAML.
@@ -53,8 +53,10 @@ class YamlMap extends YamlNode with collection.MapMixin, UnmodifiableMapMixin {
   /// The style used for the map in the original document.
   final CollectionStyle style;
 
+  @override
   Map get value => this;
 
+  @override
   Iterable get keys => nodes.keys.map((node) => node.value);
 
   /// Creates an empty YamlMap.
@@ -84,10 +86,8 @@ class YamlMap extends YamlNode with collection.MapMixin, UnmodifiableMapMixin {
     _span = span;
   }
 
-  operator [](key) {
-    var node = nodes[key];
-    return node == null ? null : node.value;
-  }
+  @override
+  dynamic operator [](key) => nodes[key]?.value;
 }
 
 // TODO(nweiz): Use UnmodifiableListMixin when issue 18970 is fixed.
@@ -98,12 +98,15 @@ class YamlList extends YamlNode with collection.ListMixin {
   /// The style used for the list in the original document.
   final CollectionStyle style;
 
+  @override
   List get value => this;
 
+  @override
   int get length => nodes.length;
 
+  @override
   set length(int index) {
-    throw UnsupportedError("Cannot modify an unmodifiable List");
+    throw UnsupportedError('Cannot modify an unmodifiable List');
   }
 
   /// Creates an empty YamlList.
@@ -133,16 +136,19 @@ class YamlList extends YamlNode with collection.ListMixin {
     _span = span;
   }
 
-  operator [](int index) => nodes[index].value;
+  @override
+  dynamic operator [](int index) => nodes[index].value;
 
+  @override
   operator []=(int index, value) {
-    throw UnsupportedError("Cannot modify an unmodifiable List");
+    throw UnsupportedError('Cannot modify an unmodifiable List');
   }
 }
 
 /// A wrapped scalar value parsed from YAML.
 class YamlScalar extends YamlNode {
-  final value;
+  @override
+  final dynamic value;
 
   /// The style used for the scalar in the original document.
   final ScalarStyle style;
@@ -169,6 +175,7 @@ class YamlScalar extends YamlNode {
     _span = span;
   }
 
+  @override
   String toString() => value.toString();
 }
 
