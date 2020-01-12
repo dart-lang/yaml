@@ -1,3 +1,7 @@
+## 2.2.1
+
+* Update min Dart SDK to `2.4.0`.
+
 ## 2.2.0
 
 * POSSIBLY BREAKING CHANGE: Make `YamlMap` preserve parsed key order.
