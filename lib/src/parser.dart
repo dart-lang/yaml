@@ -712,9 +712,6 @@ class _State {
   /// Expect [TokenType.STREAM_START].
   static const STREAM_START = _State('STREAM_START');
 
-  /// Expect the beginning of an implicit document.
-  static const IMPLICIT_DOCUMENT_START = _State('IMPLICIT_DOCUMENT_START');
-
   /// Expect [TokenType.DOCUMENT_START].
   static const DOCUMENT_START = _State('DOCUMENT_START');
 
