@@ -157,26 +157,15 @@ class MappingStartEvent extends _ValueEvent {
 }
 
 /// An enum of types of [Event] object.
-class EventType {
-  static const STREAM_START = EventType._('STREAM_START');
-  static const STREAM_END = EventType._('STREAM_END');
-
-  static const DOCUMENT_START = EventType._('DOCUMENT_START');
-  static const DOCUMENT_END = EventType._('DOCUMENT_END');
-
-  static const ALIAS = EventType._('ALIAS');
-  static const SCALAR = EventType._('SCALAR');
-
-  static const SEQUENCE_START = EventType._('SEQUENCE_START');
-  static const SEQUENCE_END = EventType._('SEQUENCE_END');
-
-  static const MAPPING_START = EventType._('MAPPING_START');
-  static const MAPPING_END = EventType._('MAPPING_END');
-
-  final String name;
-
-  const EventType._(this.name);
-
-  @override
-  String toString() => name;
+enum EventType {
+  STREAM_START,
+  STREAM_END,
+  DOCUMENT_START,
+  DOCUMENT_END,
+  ALIAS,
+  SCALAR,
+  SEQUENCE_START,
+  SEQUENCE_END,
+  MAPPING_START,
+  MAPPING_END
 }

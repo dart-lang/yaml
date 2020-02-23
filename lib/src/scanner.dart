@@ -1666,20 +1666,13 @@ class _SimpleKey {
 /// whitespace for a block scalar.
 ///
 /// See http://yaml.org/spec/1.2/spec.html#id2794534.
-class _Chomping {
+enum _Chomping {
   /// All trailing whitespace is discarded.
-  static const STRIP = _Chomping('STRIP');
+  STRIP,
 
   /// A single trailing newline is retained.
-  static const CLIP = _Chomping('CLIP');
+  CLIP,
 
   /// All trailing whitespace is preserved.
-  static const KEEP = _Chomping('KEEP');
-
-  final String name;
-
-  const _Chomping(this.name);
-
-  @override
-  String toString() => name;
+  KEEP
 }
