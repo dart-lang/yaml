@@ -46,18 +46,27 @@ class ScalarStyle {
 }
 
 /// An enum of collection styles.
-enum CollectionStyle {
+class CollectionStyle {
+  /// No source style was specified.
+  ///
   /// This usually indicates a collection constructed with [YamlList.wrap] or
   /// [YamlMap.wrap].
-  ANY,
+  static const ANY = CollectionStyle._('ANY');
 
   /// The indentation-based block style.
   ///
   /// See http://yaml.org/spec/1.2/spec.html#id2797293.
-  BLOCK,
+  static const BLOCK = CollectionStyle._('BLOCK');
 
   /// The delimiter-based block style.
   ///
   /// See http://yaml.org/spec/1.2/spec.html#id2790088.
-  FLOW
+  static const FLOW = CollectionStyle._('FLOW');
+
+  final String name;
+
+  const CollectionStyle._(this.name);
+
+  @override
+  String toString() => name;
 }
