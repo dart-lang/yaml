@@ -116,10 +116,10 @@ class Parser {
   ///       ************
   Event _parseStreamStart() {
     var token = _scanner.scan();
-    assert(token.type == TokenType.STREAM_START);
+    assert(token.type == TokenType.streamStart);
 
     _state = _State.DOCUMENT_START;
-    return Event(EventType.STREAM_START, token.span);
+    return Event(EventType.streamStart, token.span);
   }
 
   /// Parses the productions:
@@ -137,14 +137,14 @@ class Parser {
     // as long as there was an end indicator.
 
     // Parse extra document end indicators.
-    while (token.type == TokenType.DOCUMENT_END) {
+    while (token.type == TokenType.documentEnd) {
       token = _scanner.advance();
     }
 
-    if (token.type != TokenType.VERSION_DIRECTIVE &&
-        token.type != TokenType.TAG_DIRECTIVE &&
-        token.type != TokenType.DOCUMENT_START &&
-        token.type != TokenType.STREAM_END) {
+    if (token.type != TokenType.versionDirective &&
+        token.type != TokenType.tagDirective &&
+        token.type != TokenType.documentStart &&
+        token.type != TokenType.streamEnd) {
       // Parse an implicit document.
       _processDirectives();
       _states.add(_State.DOCUMENT_END);
@@ -152,10 +152,10 @@ class Parser {
       return DocumentStartEvent(token.span.start.pointSpan());
     }
 
-    if (token.type == TokenType.STREAM_END) {
+    if (token.type == TokenType.streamEnd) {
       _state = _State.END;
       _scanner.scan();
-      return Event(EventType.STREAM_END, token.span);
+      return Event(EventType.streamEnd, token.span);
     }
 
     // Parse an explicit document.
@@ -164,7 +164,7 @@ class Parser {
     var versionDirective = pair.first;
     var tagDirectives = pair.last;
     token = _scanner.peek();
-    if (token.type != TokenType.DOCUMENT_START) {
+    if (token.type != TokenType.documentStart) {
       throw YamlException('Expected document start.', token.span);
     }
 
@@ -186,11 +186,11 @@ class Parser {
     var token = _scanner.peek();
 
     switch (token.type) {
-      case TokenType.VERSION_DIRECTIVE:
-      case TokenType.TAG_DIRECTIVE:
-      case TokenType.DOCUMENT_START:
-      case TokenType.DOCUMENT_END:
-      case TokenType.STREAM_END:
+      case TokenType.versionDirective:
+      case TokenType.tagDirective:
+      case TokenType.documentStart:
+      case TokenType.documentEnd:
+      case TokenType.streamEnd:
         _state = _states.removeLast();
         return _processEmptyScalar(token.span.start);
       default:
@@ -210,7 +210,7 @@ class Parser {
     _state = _State.DOCUMENT_START;
 
     var token = _scanner.peek();
-    if (token.type == TokenType.DOCUMENT_END) {
+    if (token.type == TokenType.documentEnd) {
       _scanner.scan();
       return DocumentEndEvent(token.span, isImplicit: false);
     } else {
@@ -291,7 +291,7 @@ class Parser {
       }
     }
 
-    if (indentlessSequence && token.type == TokenType.BLOCK_ENTRY) {
+    if (indentlessSequence && token.type == TokenType.blockEntry) {
       _state = _State.INDENTLESS_SEQUENCE_ENTRY;
       return SequenceStartEvent(span.expand(token.span), CollectionStyle.BLOCK,
           anchor: anchor, tag: tag);
@@ -307,25 +307,25 @@ class Parser {
           anchor: anchor, tag: tag);
     }
 
-    if (token.type == TokenType.FLOW_SEQUENCE_START) {
+    if (token.type == TokenType.flowSequenceStart) {
       _state = _State.FLOW_SEQUENCE_FIRST_ENTRY;
       return SequenceStartEvent(span.expand(token.span), CollectionStyle.FLOW,
           anchor: anchor, tag: tag);
     }
 
-    if (token.type == TokenType.FLOW_MAPPING_START) {
+    if (token.type == TokenType.flowMappingStart) {
       _state = _State.FLOW_MAPPING_FIRST_KEY;
       return MappingStartEvent(span.expand(token.span), CollectionStyle.FLOW,
           anchor: anchor, tag: tag);
     }
 
-    if (block && token.type == TokenType.BLOCK_SEQUENCE_START) {
+    if (block && token.type == TokenType.blockSequenceStart) {
       _state = _State.BLOCK_SEQUENCE_FIRST_ENTRY;
       return SequenceStartEvent(span.expand(token.span), CollectionStyle.BLOCK,
           anchor: anchor, tag: tag);
     }
 
-    if (block && token.type == TokenType.BLOCK_MAPPING_START) {
+    if (block && token.type == TokenType.blockMappingStart) {
       _state = _State.BLOCK_MAPPING_FIRST_KEY;
       return MappingStartEvent(span.expand(token.span), CollectionStyle.BLOCK,
           anchor: anchor, tag: tag);
@@ -347,11 +347,11 @@ class Parser {
   Event _parseBlockSequenceEntry() {
     var token = _scanner.peek();
 
-    if (token.type == TokenType.BLOCK_ENTRY) {
+    if (token.type == TokenType.blockEntry) {
       token = _scanner.advance();
 
-      if (token.type == TokenType.BLOCK_ENTRY ||
-          token.type == TokenType.BLOCK_END) {
+      if (token.type == TokenType.blockEntry ||
+          token.type == TokenType.blockEnd) {
         _state = _State.BLOCK_SEQUENCE_ENTRY;
         return _processEmptyScalar(token.span.end);
       } else {
@@ -360,10 +360,10 @@ class Parser {
       }
     }
 
-    if (token.type == TokenType.BLOCK_END) {
+    if (token.type == TokenType.blockEnd) {
       _scanner.scan();
       _state = _states.removeLast();
-      return Event(EventType.SEQUENCE_END, token.span);
+      return Event(EventType.sequenceEnd, token.span);
     }
 
     throw YamlException("While parsing a block collection, expected '-'.",
@@ -377,18 +377,18 @@ class Parser {
   Event _parseIndentlessSequenceEntry() {
     var token = _scanner.peek();
 
-    if (token.type != TokenType.BLOCK_ENTRY) {
+    if (token.type != TokenType.blockEntry) {
       _state = _states.removeLast();
-      return Event(EventType.SEQUENCE_END, token.span.start.pointSpan());
+      return Event(EventType.sequenceEnd, token.span.start.pointSpan());
     }
 
     var start = token.span.start;
     token = _scanner.advance();
 
-    if (token.type == TokenType.BLOCK_ENTRY ||
-        token.type == TokenType.KEY ||
-        token.type == TokenType.VALUE ||
-        token.type == TokenType.BLOCK_END) {
+    if (token.type == TokenType.blockEntry ||
+        token.type == TokenType.key ||
+        token.type == TokenType.value ||
+        token.type == TokenType.blockEnd) {
       _state = _State.INDENTLESS_SEQUENCE_ENTRY;
       return _processEmptyScalar(start);
     } else {
@@ -409,13 +409,13 @@ class Parser {
   ///                              *********
   Event _parseBlockMappingKey() {
     var token = _scanner.peek();
-    if (token.type == TokenType.KEY) {
+    if (token.type == TokenType.key) {
       var start = token.span.start;
       token = _scanner.advance();
 
-      if (token.type == TokenType.KEY ||
-          token.type == TokenType.VALUE ||
-          token.type == TokenType.BLOCK_END) {
+      if (token.type == TokenType.key ||
+          token.type == TokenType.value ||
+          token.type == TokenType.blockEnd) {
         _state = _State.BLOCK_MAPPING_VALUE;
         return _processEmptyScalar(start);
       } else {
@@ -427,15 +427,15 @@ class Parser {
     // libyaml doesn't allow empty keys without an explicit key indicator, but
     // the spec does. See example 8.18:
     // http://yaml.org/spec/1.2/spec.html#id2798896.
-    if (token.type == TokenType.VALUE) {
+    if (token.type == TokenType.value) {
       _state = _State.BLOCK_MAPPING_VALUE;
       return _processEmptyScalar(token.span.start);
     }
 
-    if (token.type == TokenType.BLOCK_END) {
+    if (token.type == TokenType.blockEnd) {
       _scanner.scan();
       _state = _states.removeLast();
-      return Event(EventType.MAPPING_END, token.span);
+      return Event(EventType.mappingEnd, token.span);
     }
 
     throw YamlException('Expected a key while parsing a block mapping.',
@@ -455,16 +455,16 @@ class Parser {
   Event _parseBlockMappingValue() {
     var token = _scanner.peek();
 
-    if (token.type != TokenType.VALUE) {
+    if (token.type != TokenType.value) {
       _state = _State.BLOCK_MAPPING_KEY;
       return _processEmptyScalar(token.span.start);
     }
 
     var start = token.span.start;
     token = _scanner.advance();
-    if (token.type == TokenType.KEY ||
-        token.type == TokenType.VALUE ||
-        token.type == TokenType.BLOCK_END) {
+    if (token.type == TokenType.key ||
+        token.type == TokenType.value ||
+        token.type == TokenType.blockEnd) {
       _state = _State.BLOCK_MAPPING_KEY;
       return _processEmptyScalar(start);
     } else {
@@ -490,9 +490,9 @@ class Parser {
     if (first) _scanner.scan();
     var token = _scanner.peek();
 
-    if (token.type != TokenType.FLOW_SEQUENCE_END) {
+    if (token.type != TokenType.flowSequenceEnd) {
       if (!first) {
-        if (token.type != TokenType.FLOW_ENTRY) {
+        if (token.type != TokenType.flowEntry) {
           throw YamlException(
               "While parsing a flow sequence, expected ',' or ']'.",
               token.span.start.pointSpan());
@@ -501,11 +501,11 @@ class Parser {
         token = _scanner.advance();
       }
 
-      if (token.type == TokenType.KEY) {
+      if (token.type == TokenType.key) {
         _state = _State.FLOW_SEQUENCE_ENTRY_MAPPING_KEY;
         _scanner.scan();
         return MappingStartEvent(token.span, CollectionStyle.FLOW);
-      } else if (token.type != TokenType.FLOW_SEQUENCE_END) {
+      } else if (token.type != TokenType.flowSequenceEnd) {
         _states.add(_State.FLOW_SEQUENCE_ENTRY);
         return _parseNode();
       }
@@ -513,7 +513,7 @@ class Parser {
 
     _scanner.scan();
     _state = _states.removeLast();
-    return Event(EventType.SEQUENCE_END, token.span);
+    return Event(EventType.sequenceEnd, token.span);
   }
 
   /// Parses the productions:
@@ -524,9 +524,9 @@ class Parser {
   Event _parseFlowSequenceEntryMappingKey() {
     var token = _scanner.peek();
 
-    if (token.type == TokenType.VALUE ||
-        token.type == TokenType.FLOW_ENTRY ||
-        token.type == TokenType.FLOW_SEQUENCE_END) {
+    if (token.type == TokenType.value ||
+        token.type == TokenType.flowEntry ||
+        token.type == TokenType.flowSequenceEnd) {
       // libyaml consumes the token here, but that seems like a bug, since it
       // always causes [_parseFlowSequenceEntryMappingValue] to emit an empty
       // scalar.
@@ -548,10 +548,10 @@ class Parser {
   Event _parseFlowSequenceEntryMappingValue() {
     var token = _scanner.peek();
 
-    if (token.type == TokenType.VALUE) {
+    if (token.type == TokenType.value) {
       token = _scanner.advance();
-      if (token.type != TokenType.FLOW_ENTRY &&
-          token.type != TokenType.FLOW_SEQUENCE_END) {
+      if (token.type != TokenType.flowEntry &&
+          token.type != TokenType.flowSequenceEnd) {
         _states.add(_State.FLOW_SEQUENCE_ENTRY_MAPPING_END);
         return _parseNode();
       }
@@ -568,7 +568,7 @@ class Parser {
   ///                                                   *
   Event _parseFlowSequenceEntryMappingEnd() {
     _state = _State.FLOW_SEQUENCE_ENTRY;
-    return Event(EventType.MAPPING_END, _scanner.peek().span.start.pointSpan());
+    return Event(EventType.mappingEnd, _scanner.peek().span.start.pointSpan());
   }
 
   /// Parses the productions:
@@ -588,9 +588,9 @@ class Parser {
     if (first) _scanner.scan();
     var token = _scanner.peek();
 
-    if (token.type != TokenType.FLOW_MAPPING_END) {
+    if (token.type != TokenType.flowMappingEnd) {
       if (!first) {
-        if (token.type != TokenType.FLOW_ENTRY) {
+        if (token.type != TokenType.flowEntry) {
           throw YamlException(
               "While parsing a flow mapping, expected ',' or '}'.",
               token.span.start.pointSpan());
@@ -599,18 +599,18 @@ class Parser {
         token = _scanner.advance();
       }
 
-      if (token.type == TokenType.KEY) {
+      if (token.type == TokenType.key) {
         token = _scanner.advance();
-        if (token.type != TokenType.VALUE &&
-            token.type != TokenType.FLOW_ENTRY &&
-            token.type != TokenType.FLOW_MAPPING_END) {
+        if (token.type != TokenType.value &&
+            token.type != TokenType.flowEntry &&
+            token.type != TokenType.flowMappingEnd) {
           _states.add(_State.FLOW_MAPPING_VALUE);
           return _parseNode();
         } else {
           _state = _State.FLOW_MAPPING_VALUE;
           return _processEmptyScalar(token.span.start);
         }
-      } else if (token.type != TokenType.FLOW_MAPPING_END) {
+      } else if (token.type != TokenType.flowMappingEnd) {
         _states.add(_State.FLOW_MAPPING_EMPTY_VALUE);
         return _parseNode();
       }
@@ -618,7 +618,7 @@ class Parser {
 
     _scanner.scan();
     _state = _states.removeLast();
-    return Event(EventType.MAPPING_END, token.span);
+    return Event(EventType.mappingEnd, token.span);
   }
 
   /// Parses the productions:
@@ -634,10 +634,10 @@ class Parser {
       return _processEmptyScalar(token.span.start);
     }
 
-    if (token.type == TokenType.VALUE) {
+    if (token.type == TokenType.value) {
       token = _scanner.advance();
-      if (token.type != TokenType.FLOW_ENTRY &&
-          token.type != TokenType.FLOW_MAPPING_END) {
+      if (token.type != TokenType.flowEntry &&
+          token.type != TokenType.flowMappingEnd) {
         _states.add(_State.FLOW_MAPPING_KEY);
         return _parseNode();
       }
@@ -657,8 +657,8 @@ class Parser {
 
     VersionDirective versionDirective;
     var tagDirectives = <TagDirective>[];
-    while (token.type == TokenType.VERSION_DIRECTIVE ||
-        token.type == TokenType.TAG_DIRECTIVE) {
+    while (token.type == TokenType.versionDirective ||
+        token.type == TokenType.tagDirective) {
       if (token is VersionDirectiveToken) {
         if (versionDirective != null) {
           throw YamlException('Duplicate %YAML directive.', token.span);
@@ -709,16 +709,16 @@ class Parser {
 
 /// The possible states for the parser.
 class _State {
-  /// Expect [TokenType.STREAM_START].
+  /// Expect [TokenType.streamStart].
   static const STREAM_START = _State('STREAM_START');
 
-  /// Expect [TokenType.DOCUMENT_START].
+  /// Expect [TokenType.documentStart].
   static const DOCUMENT_START = _State('DOCUMENT_START');
 
   /// Expect the content of a document.
   static const DOCUMENT_CONTENT = _State('DOCUMENT_CONTENT');
 
-  /// Expect [TokenType.DOCUMENT_END].
+  /// Expect [TokenType.documentEnd].
   static const DOCUMENT_END = _State('DOCUMENT_END');
 
   /// Expect a block node.

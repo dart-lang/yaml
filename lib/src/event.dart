@@ -9,10 +9,7 @@ import 'yaml_document.dart';
 
 /// An event emitted by a [Parser].
 class Event {
-  /// The event type.
   final EventType type;
-
-  /// The span associated with the event.
   final FileSpan span;
 
   Event(this.type, this.span);
@@ -24,7 +21,7 @@ class Event {
 /// An event indicating the beginning of a YAML document.
 class DocumentStartEvent implements Event {
   @override
-  EventType get type => EventType.DOCUMENT_START;
+  EventType get type => EventType.documentStart;
   @override
   final FileSpan span;
 
@@ -51,7 +48,7 @@ class DocumentStartEvent implements Event {
 /// An event indicating the end of a YAML document.
 class DocumentEndEvent implements Event {
   @override
-  EventType get type => EventType.DOCUMENT_END;
+  EventType get type => EventType.documentEnd;
   @override
   final FileSpan span;
 
@@ -68,11 +65,11 @@ class DocumentEndEvent implements Event {
 /// An event indicating that an alias was referenced.
 class AliasEvent implements Event {
   @override
-  EventType get type => EventType.ALIAS;
+  EventType get type => EventType.alias;
   @override
   final FileSpan span;
 
-  /// The name of the anchor.
+  /// The alias name.
   final String name;
 
   AliasEvent(this.span, this.name);
@@ -81,8 +78,7 @@ class AliasEvent implements Event {
   String toString() => 'ALIAS $name';
 }
 
-/// A base class for events that can have anchor and tag properties associated
-/// with them.
+/// An event that can have associated anchor and tag properties.
 abstract class _ValueEvent implements Event {
   /// The name of the value's anchor, or `null` if it wasn't anchored.
   String get anchor;
@@ -102,7 +98,7 @@ abstract class _ValueEvent implements Event {
 /// An event indicating a single scalar value.
 class ScalarEvent extends _ValueEvent {
   @override
-  EventType get type => EventType.SCALAR;
+  EventType get type => EventType.scalar;
   @override
   final FileSpan span;
   @override
@@ -125,7 +121,7 @@ class ScalarEvent extends _ValueEvent {
 /// An event indicating the beginning of a sequence.
 class SequenceStartEvent extends _ValueEvent {
   @override
-  EventType get type => EventType.SEQUENCE_START;
+  EventType get type => EventType.sequenceStart;
   @override
   final FileSpan span;
   @override
@@ -142,7 +138,7 @@ class SequenceStartEvent extends _ValueEvent {
 /// An event indicating the beginning of a mapping.
 class MappingStartEvent extends _ValueEvent {
   @override
-  EventType get type => EventType.MAPPING_START;
+  EventType get type => EventType.mappingStart;
   @override
   final FileSpan span;
   @override
@@ -156,16 +152,16 @@ class MappingStartEvent extends _ValueEvent {
   MappingStartEvent(this.span, this.style, {this.anchor, this.tag});
 }
 
-/// An enum of types of [Event] object.
+/// The types of [Event] objects.
 enum EventType {
-  STREAM_START,
-  STREAM_END,
-  DOCUMENT_START,
-  DOCUMENT_END,
-  ALIAS,
-  SCALAR,
-  SEQUENCE_START,
-  SEQUENCE_END,
-  MAPPING_START,
-  MAPPING_END
+  streamStart,
+  streamEnd,
+  documentStart,
+  documentEnd,
+  alias,
+  scalar,
+  sequenceStart,
+  sequenceEnd,
+  mappingStart,
+  mappingEnd
 }
