@@ -36,7 +36,7 @@ class Loader {
       : _parser = Parser(source, sourceUrl: sourceUrl) {
     var event = _parser.parse();
     _span = event.span;
-    assert(event.type == EventType.STREAM_START);
+    assert(event.type == EventType.streamStart);
   }
 
   /// Loads the next document from the stream.
@@ -46,7 +46,7 @@ class Loader {
     if (_parser.isDone) return null;
 
     var event = _parser.parse();
-    if (event.type == EventType.STREAM_END) {
+    if (event.type == EventType.streamEnd) {
       _span = _span.expand(event.span);
       return null;
     }
@@ -62,7 +62,7 @@ class Loader {
     var contents = _loadNode(_parser.parse());
 
     var lastEvent = _parser.parse() as DocumentEndEvent;
-    assert(lastEvent.type == EventType.DOCUMENT_END);
+    assert(lastEvent.type == EventType.documentEnd);
 
     return YamlDocument.internal(
         contents,
@@ -76,13 +76,13 @@ class Loader {
   /// Composes a node.
   YamlNode _loadNode(Event firstEvent) {
     switch (firstEvent.type) {
-      case EventType.ALIAS:
+      case EventType.alias:
         return _loadAlias(firstEvent as AliasEvent);
-      case EventType.SCALAR:
+      case EventType.scalar:
         return _loadScalar(firstEvent as ScalarEvent);
-      case EventType.SEQUENCE_START:
+      case EventType.sequenceStart:
         return _loadSequence(firstEvent as SequenceStartEvent);
-      case EventType.MAPPING_START:
+      case EventType.mappingStart:
         return _loadMapping(firstEvent as MappingStartEvent);
       default:
         throw 'Unreachable';
@@ -136,7 +136,7 @@ class Loader {
     _registerAnchor(firstEvent.anchor, node);
 
     var event = _parser.parse();
-    while (event.type != EventType.SEQUENCE_END) {
+    while (event.type != EventType.sequenceEnd) {
       children.add(_loadNode(event));
       event = _parser.parse();
     }
@@ -158,7 +158,7 @@ class Loader {
     _registerAnchor(firstEvent.anchor, node);
 
     var event = _parser.parse();
-    while (event.type != EventType.MAPPING_END) {
+    while (event.type != EventType.mappingEnd) {
       var key = _loadNode(event);
       var value = _loadNode(_parser.parse());
       if (children.containsKey(key)) {

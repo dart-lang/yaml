@@ -8,10 +8,7 @@ import 'style.dart';
 
 /// A token emitted by a [Scanner].
 class Token {
-  /// The token type.
   final TokenType type;
-
-  /// The span associated with the token.
   final FileSpan span;
 
   Token(this.type, this.span);
@@ -23,7 +20,7 @@ class Token {
 /// A token representing a `%YAML` directive.
 class VersionDirectiveToken implements Token {
   @override
-  TokenType get type => TokenType.VERSION_DIRECTIVE;
+  TokenType get type => TokenType.versionDirective;
   @override
   final FileSpan span;
 
@@ -42,7 +39,7 @@ class VersionDirectiveToken implements Token {
 /// A token representing a `%TAG` directive.
 class TagDirectiveToken implements Token {
   @override
-  TokenType get type => TokenType.TAG_DIRECTIVE;
+  TokenType get type => TokenType.tagDirective;
   @override
   final FileSpan span;
 
@@ -61,11 +58,10 @@ class TagDirectiveToken implements Token {
 /// A token representing an anchor (`&foo`).
 class AnchorToken implements Token {
   @override
-  TokenType get type => TokenType.ANCHOR;
+  TokenType get type => TokenType.anchor;
   @override
   final FileSpan span;
 
-  /// The name of the anchor.
   final String name;
 
   AnchorToken(this.span, this.name);
@@ -77,11 +73,10 @@ class AnchorToken implements Token {
 /// A token representing an alias (`*foo`).
 class AliasToken implements Token {
   @override
-  TokenType get type => TokenType.ALIAS;
+  TokenType get type => TokenType.alias;
   @override
   final FileSpan span;
 
-  /// The name of the anchor.
   final String name;
 
   AliasToken(this.span, this.name);
@@ -93,11 +88,11 @@ class AliasToken implements Token {
 /// A token representing a tag (`!foo`).
 class TagToken implements Token {
   @override
-  TokenType get type => TokenType.TAG;
+  TokenType get type => TokenType.tag;
   @override
   final FileSpan span;
 
-  /// The tag handle.
+  /// The tag handle for named tags.
   final String handle;
 
   /// The tag suffix, or `null`.
@@ -109,14 +104,14 @@ class TagToken implements Token {
   String toString() => 'TAG $handle $suffix';
 }
 
-/// A tkoen representing a scalar value.
+/// A scalar value.
 class ScalarToken implements Token {
   @override
-  TokenType get type => TokenType.SCALAR;
+  TokenType get type => TokenType.scalar;
   @override
   final FileSpan span;
 
-  /// The contents of the scalar.
+  /// The unparsed contents of the value..
   final String value;
 
   /// The style of the scalar in the original source.
@@ -128,32 +123,32 @@ class ScalarToken implements Token {
   String toString() => 'SCALAR $style "$value"';
 }
 
-/// An enum of types of [Token] object.
+/// The types of [Token] objects.
 enum TokenType {
-  STREAM_START,
-  STREAM_END,
+  streamStart,
+  streamEnd,
 
-  VERSION_DIRECTIVE,
-  TAG_DIRECTIVE,
-  DOCUMENT_START,
-  DOCUMENT_END,
+  versionDirective,
+  tagDirective,
+  documentStart,
+  documentEnd,
 
-  BLOCK_SEQUENCE_START,
-  BLOCK_MAPPING_START,
-  BLOCK_END,
+  blockSequenceStart,
+  blockMappingStart,
+  blockEnd,
 
-  FLOW_SEQUENCE_START,
-  FLOW_SEQUENCE_END,
-  FLOW_MAPPING_START,
-  FLOW_MAPPING_END,
+  flowSequenceStart,
+  flowSequenceEnd,
+  flowMappingStart,
+  flowMappingEnd,
 
-  BLOCK_ENTRY,
-  FLOW_ENTRY,
-  KEY,
-  VALUE,
+  blockEntry,
+  flowEntry,
+  key,
+  value,
 
-  ALIAS,
-  ANCHOR,
-  TAG,
-  SCALAR
+  alias,
+  anchor,
+  tag,
+  scalar
 }

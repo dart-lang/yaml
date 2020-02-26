@@ -95,17 +95,17 @@ class Scanner {
   /// [SourceSpan]s.
   final SpanScanner _scanner;
 
-  /// Whether this scanner has produced a [TokenType.STREAM_START] token
+  /// Whether this scanner has produced a [TokenType.streamStart] token
   /// indicating the beginning of the YAML stream.
   var _streamStartProduced = false;
 
-  /// Whether this scanner has produced a [TokenType.STREAM_END] token
+  /// Whether this scanner has produced a [TokenType.streamEnd] token
   /// indicating the end of the YAML stream.
   var _streamEndProduced = false;
 
   /// The queue of tokens yet to be emitted.
   ///
-  /// These are queued up in advance so that [TokenType.KEY] tokens can be
+  /// These are queued up in advance so that [TokenType.key] tokens can be
   /// inserted once the scanner determines that a series of tokens represents a
   /// mapping key.
   final _tokens = QueueList<Token>();
@@ -117,7 +117,7 @@ class Scanner {
 
   /// Whether the next token in [_tokens] is ready to be returned.
   ///
-  /// It might not be ready if there may still be a [TokenType.KEY] inserted
+  /// It might not be ready if there may still be a [TokenType.key] inserted
   /// before it.
   var _tokenAvailable = false;
 
@@ -136,7 +136,7 @@ class Scanner {
   /// Entries in this list may be `null`, indicating that there is no valid
   /// simple key for the associated level of nesting.
   ///
-  /// When a ":" is parsed and there's a simple key available, a [TokenType.KEY]
+  /// When a ":" is parsed and there's a simple key available, a [TokenType.key]
   /// token is inserted in [_tokens] before that key's token. This allows the
   /// parser to tell that the key is intended to be a mapping key.
   final _simpleKeys = <_SimpleKey>[null];
@@ -301,7 +301,7 @@ class Scanner {
     var token = _tokens.removeFirst();
     _tokenAvailable = false;
     _tokensParsed++;
-    _streamEndProduced = token is Token && token.type == TokenType.STREAM_END;
+    _streamEndProduced = token is Token && token.type == TokenType.streamEnd;
     return token;
   }
 
@@ -325,7 +325,7 @@ class Scanner {
         _staleSimpleKeys();
 
         // If there are no more tokens to fetch, break.
-        if (_tokens.last.type == TokenType.STREAM_END) break;
+        if (_tokens.last.type == TokenType.streamEnd) break;
 
         // If the current token could be a simple key, we need to scan more
         // tokens until we determine whether it is or not. Otherwise we might
@@ -365,12 +365,12 @@ class Scanner {
 
       if (_isBlankOrEndAt(3)) {
         if (_scanner.matches('---')) {
-          _fetchDocumentIndicator(TokenType.DOCUMENT_START);
+          _fetchDocumentIndicator(TokenType.documentStart);
           return;
         }
 
         if (_scanner.matches('...')) {
-          _fetchDocumentIndicator(TokenType.DOCUMENT_END);
+          _fetchDocumentIndicator(TokenType.documentEnd);
           return;
         }
       }
@@ -378,16 +378,16 @@ class Scanner {
 
     switch (_scanner.peekChar()) {
       case LEFT_SQUARE:
-        _fetchFlowCollectionStart(TokenType.FLOW_SEQUENCE_START);
+        _fetchFlowCollectionStart(TokenType.flowSequenceStart);
         return;
       case LEFT_CURLY:
-        _fetchFlowCollectionStart(TokenType.FLOW_MAPPING_START);
+        _fetchFlowCollectionStart(TokenType.flowMappingStart);
         return;
       case RIGHT_SQUARE:
-        _fetchFlowCollectionEnd(TokenType.FLOW_SEQUENCE_END);
+        _fetchFlowCollectionEnd(TokenType.flowSequenceEnd);
         return;
       case RIGHT_CURLY:
-        _fetchFlowCollectionEnd(TokenType.FLOW_MAPPING_END);
+        _fetchFlowCollectionEnd(TokenType.flowMappingEnd);
         return;
       case COMMA:
         _fetchFlowEntry();
@@ -442,9 +442,9 @@ class Scanner {
           // a quoted string) it isn't required to have whitespace after it
           // since it unambiguously describes a map.
           var token = _tokens.last;
-          if (token.type == TokenType.FLOW_SEQUENCE_END ||
-              token.type == TokenType.FLOW_MAPPING_END ||
-              (token.type == TokenType.SCALAR &&
+          if (token.type == TokenType.flowSequenceEnd ||
+              token.type == TokenType.flowMappingEnd ||
+              (token.type == TokenType.scalar &&
                   (token as ScalarToken).style.isQuoted)) {
             _fetchValue();
             return;
@@ -568,12 +568,12 @@ class Scanner {
   /// Pops indentation levels from [_indents] until the current level becomes
   /// less than or equal to [column].
   ///
-  /// For each indentation level, appends a [TokenType.BLOCK_END] token.
+  /// For each indentation level, appends a [TokenType.blockEnd] token.
   void _unrollIndent(int column) {
     if (!_inBlockContext) return;
 
     while (_indent > column) {
-      _tokens.add(Token(TokenType.BLOCK_END, _scanner.emptySpan));
+      _tokens.add(Token(TokenType.blockEnd, _scanner.emptySpan));
       _indents.removeLast();
     }
   }
@@ -581,26 +581,26 @@ class Scanner {
   /// Pops indentation levels from [_indents] until the current level resets to
   /// -1.
   ///
-  /// For each indentation level, appends a [TokenType.BLOCK_END] token.
+  /// For each indentation level, appends a [TokenType.blockEnd] token.
   void _resetIndent() => _unrollIndent(-1);
 
-  /// Produces a [TokenType.STREAM_START] token.
+  /// Produces a [TokenType.streamStart] token.
   void _fetchStreamStart() {
     // Much of libyaml's initialization logic here is done in variable
     // initializers instead.
     _streamStartProduced = true;
-    _tokens.add(Token(TokenType.STREAM_START, _scanner.emptySpan));
+    _tokens.add(Token(TokenType.streamStart, _scanner.emptySpan));
   }
 
-  /// Produces a [TokenType.STREAM_END] token.
+  /// Produces a [TokenType.streamEnd] token.
   void _fetchStreamEnd() {
     _resetIndent();
     _removeSimpleKey();
     _simpleKeyAllowed = false;
-    _tokens.add(Token(TokenType.STREAM_END, _scanner.emptySpan));
+    _tokens.add(Token(TokenType.streamEnd, _scanner.emptySpan));
   }
 
-  /// Produces a [TokenType.VERSION_DIRECTIVE] or [TokenType.TAG_DIRECTIVE]
+  /// Produces a [TokenType.versionDirective] or [TokenType.tagDirective]
   /// token.
   void _fetchDirective() {
     _resetIndent();
@@ -610,7 +610,7 @@ class Scanner {
     if (directive != null) _tokens.add(directive);
   }
 
-  /// Produces a [TokenType.DOCUMENT_START] or [TokenType.DOCUMENT_END] token.
+  /// Produces a [TokenType.documentStart] or [TokenType.documentEnd] token.
   void _fetchDocumentIndicator(TokenType type) {
     _resetIndent();
     _removeSimpleKey();
@@ -625,8 +625,8 @@ class Scanner {
     _tokens.add(Token(type, _scanner.spanFrom(start)));
   }
 
-  /// Produces a [TokenType.FLOW_SEQUENCE_START] or
-  /// [TokenType.FLOW_MAPPING_START] token.
+  /// Produces a [TokenType.flowSequenceStart] or
+  /// [TokenType.flowMappingStart] token.
   void _fetchFlowCollectionStart(TokenType type) {
     _saveSimpleKey();
     _increaseFlowLevel();
@@ -634,7 +634,7 @@ class Scanner {
     _addCharToken(type);
   }
 
-  /// Produces a [TokenType.FLOW_SEQUENCE_END] or [TokenType.FLOW_MAPPING_END]
+  /// Produces a [TokenType.flowSequenceEnd] or [TokenType.flowMappingEnd]
   /// token.
   void _fetchFlowCollectionEnd(TokenType type) {
     _removeSimpleKey();
@@ -643,14 +643,14 @@ class Scanner {
     _addCharToken(type);
   }
 
-  /// Produces a [TokenType.FLOW_ENTRY] token.
+  /// Produces a [TokenType.flowEntry] token.
   void _fetchFlowEntry() {
     _removeSimpleKey();
     _simpleKeyAllowed = true;
-    _addCharToken(TokenType.FLOW_ENTRY);
+    _addCharToken(TokenType.flowEntry);
   }
 
-  /// Produces a [TokenType.BLOCK_ENTRY] token.
+  /// Produces a [TokenType.blockEntry] token.
   void _fetchBlockEntry() {
     if (_inBlockContext) {
       if (!_simpleKeyAllowed) {
@@ -659,7 +659,7 @@ class Scanner {
       }
 
       _rollIndent(
-          _scanner.column, TokenType.BLOCK_SEQUENCE_START, _scanner.location);
+          _scanner.column, TokenType.blockSequenceStart, _scanner.location);
     } else {
       // It is an error for the '-' indicator to occur in the flow context, but
       // we let the Parser detect and report it because it's able to point to
@@ -668,10 +668,10 @@ class Scanner {
 
     _removeSimpleKey();
     _simpleKeyAllowed = true;
-    _addCharToken(TokenType.BLOCK_ENTRY);
+    _addCharToken(TokenType.blockEntry);
   }
 
-  /// Produces the [TokenType.KEY] token.
+  /// Produces the [TokenType.key] token.
   void _fetchKey() {
     if (_inBlockContext) {
       if (!_simpleKeyAllowed) {
@@ -680,27 +680,27 @@ class Scanner {
       }
 
       _rollIndent(
-          _scanner.column, TokenType.BLOCK_MAPPING_START, _scanner.location);
+          _scanner.column, TokenType.blockMappingStart, _scanner.location);
     }
 
     // Simple keys are allowed after `?` in a block context.
     _simpleKeyAllowed = _inBlockContext;
-    _addCharToken(TokenType.KEY);
+    _addCharToken(TokenType.key);
   }
 
-  /// Produces the [TokenType.VALUE] token.
+  /// Produces the [TokenType.value] token.
   void _fetchValue() {
     var simpleKey = _simpleKeys.last;
     if (simpleKey != null) {
       // Add a [TokenType.KEY] directive before the first token of the simple
       // key so the parser knows that it's part of a key/value pair.
       _tokens.insert(simpleKey.tokenNumber - _tokensParsed,
-          Token(TokenType.KEY, simpleKey.location.pointSpan() as FileSpan));
+          Token(TokenType.key, simpleKey.location.pointSpan() as FileSpan));
 
       // In the block context, we may need to add the
       // [TokenType.BLOCK_MAPPING_START] token.
       _rollIndent(
-          simpleKey.column, TokenType.BLOCK_MAPPING_START, simpleKey.location,
+          simpleKey.column, TokenType.blockMappingStart, simpleKey.location,
           tokenNumber: simpleKey.tokenNumber);
 
       // Remove the simple key.
@@ -719,16 +719,16 @@ class Scanner {
       // If we're here, we've found the ':' indicator following a complex key.
 
       _rollIndent(
-          _scanner.column, TokenType.BLOCK_MAPPING_START, _scanner.location);
+          _scanner.column, TokenType.blockMappingStart, _scanner.location);
       _simpleKeyAllowed = true;
     } else if (_simpleKeyAllowed) {
       // If we're here, we've found the ':' indicator with an empty key. This
       // behavior differs from libyaml, which disallows empty implicit keys.
       _simpleKeyAllowed = false;
-      _addCharToken(TokenType.KEY);
+      _addCharToken(TokenType.key);
     }
 
-    _addCharToken(TokenType.VALUE);
+    _addCharToken(TokenType.value);
   }
 
   /// Adds a token with [type] to [_tokens].
@@ -740,21 +740,21 @@ class Scanner {
     _tokens.add(Token(type, _scanner.spanFrom(start)));
   }
 
-  /// Produces a [TokenType.ALIAS] or [TokenType.ANCHOR] token.
+  /// Produces a [TokenType.alias] or [TokenType.anchor] token.
   void _fetchAnchor({bool anchor = true}) {
     _saveSimpleKey();
     _simpleKeyAllowed = false;
     _tokens.add(_scanAnchor(anchor: anchor));
   }
 
-  /// Produces a [TokenType.TAG] token.
+  /// Produces a [TokenType.tag] token.
   void _fetchTag() {
     _saveSimpleKey();
     _simpleKeyAllowed = false;
     _tokens.add(_scanTag());
   }
 
-  /// Produces a [TokenType.SCALAR] token with style [ScalarStyle.LITERAL] or
+  /// Produces a [TokenType.scalar] token with style [ScalarStyle.LITERAL] or
   /// [ScalarStyle.FOLDED].
   void _fetchBlockScalar({bool literal = false}) {
     _removeSimpleKey();
@@ -762,7 +762,7 @@ class Scanner {
     _tokens.add(_scanBlockScalar(literal: literal));
   }
 
-  /// Produces a [TokenType.SCALAR] token with style [ScalarStyle.SINGLE_QUOTED]
+  /// Produces a [TokenType.scalar] token with style [ScalarStyle.SINGLE_QUOTED]
   /// or [ScalarStyle.DOUBLE_QUOTED].
   void _fetchFlowScalar({bool singleQuote = false}) {
     _saveSimpleKey();
@@ -770,7 +770,7 @@ class Scanner {
     _tokens.add(_scanFlowScalar(singleQuote: singleQuote));
   }
 
-  /// Produces a [TokenType.SCALAR] token with style [ScalarStyle.PLAIN].
+  /// Produces a [TokenType.scalar] token with style [ScalarStyle.PLAIN].
   void _fetchPlainScalar() {
     _saveSimpleKey();
     _simpleKeyAllowed = false;
@@ -816,7 +816,7 @@ class Scanner {
     }
   }
 
-  /// Scans a [TokenType.YAML_DIRECTIVE] or [TokenType.TAG_DIRECTIVE] token.
+  /// Scans a [TokenType.YAML_DIRECTIVE] or [TokenType.tagDirective] token.
   ///
   ///     %YAML    1.2    # a comment \n
   ///     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -940,7 +940,7 @@ class Scanner {
     return TagDirectiveToken(_scanner.spanFrom(start), handle, prefix);
   }
 
-  /// Scans a [TokenType.ANCHOR] token.
+  /// Scans a [TokenType.anchor] token.
   Token _scanAnchor({bool anchor = true}) {
     var start = _scanner.state;
 
@@ -977,7 +977,7 @@ class Scanner {
     }
   }
 
-  /// Scans a [TokenType.TAG] token.
+  /// Scans a [TokenType.tag] token.
   Token _scanTag() {
     String handle;
     String suffix;
@@ -1090,11 +1090,11 @@ class Scanner {
     _scanner.readChar();
 
     // Check for a chomping indicator.
-    var chomping = _Chomping.CLIP;
+    var chomping = _Chomping.clip;
     var increment = 0;
     var char = _scanner.peekChar();
     if (char == PLUS || char == HYPHEN) {
-      chomping = char == PLUS ? _Chomping.KEEP : _Chomping.STRIP;
+      chomping = char == PLUS ? _Chomping.keep : _Chomping.strip;
       _scanner.readChar();
 
       // Check for an indentation indicator.
@@ -1118,7 +1118,7 @@ class Scanner {
 
       char = _scanner.peekChar();
       if (char == PLUS || char == HYPHEN) {
-        chomping = char == PLUS ? _Chomping.KEEP : _Chomping.STRIP;
+        chomping = char == PLUS ? _Chomping.keep : _Chomping.strip;
         _scanner.readChar();
       }
     }
@@ -1203,8 +1203,8 @@ class Scanner {
     }
 
     // Chomp the tail.
-    if (chomping != _Chomping.STRIP) buffer.write(leadingBreak);
-    if (chomping == _Chomping.KEEP) buffer.write(trailingBreaks);
+    if (chomping != _Chomping.strip) buffer.write(leadingBreak);
+    if (chomping == _Chomping.keep) buffer.write(trailingBreaks);
 
     return ScalarToken(_scanner.spanFrom(start, end), buffer.toString(),
         literal ? ScalarStyle.LITERAL : ScalarStyle.FOLDED);
@@ -1662,17 +1662,16 @@ class _SimpleKey {
       : required = required;
 }
 
-/// An enum of chomping indicators that describe how to handle trailing
-/// whitespace for a block scalar.
+/// The ways to handle trailing whitespace for a block scalar.
 ///
 /// See http://yaml.org/spec/1.2/spec.html#id2794534.
 enum _Chomping {
   /// All trailing whitespace is discarded.
-  STRIP,
+  strip,
 
   /// A single trailing newline is retained.
-  CLIP,
+  clip,
 
   /// All trailing whitespace is preserved.
-  KEEP
+  keep
 }
