@@ -1473,6 +1473,9 @@ class Scanner {
 
       // Is it the end?
       if (!_isBlank && !_isBreak) break;
+      
+      // Flow mode scalars contain only one break or blank
+      if (!_inBlockContext && (_isBlank || _isBreak)) break;
 
       while (_isBlank || _isBreak) {
         if (_isBlank) {
