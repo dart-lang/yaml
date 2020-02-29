@@ -35,7 +35,7 @@ dynamic loadYaml(String yaml, {sourceUrl}) =>
     loadYamlNode(yaml, sourceUrl: sourceUrl).value;
 
 dynamic loadYamlFile(String filepath) {
-  var yaml =  File(filepath).readAsStringSync();
+  var yaml = File(filepath).readAsStringSync();
 
   return loadYaml(yaml, sourceUrl: filepath);
 }
