@@ -1460,6 +1460,10 @@ class Scanner {
           buffer.write(whitespace);
           whitespace.clear();
         }
+      } 
+      // After reading blanks or breaks, stop if Plain Character is not found
+      else {
+        break;
       }
 
       // libyaml's notion of valid identifiers differs substantially from YAML
@@ -1473,9 +1477,6 @@ class Scanner {
 
       // Is it the end?
       if (!_isBlank && !_isBreak) break;
-      
-      // Flow mode scalars contain only one break or blank
-      if (!_inBlockContext && (_isBlank || _isBreak)) break;
 
       while (_isBlank || _isBreak) {
         if (_isBlank) {
