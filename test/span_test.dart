@@ -78,10 +78,8 @@ line 4, column 11: message
         r'''
 line 5, column 10: message
   ╷
-5 │     "num": 42
-  │ ┌──────────^
-6 │ │  },
-  │ └─^
+5 │   "num": 42
+  │          ^^
   ╵''',
       );
     });
