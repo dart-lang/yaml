@@ -1460,7 +1460,7 @@ class Scanner {
           buffer.write(whitespace);
           whitespace.clear();
         }
-      } 
+      }
       // After reading blanks or breaks, stop if Plain Character is not found
       else {
         break;
