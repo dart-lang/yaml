@@ -90,7 +90,7 @@ class YamlMap extends YamlNode with collection.MapMixin, UnmodifiableMapMixin {
   dynamic operator [](key) => nodes[key]?.value;
 
   @override
-  String toString({int indent}) {
+  String toString({int indentOverride, CollectionStyle styleOverride}) {
     switch (style) {
       case 'ANY':
         print('ANY');
@@ -163,7 +163,7 @@ class YamlList extends YamlNode with collection.ListMixin {
   }
 
   @override
-  String toString({int indent}) {
+  String toString({int indentOverride, CollectionStyle styleOverride}) {
     switch (style) {
       case 'ANY':
         print('ANY');
@@ -212,7 +212,7 @@ class YamlScalar extends YamlNode {
   }
 
   @override
-  String toString({int indent}) {
+  String toString({int indentOverride}) {
     switch (style) {
       case 'ANY':
         print('ANY');
