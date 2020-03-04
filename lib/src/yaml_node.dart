@@ -213,6 +213,28 @@ class YamlScalar extends YamlNode {
 
   @override
   String toString({int indent}) {
+    switch (style) {
+      case 'ANY':
+        print('ANY');
+        break;
+      case 'PLAIN':
+        print('PLAIN');
+        break;
+      case 'LITERAL':
+        print('LITERAL');
+        break;
+      case 'FOLDED':
+        print('FOLDED');
+        break;
+      case 'SINGLE_QUOTED':
+        print('SINGLE_QUOTED');
+        break;
+      case 'DOUBLE_QUOTED':
+        print('DOUBLE_QUOTED');
+        break;
+      default:
+        break;
+    }
     return value.toString();
   }
 }
