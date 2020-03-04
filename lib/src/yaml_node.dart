@@ -88,6 +88,11 @@ class YamlMap extends YamlNode with collection.MapMixin, UnmodifiableMapMixin {
 
   @override
   dynamic operator [](key) => nodes[key]?.value;
+
+  @override
+  String toString() {
+    return '';
+  }
 }
 
 // TODO(nweiz): Use UnmodifiableListMixin when issue 18970 is fixed.
@@ -142,6 +147,11 @@ class YamlList extends YamlNode with collection.ListMixin {
   @override
   operator []=(int index, value) {
     throw UnsupportedError('Cannot modify an unmodifiable List');
+  }
+
+  @override
+  String toString() {
+    return '';
   }
 }
 
