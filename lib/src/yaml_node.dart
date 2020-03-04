@@ -91,6 +91,19 @@ class YamlMap extends YamlNode with collection.MapMixin, UnmodifiableMapMixin {
 
   @override
   String toString() {
+    switch (style) {
+      case 'ANY':
+        print('ANY');
+        break;
+      case 'BLOCK':
+        print('BLOCK');
+        break;
+      case 'FLOW':
+        print('FLOW');
+        break;
+      default:
+        break;
+    }
     return '';
   }
 }
@@ -151,6 +164,19 @@ class YamlList extends YamlNode with collection.ListMixin {
 
   @override
   String toString() {
+    switch (style) {
+      case 'ANY':
+        print('ANY');
+        break;
+      case 'BLOCK':
+        print('BLOCK');
+        break;
+      case 'FLOW':
+        print('FLOW');
+        break;
+      default:
+        break;
+    }
     return '';
   }
 }
