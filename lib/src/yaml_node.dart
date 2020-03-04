@@ -90,7 +90,7 @@ class YamlMap extends YamlNode with collection.MapMixin, UnmodifiableMapMixin {
   dynamic operator [](key) => nodes[key]?.value;
 
   @override
-  String toString() {
+  String toString({int indent}) {
     switch (style) {
       case 'ANY':
         print('ANY');
@@ -163,7 +163,7 @@ class YamlList extends YamlNode with collection.ListMixin {
   }
 
   @override
-  String toString() {
+  String toString({int indent}) {
     switch (style) {
       case 'ANY':
         print('ANY');
@@ -212,7 +212,9 @@ class YamlScalar extends YamlNode {
   }
 
   @override
-  String toString() => value.toString();
+  String toString({int indent}) {
+    return value.toString();
+  }
 }
 
 /// Sets the source span of a [YamlNode].
