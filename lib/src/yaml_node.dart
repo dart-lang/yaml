@@ -97,6 +97,7 @@ class YamlMap extends YamlNode with collection.MapMixin, UnmodifiableMapMixin {
     return toStringShaped();
   }
 
+  @override
   String toStringShaped({int indentOverride, CollectionStyle styleOverride}) {
     var result = '';
     styleOverride ??= style;
@@ -105,8 +106,46 @@ class YamlMap extends YamlNode with collection.MapMixin, UnmodifiableMapMixin {
     }
     switch (styleOverride) {
       case CollectionStyle.BLOCK:
+        for (var node in nodes.entries) {
+          if (result.isNotEmpty) {
+            result +=
+                '\n' + ((indentOverride != null) ? '  ' * indentOverride : '');
+          }
+          if (node.key is YamlScalar) {
+            result += (node.key as YamlScalar).toStringShaped(
+                    indentOverride:
+                        (indentOverride != null) ? indentOverride : 0) +
+                ': ';
+          } else if (node.key is YamlList) {
+            result += '? ' +
+                (node.key as YamlList).toStringShaped(
+                    indentOverride:
+                        (indentOverride != null) ? indentOverride + 1 : 1);
+            result += '\n:\n' +
+                ((indentOverride != null) ? '  ' * (indentOverride + 1) : '  ');
+          } else if (node.key is YamlMap) {
+            result += '? ' +
+                (node.key as YamlMap).toStringShaped(
+                    indentOverride:
+                        (indentOverride != null) ? indentOverride + 1 : 1);
+            result += '\n:\n' +
+                ((indentOverride != null) ? '  ' * (indentOverride + 1) : '  ');
+          }
+          result += node.value.toStringShaped(
+              indentOverride:
+                  (indentOverride != null) ? indentOverride + 1 : 1);
+        }
         break;
       case CollectionStyle.FLOW:
+        result += '{' +
+            nodes.entries
+                .map((e) =>
+                    (e.key as YamlNode)
+                        .toStringShaped(styleOverride: CollectionStyle.FLOW) +
+                    ': ' +
+                    e.value.toStringShaped(styleOverride: CollectionStyle.FLOW))
+                .join(', ') +
+            '}';
         break;
       default:
         break;
@@ -174,6 +213,7 @@ class YamlList extends YamlNode with collection.ListMixin {
     return toStringShaped();
   }
 
+  @override
   String toStringShaped({int indentOverride, CollectionStyle styleOverride}) {
     var result = '';
     styleOverride ??= style;
@@ -252,6 +292,7 @@ class YamlScalar extends YamlNode {
     return toStringShaped();
   }
 
+  @override
   String toStringShaped({int indentOverride, CollectionStyle styleOverride}) {
     String result;
     switch (style) {
@@ -286,7 +327,7 @@ class YamlScalar extends YamlNode {
                 if (lines[line][i] == ' ') {
                   initialWhitespace++;
                 } else {
-        break;
+                  break;
                 }
               }
 
@@ -299,13 +340,13 @@ class YamlScalar extends YamlNode {
                   newLines.add(lines[line].substring(0, i));
                   lines[line] =
                       lines[line].substring(i + 1, lines[line].length);
-        break;
+                  break;
                 }
               }
 
               if (lines[line].length > lineLimit &&
                   !lines[line].substring(initialWhitespace).contains(' ')) {
-        break;
+                break;
               }
             }
             if (lines[line].isNotEmpty) {
