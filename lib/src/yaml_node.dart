@@ -37,6 +37,8 @@ abstract class YamlNode {
   /// [YamlList], it will return [this], since they already implement [Map] and
   /// [List], respectively.
   dynamic get value;
+
+  String toStringShaped({int indentOverride, CollectionStyle styleOverride});
 }
 
 /// A read-only [Map] parsed from YAML.
@@ -103,10 +105,8 @@ class YamlMap extends YamlNode with collection.MapMixin, UnmodifiableMapMixin {
     }
     switch (styleOverride) {
       case CollectionStyle.BLOCK:
-        print('BLOCK');
         break;
       case CollectionStyle.FLOW:
-        print('FLOW');
         break;
       default:
         break;
@@ -182,10 +182,33 @@ class YamlList extends YamlNode with collection.ListMixin {
     }
     switch (styleOverride) {
       case CollectionStyle.BLOCK:
-        print('BLOCK');
+        for (var node in nodes) {
+          if (result.isNotEmpty) {
+            result +=
+                '\n' + ((indentOverride != null) ? '  ' * indentOverride : '');
+          }
+          result += '- ';
+          if (node is YamlScalar) {
+            result += node.toStringShaped(
+                indentOverride: (indentOverride != null) ? indentOverride : 0);
+          } else if (node is YamlList) {
+            result += node.toStringShaped(
+                indentOverride:
+                    (indentOverride != null) ? indentOverride + 1 : 1);
+          } else if (node is YamlMap) {
+            result += node.toStringShaped(
+                indentOverride:
+                    (indentOverride != null) ? indentOverride + 1 : 1);
+          }
+        }
         break;
       case CollectionStyle.FLOW:
-        print('FLOW');
+        result += '[' +
+            nodes
+                .map((e) =>
+                    e.toStringShaped(styleOverride: CollectionStyle.FLOW))
+                .join(', ') +
+            ']';
         break;
       default:
         break;
@@ -229,16 +252,14 @@ class YamlScalar extends YamlNode {
     return toStringShaped();
   }
 
-  String toStringShaped({int indentOverride}) {
+  String toStringShaped({int indentOverride, CollectionStyle styleOverride}) {
     String result;
     switch (style) {
       case ScalarStyle.ANY:
-        result = ((indentOverride != null) ? '  ' * indentOverride : '') +
-            value.toString();
+        result = value.toString();
         break;
       case ScalarStyle.PLAIN:
-        result = ((indentOverride != null) ? '  ' * indentOverride : '') +
-            value.toString();
+        result = value.toString();
         break;
       case ScalarStyle.LITERAL:
         result = '|';
@@ -303,14 +324,23 @@ class YamlScalar extends YamlNode {
         }
         break;
       case ScalarStyle.SINGLE_QUOTED:
-        result = ((indentOverride != null) ? '  ' * (indentOverride) : '') + '\'' + value.toString() + '\'';
+        result = '\'' + value.toString() + '\'';
         break;
       case ScalarStyle.DOUBLE_QUOTED:
-        result = ((indentOverride != null) ? '  ' * (indentOverride) : '') + '"' + value.toString() + '"';
+        result = '"' + value.toString() + '"';
         break;
       default:
         break;
     }
+
+    if (styleOverride != null) {
+      for (var i = 0; i < result.length; i++) {
+        if (result[i] == '\n') {
+          result = result.replaceRange(i, i + 1, '\\n');
+        }
+      }
+    }
+
     return result;
   }
 }
