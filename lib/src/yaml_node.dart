@@ -116,19 +116,34 @@ class YamlMap extends YamlNode with collection.MapMixin, UnmodifiableMapMixin {
                     indentOverride:
                         (indentOverride != null) ? indentOverride : 0) +
                 ': ';
+            if (node.value is YamlList) {
+              result += '\n' +
+                  ((indentOverride != null)
+                      ? '  ' * (indentOverride + 1)
+                      : '  ');
+            } else if (node.value is YamlMap) {
+              result += '\n' +
+                  ((indentOverride != null)
+                      ? '  ' * (indentOverride + 1)
+                      : '  ');
+            }
           } else if (node.key is YamlList) {
             result += '? ' +
                 (node.key as YamlList).toStringShaped(
                     indentOverride:
                         (indentOverride != null) ? indentOverride + 1 : 1);
-            result += '\n:\n' +
+            result += '\n' +
+                ((indentOverride != null) ? '  ' * (indentOverride) : '') +
+                ':\n' +
                 ((indentOverride != null) ? '  ' * (indentOverride + 1) : '  ');
           } else if (node.key is YamlMap) {
             result += '? ' +
                 (node.key as YamlMap).toStringShaped(
                     indentOverride:
                         (indentOverride != null) ? indentOverride + 1 : 1);
-            result += '\n:\n' +
+            result += '\n' +
+                ((indentOverride != null) ? '  ' * (indentOverride) : '') +
+                ':\n' +
                 ((indentOverride != null) ? '  ' * (indentOverride + 1) : '  ');
           }
           result += node.value.toStringShaped(
