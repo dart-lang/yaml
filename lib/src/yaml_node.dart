@@ -3,6 +3,7 @@
 // BSD-style license that can be found in the LICENSE file.
 
 import 'dart:collection' as collection;
+import 'dart:math' as math;
 
 import 'package:collection/collection.dart';
 import 'package:source_span/source_span.dart';
@@ -90,21 +91,27 @@ class YamlMap extends YamlNode with collection.MapMixin, UnmodifiableMapMixin {
   dynamic operator [](key) => nodes[key]?.value;
 
   @override
-  String toString({int indentOverride, CollectionStyle styleOverride}) {
-    switch (style) {
-      case 'ANY':
-        print('ANY');
-        break;
-      case 'BLOCK':
+  String toString() {
+    return toStringShaped();
+  }
+
+  String toStringShaped({int indentOverride, CollectionStyle styleOverride}) {
+    var result = '';
+    styleOverride ??= style;
+    if (styleOverride == CollectionStyle.ANY) {
+      styleOverride = CollectionStyle.BLOCK;
+    }
+    switch (styleOverride) {
+      case CollectionStyle.BLOCK:
         print('BLOCK');
         break;
-      case 'FLOW':
+      case CollectionStyle.FLOW:
         print('FLOW');
         break;
       default:
         break;
     }
-    return '';
+    return result;
   }
 }
 
@@ -163,21 +170,27 @@ class YamlList extends YamlNode with collection.ListMixin {
   }
 
   @override
-  String toString({int indentOverride, CollectionStyle styleOverride}) {
-    switch (style) {
-      case 'ANY':
-        print('ANY');
-        break;
-      case 'BLOCK':
+  String toString() {
+    return toStringShaped();
+  }
+
+  String toStringShaped({int indentOverride, CollectionStyle styleOverride}) {
+    var result = '';
+    styleOverride ??= style;
+    if (styleOverride == CollectionStyle.ANY) {
+      styleOverride = CollectionStyle.BLOCK;
+    }
+    switch (styleOverride) {
+      case CollectionStyle.BLOCK:
         print('BLOCK');
         break;
-      case 'FLOW':
+      case CollectionStyle.FLOW:
         print('FLOW');
         break;
       default:
         break;
     }
-    return '';
+    return result;
   }
 }
 
@@ -212,30 +225,93 @@ class YamlScalar extends YamlNode {
   }
 
   @override
-  String toString({int indentOverride}) {
+  String toString() {
+    return toStringShaped();
+  }
+
+  String toStringShaped({int indentOverride}) {
+    String result;
     switch (style) {
-      case 'ANY':
-        print('ANY');
+      case ScalarStyle.ANY:
+        result = ((indentOverride != null) ? '  ' * indentOverride : '') +
+            value.toString();
         break;
-      case 'PLAIN':
-        print('PLAIN');
+      case ScalarStyle.PLAIN:
+        result = ((indentOverride != null) ? '  ' * indentOverride : '') +
+            value.toString();
         break;
-      case 'LITERAL':
-        print('LITERAL');
+      case ScalarStyle.LITERAL:
+        result = '|';
+        var lines = value.toString().split('\n');
+        for (var line in lines) {
+          result += '\n' +
+              ((indentOverride != null) ? '  ' * (indentOverride + 1) : '  ') +
+              line;
+        }
         break;
-      case 'FOLDED':
-        print('FOLDED');
+      case ScalarStyle.FOLDED:
+        result = '>';
+        var lines = value.toString().split('\n');
+        // Default limit from
+        // https://github.com/flutter/flutter/blob/master/packages/flutter_tools/lib/src/commands/format.dart
+        var lineLimit =
+            (80 - ((indentOverride != null) ? 2 * (indentOverride + 1) : 2));
+        for (var line = 0; line < lines.length; line++) {
+          if (lines[line].length > lineLimit && !lines[line].startsWith(' ')) {
+            var newLines = <String>[];
+            while (lines[line].length > lineLimit) {
+              var initialWhitespace = 1;
+              for (var i = 0; i < lines[line].length; i++) {
+                if (lines[line][i] == ' ') {
+                  initialWhitespace++;
+                } else {
         break;
-      case 'SINGLE_QUOTED':
-        print('SINGLE_QUOTED');
+                }
+              }
+
+              for (var i = math.max(lineLimit ~/ 2, initialWhitespace);
+                  i < lineLimit;
+                  i++) {
+                if (lines[line][i] == ' ' &&
+                    lines[line][i + 1] != ' ' &&
+                    lines[line][i - 1] != ' ') {
+                  newLines.add(lines[line].substring(0, i));
+                  lines[line] =
+                      lines[line].substring(i + 1, lines[line].length);
         break;
-      case 'DOUBLE_QUOTED':
-        print('DOUBLE_QUOTED');
+                }
+              }
+
+              if (lines[line].length > lineLimit &&
+                  !lines[line].substring(initialWhitespace).contains(' ')) {
+        break;
+              }
+            }
+            if (lines[line].isNotEmpty) {
+              newLines.add(lines[line]);
+            }
+
+            if (newLines.isNotEmpty) {
+              lines.replaceRange(line, line + 1, newLines);
+            }
+          }
+        }
+        for (var line in lines) {
+          result += '\n' +
+              ((indentOverride != null) ? '  ' * (indentOverride + 1) : '  ') +
+              line;
+        }
+        break;
+      case ScalarStyle.SINGLE_QUOTED:
+        result = ((indentOverride != null) ? '  ' * (indentOverride) : '') + '\'' + value.toString() + '\'';
+        break;
+      case ScalarStyle.DOUBLE_QUOTED:
+        result = ((indentOverride != null) ? '  ' * (indentOverride) : '') + '"' + value.toString() + '"';
         break;
       default:
         break;
     }
-    return value.toString();
+    return result;
   }
 }
 

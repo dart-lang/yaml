@@ -53,6 +53,12 @@ class YamlMapWrapper extends MapBase
   @override
   bool operator ==(Object other) =>
       other is YamlMapWrapper && other._dartMap == _dartMap;
+
+  @override
+  String toStringShaped({int indentOverride, CollectionStyle styleOverride}) {
+    // TODO: implement toStringShaped
+    throw UnimplementedError();
+  }
 }
 
 /// The implementation of [YamlMapWrapper.nodes] as a wrapper around the Dart
@@ -137,6 +143,12 @@ class YamlListWrapper extends ListBase implements YamlList {
   @override
   bool operator ==(Object other) =>
       other is YamlListWrapper && other._dartList == _dartList;
+
+  @override
+  String toStringShaped({int indentOverride, CollectionStyle styleOverride}) {
+    // TODO: implement toStringShaped
+    throw UnimplementedError();
+  }
 }
 
 // TODO(nweiz): Use UnmodifiableListMixin when issue 18970 is fixed.
