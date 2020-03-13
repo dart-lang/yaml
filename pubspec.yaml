@@ -2,7 +2,6 @@ name: yaml
 version: 2.2.1-dev
 
 description: A parser for YAML, a human-friendly data serialization standard
-author: Dart Team <misc@dartlang.org>
 homepage: https://github.com/dart-lang/yaml
 
 environment:
