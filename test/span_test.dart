@@ -52,6 +52,18 @@ line 7, column 10: message
   ╵''',
     );
   });
+  
+  test('null node in block sequence', () {
+    var yamlSource = loadYaml(r'''
+- foo
+- 
+- bar
+''');
+    expect(yamlSource.nodes.firstWhere((n) => n.value == null).span.highlight(), '''  ╷
+2 │ - 
+  │ ^
+  ╵''');
+  });
 
   group('nested', () {
     YamlMap nestedMap;
