@@ -779,7 +779,7 @@ class Scanner {
 
   /// Eats whitespace and comments until the next token is found.
   void _scanToNextToken() {
-    var afterLineBreak = false;
+    var afterLineBreak = _scanner.column == 0;
     while (true) {
       // Allow the BOM to start a line.
       if (_scanner.column == 0) _scanner.scan('\uFEFF');
