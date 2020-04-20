@@ -1460,6 +1460,9 @@ class Scanner {
           buffer.write(whitespace);
           whitespace.clear();
         }
+      } else if (_scanner.peekChar() == RIGHT_CURLY) {
+        // If last entry with no "," indicator, break out and prevent updation of [end]
+        break;
       }
 
       // libyaml's notion of valid identifiers differs substantially from YAML
