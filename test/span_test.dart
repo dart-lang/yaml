@@ -107,7 +107,7 @@ line 5, column 10: message
 ''';
 
       list = loadYaml(yamlStr) as YamlList;
-      nestedList = list.nodes[1];
+      nestedList = list.nodes[1] as YamlList;
     });
 
     test('root nodes span', () {
