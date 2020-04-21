@@ -16,7 +16,7 @@ void _expectSpan(SourceSpan source, String expected) {
 }
 
 void main() {
-  YamlMap yaml, yaml_n0, yaml_n1, yaml_n2, yaml_n3;
+  YamlMap yaml;
 
   setUpAll(() {
     yaml = loadYaml(const JsonEncoder.withIndent(' ').convert({
@@ -85,7 +85,9 @@ line 5, column 10: message
     });
   });
 
-  group('all nested', () {
+  group('flow', () {
+    YamlMap yaml_n0, yaml_n1, yaml_n2, yaml_n3;
+
     setUpAll(() {
       const dtr = '''
   'nested_0': {
