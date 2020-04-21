@@ -86,7 +86,7 @@ line 5, column 10: message
   });
 
   group('flow', () {
-    YamlMap yaml_n0, yaml_n1, yaml_n2, yaml_n3;
+    YamlMap yamlN0, yamlN1, yamlN2, yamlN3;
 
     setUpAll(() {
       const dtr = '''
@@ -109,14 +109,14 @@ line 5, column 10: message
         ,
   ''';
 
-      yaml_n0 = loadYaml(dtr) as YamlMap;
-      yaml_n1 = yaml_n0.nodes['nested_0'] as YamlMap;
-      yaml_n2 = yaml_n1.nodes['nested_1'] as YamlMap;
-      yaml_n3 = yaml_n2.nodes['nested_2'] as YamlMap;
+      yamlN0 = loadYaml(dtr) as YamlMap;
+      yamlN1 = yamlN0.nodes['nested_0'] as YamlMap;
+      yamlN2 = yamlN1.nodes['nested_1'] as YamlMap;
+      yamlN3 = yamlN2.nodes['nested_2'] as YamlMap;
     });
 
     test('root last key', () {
-      _expectSpan(yaml_n0.nodes['rk2'].span, r'''
+      _expectSpan(yamlN0.nodes['rk2'].span, r'''
 line 16, column 10: message
    ╷
 16 │     'rk2': 44
@@ -126,7 +126,7 @@ line 16, column 10: message
     });
 
     test('nested level 1 last key', () {
-      _expectSpan(yaml_n1.nodes['n0k2'].span, r'''
+      _expectSpan(yamlN1.nodes['n0k2'].span, r'''
 line 12, column 13: message
    ╷
 12 │       'n0k2': aval      
@@ -138,7 +138,7 @@ line 12, column 13: message
     });
 
     test('nested level 2 last key', () {
-      _expectSpan(yaml_n2.nodes['n1k2'].span, r'''
+      _expectSpan(yamlN2.nodes['n1k2'].span, r'''
 line 10, column 15: message
    ╷
 10 │       'n1k2': 425
@@ -147,7 +147,7 @@ line 10, column 15: message
     });
 
     test('nested level 3 first key', () {
-      _expectSpan(yaml_n3.nodes['n2k1'].span, r'''
+      _expectSpan(yamlN3.nodes['n2k1'].span, r'''
 line 4, column 17: message
   ╷
 4 │           'n2k1': null
@@ -158,7 +158,7 @@ line 4, column 17: message
     });
 
     test('nested level 3 mid key', () {
-      _expectSpan(yaml_n3.nodes['n2k2'].span, r'''
+      _expectSpan(yamlN3.nodes['n2k2'].span, r'''
 line 6, column 17: message
   ╷
 6 │           'n2k2': a
@@ -169,7 +169,7 @@ line 6, column 17: message
     });
 
     test('nested level 3 last key', () {
-      _expectSpan(yaml_n3.nodes['n2k3'].span, r'''
+      _expectSpan(yamlN3.nodes['n2k3'].span, r'''
 line 8, column 40: message
   ╷
 8 │         'n2k3':                        4     
