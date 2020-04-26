@@ -348,13 +348,13 @@ class Parser {
     var token = _scanner.peek();
 
     if (token.type == TokenType.blockEntry) {
-      var prevToken = token;
+      var start = token.span.start;
       token = _scanner.advance();
 
       if (token.type == TokenType.blockEntry ||
           token.type == TokenType.blockEnd) {
         _state = _State.BLOCK_SEQUENCE_ENTRY;
-        return _processEmptyScalar(prevToken.span.end);
+        return _processEmptyScalar(start);
       } else {
         _states.add(_State.BLOCK_SEQUENCE_ENTRY);
         return _parseNode(block: true);

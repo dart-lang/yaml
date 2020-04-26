@@ -146,24 +146,24 @@ line 12, column 3: message
 
     test('null nodes span', () {
       _expectSpan(nestedList.nodes[1].span, r'''
-line 4, column 4: message
+line 4, column 3: message
   ╷
 4 │   - 
-  │    ^
+  │   ^
   ╵''');
 
       _expectSpan(nestedList.nodes[3].span, r'''
-line 6, column 4: message
+line 6, column 3: message
   ╷
 6 │   - 
-  │    ^
+  │   ^
   ╵''');
 
       _expectSpan(nestedList.nodes[5].span, r'''
-line 8, column 4: message
+line 8, column 3: message
   ╷
 8 │   -
-  │    ^
+  │   ^
   ╵''');
     });
   });
