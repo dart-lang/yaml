@@ -1658,8 +1658,7 @@ class _SimpleKey {
   final bool required;
 
   _SimpleKey(this.tokenNumber, this.line, this.column, this.location,
-      {bool required})
-      : required = required;
+      {this.required});
 }
 
 /// The ways to handle trailing whitespace for a block scalar.
