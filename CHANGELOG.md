@@ -1,7 +1,7 @@
 ## 2.2.1
 
 * Update min Dart SDK to `2.4.0`.
-* Fixed span for null nodes in block list.
+* Fixed span for null nodes in block lists.
 
 ## 2.2.0
 
