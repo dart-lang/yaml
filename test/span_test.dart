@@ -86,4 +86,85 @@ line 5, column 10: message
       );
     });
   });
+
+  group('block', () {
+    YamlList list, nestedList;
+
+    setUpAll(() {
+      const yamlStr = '''
+- foo
+- 
+  - one
+  - 
+  - three
+  - 
+  - five
+  -
+- 
+  a : b
+  c : d
+- bar
+''';
+
+      list = loadYaml(yamlStr) as YamlList;
+      nestedList = list.nodes[1] as YamlList;
+    });
+
+    test('root nodes span', () {
+      _expectSpan(list.nodes[0].span, r'''
+line 1, column 3: message
+  ╷
+1 │ - foo
+  │   ^^^
+  ╵''');
+
+      _expectSpan(list.nodes[1].span, r'''
+line 3, column 3: message
+  ╷
+3 │ ┌   - one
+4 │ │   - 
+5 │ │   - three
+6 │ │   - 
+7 │ │   - five
+8 │ └   -
+  ╵''');
+
+      _expectSpan(list.nodes[2].span, r'''
+line 10, column 3: message
+   ╷
+10 │ ┌   a : b
+11 │ └   c : d
+   ╵''');
+
+      _expectSpan(list.nodes[3].span, r'''
+line 12, column 3: message
+   ╷
+12 │ - bar
+   │   ^^^
+   ╵''');
+    });
+
+    test('null nodes span', () {
+      _expectSpan(nestedList.nodes[1].span, r'''
+line 4, column 3: message
+  ╷
+4 │   - 
+  │   ^
+  ╵''');
+
+      _expectSpan(nestedList.nodes[3].span, r'''
+line 6, column 3: message
+  ╷
+6 │   - 
+  │   ^
+  ╵''');
+
+      _expectSpan(nestedList.nodes[5].span, r'''
+line 8, column 3: message
+  ╷
+8 │   -
+  │   ^
+  ╵''');
+    });
+  });
 }

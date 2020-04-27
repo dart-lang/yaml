@@ -1,5 +1,5 @@
 name: yaml
-version: 2.2.1-dev
+version: 2.2.1
 
 description: A parser for YAML, a human-friendly data serialization standard
 homepage: https://github.com/dart-lang/yaml
