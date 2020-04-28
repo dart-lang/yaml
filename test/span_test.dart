@@ -190,11 +190,11 @@ line 8, column 3: message
         ,
   ''';
 
-    yamlN0 = loadYaml(dtr) as YamlMap;
-    yamlN1 = yamlN0.nodes['nested_0'] as YamlMap;
-    yamlN2 = yamlN1.nodes['nested_1'] as YamlMap;
-    yamlN3 = yamlN2.nodes['nested_2'] as YamlMap;
-  });
+      yamlN0 = loadYaml(dtr) as YamlMap;
+      yamlN1 = yamlN0.nodes['nested_0'] as YamlMap;
+      yamlN2 = yamlN1.nodes['nested_1'] as YamlMap;
+      yamlN3 = yamlN2.nodes['nested_2'] as YamlMap;
+    });
 
     test('root last key', () {
       _expectSpan(yamlN0.nodes['rk2'].span, r'''
@@ -219,7 +219,7 @@ line 12, column 13: message
     });
 
 //  TODO : Uncomment after resolving of issue #81
-// 
+//
 //     test('nested level 2 last key', () {
 //       _expectSpan(yamlN2.nodes['n1k2'].span, r'''
 // line 10, column 15: message
