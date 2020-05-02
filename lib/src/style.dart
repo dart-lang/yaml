@@ -70,3 +70,16 @@ class CollectionStyle {
   @override
   String toString() => name;
 }
+
+/// An enum of comment styles
+class CommentStyle {
+  static const SINGLE_LINE = CommentStyle._('SINGLE_LINE');
+  static const INLINE = CommentStyle._('INLINE');
+  static const KEY = CommentStyle._('KEY');
+
+  final String name;
+  const CommentStyle._(this.name);
+
+  @override
+  String toString() => name;
+}
