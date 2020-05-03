@@ -5,7 +5,6 @@
 import 'package:charcode/ascii.dart';
 import 'package:source_span/source_span.dart';
 
-import '../yaml.dart';
 import 'equality.dart';
 import 'event.dart';
 import 'parser.dart';
@@ -77,7 +76,6 @@ class Loader {
 
   /// Composes a node.
   YamlNode _loadNode(Event firstEvent) {
-    print(firstEvent);
     switch (firstEvent.type) {
       case EventType.alias:
         return _loadAlias(firstEvent as AliasEvent);
@@ -165,7 +163,7 @@ class Loader {
     var event = _parser.parse();
     while (event.type != EventType.mappingEnd) {
       YamlNode key, value;
-      if(event is CommentEvent){
+      if (event is CommentEvent) {
         key = _loadNode(event);
         value = key;
       } else {

@@ -1127,7 +1127,9 @@ class Scanner {
 
     // Eat whitespace and comments to the end of the line.
     _skipBlanks();
-    print(_scanComment());
+
+    // TODO: Handle _scanComment
+    _scanComment();
 
     // Check if we're at the end of the line.
     if (!_isBreakOrEnd) {
@@ -1629,13 +1631,12 @@ class Scanner {
 
     while (!_isBreakOrEnd) {
       ch = _scanner.readChar();
-      if(ch != null) {
+      if (ch != null) {
         comment += String.fromCharCode(ch);
       }
     }
 
-    return CommentToken(_scanner.spanFrom(start), comment,
-      CommentStyle.INLINE);
+    return CommentToken(_scanner.spanFrom(start), comment, CommentStyle.INLINE);
   }
 }
 

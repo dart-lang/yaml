@@ -250,6 +250,11 @@ class Parser {
   Event _parseNode({bool block = false, bool indentlessSequence = false}) {
     var token = _scanner.peek();
 
+    if (token.type == TokenType.comment) {
+      _state = _states.removeLast();
+      return _parseComment();
+    }
+
     if (token is AliasToken) {
       _scanner.scan();
       _state = _states.removeLast();
@@ -367,6 +372,10 @@ class Parser {
       _scanner.scan();
       _state = _states.removeLast();
       return Event(EventType.sequenceEnd, token.span);
+    }
+
+    if (token is CommentToken) {
+      return _parseComment();
     }
 
     throw YamlException("While parsing a block collection, expected '-'.",
@@ -655,11 +664,11 @@ class Parser {
   }
 
   /// Parses the productions:
-  /// 
+  ///
   /// # Comments
   CommentEvent _parseComment() {
     var token = _scanner.scan();
-    if(token is CommentToken){
+    if (token is CommentToken) {
       return CommentEvent(token.span, token.comment, token.style);
     }
 
