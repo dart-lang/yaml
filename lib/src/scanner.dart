@@ -801,7 +801,7 @@ class Scanner {
 
       // Scan comments
       if (_scanner.peekChar() == HASH) {
-        _scanComment();
+        _tokens.add(_scanComment());
       }
 
       // If we're at a line break, eat it.
@@ -1127,7 +1127,7 @@ class Scanner {
 
     // Eat whitespace and comments to the end of the line.
     _skipBlanks();
-    _scanComment();
+    print(_scanComment());
 
     // Check if we're at the end of the line.
     if (!_isBreakOrEnd) {

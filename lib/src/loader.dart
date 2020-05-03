@@ -5,6 +5,7 @@
 import 'package:charcode/ascii.dart';
 import 'package:source_span/source_span.dart';
 
+import '../yaml.dart';
 import 'equality.dart';
 import 'event.dart';
 import 'parser.dart';
@@ -63,18 +64,20 @@ class Loader {
 
     var lastEvent = _parser.parse() as DocumentEndEvent;
     assert(lastEvent.type == EventType.documentEnd);
-
-    return YamlDocument.internal(
+    var document = YamlDocument.internal(
         contents,
         firstEvent.span.expand(lastEvent.span),
         firstEvent.versionDirective,
         firstEvent.tagDirectives,
         startImplicit: firstEvent.isImplicit,
         endImplicit: lastEvent.isImplicit);
+
+    return document;
   }
 
   /// Composes a node.
   YamlNode _loadNode(Event firstEvent) {
+    print(firstEvent);
     switch (firstEvent.type) {
       case EventType.alias:
         return _loadAlias(firstEvent as AliasEvent);
@@ -84,6 +87,8 @@ class Loader {
         return _loadSequence(firstEvent as SequenceStartEvent);
       case EventType.mappingStart:
         return _loadMapping(firstEvent as MappingStartEvent);
+      case EventType.comment:
+        return _loadComment(firstEvent as CommentEvent);
       default:
         throw 'Unreachable';
     }
@@ -159,10 +164,16 @@ class Loader {
 
     var event = _parser.parse();
     while (event.type != EventType.mappingEnd) {
-      var key = _loadNode(event);
-      var value = _loadNode(_parser.parse());
-      if (children.containsKey(key)) {
-        throw YamlException('Duplicate mapping key.', key.span);
+      YamlNode key, value;
+      if(event is CommentEvent){
+        key = _loadNode(event);
+        value = key;
+      } else {
+        key = _loadNode(event);
+        value = _loadNode(_parser.parse());
+        if (children.containsKey(key)) {
+          throw YamlException('Duplicate mapping key.', key.span);
+        }
       }
 
       children[key] = value;
@@ -171,6 +182,10 @@ class Loader {
 
     setSpan(node, firstEvent.span.expand(event.span));
     return node;
+  }
+
+  YamlNode _loadComment(CommentEvent firstEvent) {
+    return YamlComment.internal(firstEvent.value, firstEvent);
   }
 
   /// Parses a scalar according to its tag name.

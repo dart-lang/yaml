@@ -42,6 +42,7 @@ class YamlMapWrapper extends MapBase
   @override
   dynamic operator [](Object key) {
     var value = _dartMap[key];
+    print(value);
     if (value is Map) return YamlMapWrapper._(value, span);
     if (value is List) return YamlListWrapper._(value, span);
     return value;

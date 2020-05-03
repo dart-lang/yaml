@@ -152,6 +152,25 @@ class MappingStartEvent extends _ValueEvent {
   MappingStartEvent(this.span, this.style, {this.anchor, this.tag});
 }
 
+/// An event indicating a comment.
+class CommentEvent implements Event {
+  @override
+  EventType get type => EventType.comment;
+  @override
+  final FileSpan span;
+
+  /// The contents of the scalar.
+  final String value;
+
+  /// The style of the scalar in the original source.
+  final CommentStyle style;
+
+  CommentEvent(this.span, this.value, this.style);
+
+  @override
+  String toString() => '$type "$value"';
+}
+
 /// The types of [Event] objects.
 enum EventType {
   streamStart,
@@ -160,6 +179,7 @@ enum EventType {
   documentEnd,
   alias,
   scalar,
+  comment,
   sequenceStart,
   sequenceEnd,
   mappingStart,

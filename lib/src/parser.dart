@@ -104,6 +104,8 @@ class Parser {
         return _parseFlowMappingValue();
       case _State.FLOW_MAPPING_EMPTY_VALUE:
         return _parseFlowMappingValue(empty: true);
+      case _State.COMMENT:
+        return _parseComment();
       default:
         throw 'Unreachable';
     }
@@ -439,6 +441,10 @@ class Parser {
       return Event(EventType.mappingEnd, token.span);
     }
 
+    if (token.type == TokenType.comment) {
+      return _parseComment();
+    }
+
     throw YamlException('Expected a key while parsing a block mapping.',
         token.span.start.pointSpan());
   }
@@ -648,6 +654,18 @@ class Parser {
     return _processEmptyScalar(token.span.start);
   }
 
+  /// Parses the productions:
+  /// 
+  /// # Comments
+  CommentEvent _parseComment() {
+    var token = _scanner.scan();
+    if(token is CommentToken){
+      return CommentEvent(token.span, token.comment, token.style);
+    }
+
+    throw 'Unreachable';
+  }
+
   /// Generate an empty scalar event.
   Event _processEmptyScalar(SourceLocation location) =>
       ScalarEvent(location.pointSpan() as FileSpan, '', ScalarStyle.PLAIN);
@@ -780,6 +798,9 @@ class _State {
 
   /// Expect an empty value of a flow mapping.
   static const FLOW_MAPPING_EMPTY_VALUE = _State('FLOW_MAPPING_EMPTY_VALUE');
+
+  /// Expect a comment
+  static const COMMENT = _State('COMMENT');
 
   /// Expect nothing.
   static const END = _State('END');
