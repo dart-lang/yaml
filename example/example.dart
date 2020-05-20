@@ -1,10 +1,17 @@
-// Copyright (c) 2020, the Dart project authors.  Please see the AUTHORS file
-// for details. All rights reserved. Use of this source code is governed by a
-// BSD-style license that can be found in the LICENSE file.
-
+import 'dart:io';
+import 'package:path/path.dart';
 import 'package:yaml/yaml.dart';
 
 void main() {
-  var doc = loadYaml("YAML: YAML Ain't Markup Language");
-  print(doc['YAML']);
+  String pathToYaml =
+      join(dirname(Platform.script.toFilePath()), '../pubspec.yaml');
+  File f = new File(pathToYaml);
+  String yamlText = f.readAsStringSync();
+  // print(yamlText);
+
+  Map yaml = loadYaml(yamlText) as Map;
+  print(yaml['emoji']);
+  Map _yaml = yaml['dependencies'] as Map;
+  _yaml.forEach((k, v) =>
+      print('$k: $v')); // printing subsets and this is without comments.
 }
