@@ -7,7 +7,7 @@ dart:
 dart_task:
   - test: -p vm
     xvfb: false
-  - test: -p firefox
+  - test: -p chrome
   - dartanalyzer: --fatal-warnings --fatal-infos .
 
 matrix:
