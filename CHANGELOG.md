@@ -1,3 +1,7 @@
+## 2.2.2-dev
+
+* Allow `YamlNode`s to be wrapped with an optional `style` parameter.
+
 ## 2.2.1
 
 * Update min Dart SDK to `2.4.0`.

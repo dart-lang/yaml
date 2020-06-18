@@ -36,10 +36,13 @@ class YamlMapWrapper extends MapBase
       {CollectionStyle style = CollectionStyle.ANY})
       : this._(dartMap, NullSpan(sourceUrl), style: style);
 
-  YamlMapWrapper._(Map dartMap, SourceSpan span, {this.style})
+  YamlMapWrapper._(Map dartMap, SourceSpan span,
+      {this.style = CollectionStyle.ANY})
       : _dartMap = dartMap,
         span = span,
-        nodes = _YamlMapNodes(dartMap, span);
+        nodes = _YamlMapNodes(dartMap, span) {
+    ArgumentError.checkNotNull(style, 'style');
+  }
 
   @override
   dynamic operator [](Object key) {
@@ -116,10 +119,13 @@ class YamlListWrapper extends ListBase implements YamlList {
       {CollectionStyle style = CollectionStyle.ANY})
       : this._(dartList, NullSpan(sourceUrl), style: style);
 
-  YamlListWrapper._(List dartList, SourceSpan span, {this.style})
+  YamlListWrapper._(List dartList, SourceSpan span,
+      {this.style = CollectionStyle.ANY})
       : _dartList = dartList,
         span = span,
-        nodes = _YamlListNodes(dartList, span);
+        nodes = _YamlListNodes(dartList, span) {
+    ArgumentError.checkNotNull(style, 'style');
+  }
 
   @override
   dynamic operator [](int index) {

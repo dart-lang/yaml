@@ -163,6 +163,7 @@ class YamlScalar extends YamlNode {
   ///
   /// [sourceUrl] may be either a [String], a [Uri], or `null`.
   YamlScalar.wrap(this.value, {sourceUrl, this.style = ScalarStyle.ANY}) {
+    ArgumentError.checkNotNull(style, 'style');
     _span = NullSpan(sourceUrl);
   }
 
