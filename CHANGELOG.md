@@ -1,4 +1,4 @@
-## 2.2.2-dev
+## 2.3.0-dev
 
 * Allow `YamlNode`s to be wrapped with an optional `style` parameter.
 
