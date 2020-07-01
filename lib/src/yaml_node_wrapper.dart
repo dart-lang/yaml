@@ -16,7 +16,7 @@ class YamlMapWrapper extends MapBase
     with pkg_collection.UnmodifiableMapMixin
     implements YamlMap {
   @override
-  final style = CollectionStyle.ANY;
+  final style;
 
   final Map _dartMap;
 
@@ -32,12 +32,17 @@ class YamlMapWrapper extends MapBase
   @override
   Iterable get keys => _dartMap.keys;
 
-  YamlMapWrapper(Map dartMap, sourceUrl) : this._(dartMap, NullSpan(sourceUrl));
+  YamlMapWrapper(Map dartMap, sourceUrl,
+      {CollectionStyle style = CollectionStyle.ANY})
+      : this._(dartMap, NullSpan(sourceUrl), style: style);
 
-  YamlMapWrapper._(Map dartMap, SourceSpan span)
+  YamlMapWrapper._(Map dartMap, SourceSpan span,
+      {this.style = CollectionStyle.ANY})
       : _dartMap = dartMap,
         span = span,
-        nodes = _YamlMapNodes(dartMap, span);
+        nodes = _YamlMapNodes(dartMap, span) {
+    ArgumentError.checkNotNull(style, 'style');
+  }
 
   @override
   dynamic operator [](Object key) {
@@ -89,7 +94,7 @@ class _YamlMapNodes extends MapBase<dynamic, YamlNode>
 /// A wrapper that makes a normal Dart list behave like a [YamlList].
 class YamlListWrapper extends ListBase implements YamlList {
   @override
-  final style = CollectionStyle.ANY;
+  final style;
 
   final List _dartList;
 
@@ -110,13 +115,17 @@ class YamlListWrapper extends ListBase implements YamlList {
     throw UnsupportedError('Cannot modify an unmodifiable List.');
   }
 
-  YamlListWrapper(List dartList, sourceUrl)
-      : this._(dartList, NullSpan(sourceUrl));
+  YamlListWrapper(List dartList, sourceUrl,
+      {CollectionStyle style = CollectionStyle.ANY})
+      : this._(dartList, NullSpan(sourceUrl), style: style);
 
-  YamlListWrapper._(List dartList, SourceSpan span)
+  YamlListWrapper._(List dartList, SourceSpan span,
+      {this.style = CollectionStyle.ANY})
       : _dartList = dartList,
         span = span,
-        nodes = _YamlListNodes(dartList, span);
+        nodes = _YamlListNodes(dartList, span) {
+    ArgumentError.checkNotNull(style, 'style');
+  }
 
   @override
   dynamic operator [](int index) {

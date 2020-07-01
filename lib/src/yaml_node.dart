@@ -77,8 +77,9 @@ class YamlMap extends YamlNode with collection.MapMixin, UnmodifiableMapMixin {
   /// passed, it's used as the [SourceSpan.sourceUrl].
   ///
   /// [sourceUrl] may be either a [String], a [Uri], or `null`.
-  factory YamlMap.wrap(Map dartMap, {sourceUrl}) =>
-      YamlMapWrapper(dartMap, sourceUrl);
+  factory YamlMap.wrap(Map dartMap,
+          {sourceUrl, CollectionStyle style = CollectionStyle.ANY}) =>
+      YamlMapWrapper(dartMap, sourceUrl, style: style);
 
   /// Users of the library should not use this constructor.
   YamlMap.internal(Map<dynamic, YamlNode> nodes, SourceSpan span, this.style)
@@ -127,8 +128,9 @@ class YamlList extends YamlNode with collection.ListMixin {
   /// passed, it's used as the [SourceSpan.sourceUrl].
   ///
   /// [sourceUrl] may be either a [String], a [Uri], or `null`.
-  factory YamlList.wrap(List dartList, {sourceUrl}) =>
-      YamlListWrapper(dartList, sourceUrl);
+  factory YamlList.wrap(List dartList,
+          {sourceUrl, CollectionStyle style = CollectionStyle.ANY}) =>
+      YamlListWrapper(dartList, sourceUrl, style: style);
 
   /// Users of the library should not use this constructor.
   YamlList.internal(List<YamlNode> nodes, SourceSpan span, this.style)
@@ -160,7 +162,8 @@ class YamlScalar extends YamlNode {
   /// [sourceUrl] is passed, it's used as the [SourceSpan.sourceUrl].
   ///
   /// [sourceUrl] may be either a [String], a [Uri], or `null`.
-  YamlScalar.wrap(this.value, {sourceUrl}) : style = ScalarStyle.ANY {
+  YamlScalar.wrap(this.value, {sourceUrl, this.style = ScalarStyle.ANY}) {
+    ArgumentError.checkNotNull(style, 'style');
     _span = NullSpan(sourceUrl);
   }
 

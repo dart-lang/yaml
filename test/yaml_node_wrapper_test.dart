@@ -67,6 +67,11 @@ void main() {
     expect(map.keys, unorderedEquals(['list', 'map', 'scalar']));
     expect(map.nodes.keys, everyElement(TypeMatcher<YamlScalar>()));
     expect(map.nodes[YamlScalar.wrap('list')], equals([1, 2, 3]));
+    expect(map.style, equals(CollectionStyle.ANY));
+    expect((map.nodes['list'] as YamlList).style, equals(CollectionStyle.ANY));
+    expect((map.nodes['map'] as YamlMap).style, equals(CollectionStyle.ANY));
+    expect((map['map'].nodes['nested'] as YamlList).style,
+        equals(CollectionStyle.ANY));
   });
 
   test('YamlMap.wrap() with a sourceUrl', () {
@@ -84,6 +89,23 @@ void main() {
     expect(map['list'].span, isNullSpan(source));
     expect(map['map'].span, isNullSpan(source));
     expect(map.nodes['scalar'].span, isNullSpan(source));
+  });
+
+  test('YamlMap.wrap() with a sourceUrl and style', () {
+    var map = YamlMap.wrap({
+      'list': [1, 2, 3],
+      'map': {
+        'foo': 'bar',
+        'nested': [4, 5, 6]
+      },
+      'scalar': 'value'
+    }, sourceUrl: 'source', style: CollectionStyle.BLOCK);
+
+    expect(map.style, equals(CollectionStyle.BLOCK));
+    expect((map.nodes['list'] as YamlList).style, equals(CollectionStyle.ANY));
+    expect((map.nodes['map'] as YamlMap).style, equals(CollectionStyle.ANY));
+    expect((map['map'].nodes['nested'] as YamlList).style,
+        equals(CollectionStyle.ANY));
   });
 
   test('YamlList.wrap() with no sourceUrl', () {
@@ -119,6 +141,10 @@ void main() {
     expect(list.nodes[2].value, 'value');
     expect(list.nodes[2].span, isNullSpan(isNull));
     expect(list[2], 'value');
+    expect(list.style, equals(CollectionStyle.ANY));
+    expect((list[0] as YamlList).style, equals(CollectionStyle.ANY));
+    expect((list[1] as YamlMap).style, equals(CollectionStyle.ANY));
+    expect((list[1]['nested'] as YamlList).style, equals(CollectionStyle.ANY));
   });
 
   test('YamlList.wrap() with a sourceUrl', () {
@@ -129,12 +155,29 @@ void main() {
         'nested': [4, 5, 6]
       },
       'value'
-    ]);
+    ], sourceUrl: 'source');
 
-    expect(list.span, isNullSpan(isNull));
-    expect(list[0].span, isNullSpan(isNull));
-    expect(list[1].span, isNullSpan(isNull));
-    expect(list.nodes[2].span, isNullSpan(isNull));
+    var source = Uri.parse('source');
+    expect(list.span, isNullSpan(source));
+    expect(list[0].span, isNullSpan(source));
+    expect(list[1].span, isNullSpan(source));
+    expect(list.nodes[2].span, isNullSpan(source));
+  });
+
+  test('YamlList.wrap() with a sourceUrl and style', () {
+    var list = YamlList.wrap([
+      [1, 2, 3],
+      {
+        'foo': 'bar',
+        'nested': [4, 5, 6]
+      },
+      'value'
+    ], sourceUrl: 'source', style: CollectionStyle.FLOW);
+
+    expect(list.style, equals(CollectionStyle.FLOW));
+    expect((list[0] as YamlList).style, equals(CollectionStyle.ANY));
+    expect((list[1] as YamlMap).style, equals(CollectionStyle.ANY));
+    expect((list[1]['nested'] as YamlList).style, equals(CollectionStyle.ANY));
   });
 
   test('re-wrapped objects equal one another', () {
@@ -149,6 +192,28 @@ void main() {
     expect(list[1] == list[1], isTrue);
     expect(list[1].nodes == list[1].nodes, isTrue);
     expect(list[1] == YamlMap.wrap({'foo': 'bar'}), isFalse);
+  });
+
+  test('YamlScalar.wrap() with no sourceUrl', () {
+    var scalar = YamlScalar.wrap('foo');
+
+    expect(scalar.span, isNullSpan(isNull));
+    expect(scalar.value, 'foo');
+    expect(scalar.style, equals(ScalarStyle.ANY));
+  });
+
+  test('YamlScalar.wrap() with sourceUrl', () {
+    var scalar = YamlScalar.wrap('foo', sourceUrl: 'source');
+
+    var source = Uri.parse('source');
+    expect(scalar.span, isNullSpan(source));
+  });
+
+  test('YamlScalar.wrap() with sourceUrl and style', () {
+    var scalar = YamlScalar.wrap('foo',
+        sourceUrl: 'source', style: ScalarStyle.DOUBLE_QUOTED);
+
+    expect(scalar.style, equals(ScalarStyle.DOUBLE_QUOTED));
   });
 }
 
