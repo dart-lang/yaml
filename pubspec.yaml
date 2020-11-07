@@ -10,10 +10,10 @@ environment:
 dependencies:
   charcode: ^1.2.0-nullsafety
   collection: ^1.15.0-nullsafety
-  string_scanner: ^1.1.0-nullsafety
   source_span: ^1.8.0-nullsafety
+  string_scanner: ^1.1.0-nullsafety
 
 dev_dependencies:
-  pedantic: ^1.10.0-nullsafety
   path: ^1.8.0-nullsafety
+  pedantic: ^1.10.0-nullsafety
   test: ^1.16.0-nullsafety
