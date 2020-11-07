@@ -8,7 +8,7 @@ environment:
   sdk: '>=2.12.0-0 <3.0.0'
 
 dependencies:
-  charcode: ^1.1.0
+  charcode: ^1.2.0-nullsafety
   collection: ^1.15.0-nullsafety
   string_scanner: ^1.1.0-nullsafety
   source_span: ^1.8.0-nullsafety
