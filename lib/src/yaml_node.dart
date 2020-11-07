@@ -26,9 +26,9 @@ abstract class YamlNode {
   ///
   /// [SourceSpan.message] can be used to produce a human-friendly message about
   /// this node.
-  SourceSpan get span => _span;
+  SourceSpan? get span => _span;
 
-  SourceSpan _span;
+  SourceSpan? _span;
 
   /// The inner value of this node.
   ///

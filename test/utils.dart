@@ -16,7 +16,7 @@ Matcher deepEquals(expected) => predicate(
     (actual) => equality.deepEquals(actual, expected), 'equals $expected');
 
 /// Constructs a new yaml.YamlMap, optionally from a normal Map.
-Map deepEqualsMap([Map from]) {
+Map deepEqualsMap([Map? from]) {
   var map = equality.deepEqualsMap();
   if (from != null) map.addAll(from);
   return map;

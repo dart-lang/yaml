@@ -17,7 +17,7 @@ class YamlDocument {
   final SourceSpan span;
 
   /// The version directive for the document, if any.
-  final VersionDirective versionDirective;
+  final VersionDirective? versionDirective;
 
   /// The tag directives for the document.
   final List<TagDirective> tagDirectives;

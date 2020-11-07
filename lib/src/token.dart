@@ -93,7 +93,7 @@ class TagToken implements Token {
   final FileSpan span;
 
   /// The tag handle for named tags.
-  final String handle;
+  final String? handle;
 
   /// The tag suffix, or `null`.
   final String suffix;
@@ -127,26 +127,21 @@ class ScalarToken implements Token {
 enum TokenType {
   streamStart,
   streamEnd,
-
   versionDirective,
   tagDirective,
   documentStart,
   documentEnd,
-
   blockSequenceStart,
   blockMappingStart,
   blockEnd,
-
   flowSequenceStart,
   flowSequenceEnd,
   flowMappingStart,
   flowMappingEnd,
-
   blockEntry,
   flowEntry,
   key,
   value,
-
   alias,
   anchor,
   tag,

@@ -130,7 +130,7 @@ class Parser {
   ///       DIRECTIVE* DOCUMENT-START block_node? DOCUMENT-END*
   ///       *************************
   Event _parseDocumentStart() {
-    var token = _scanner.peek();
+    var token = _scanner.peek()!;
 
     // libyaml requires any document beyond the first in the stream to have an
     // explicit document start indicator, but the spec allows it to be omitted
@@ -138,7 +138,7 @@ class Parser {
 
     // Parse extra document end indicators.
     while (token.type == TokenType.documentEnd) {
-      token = _scanner.advance();
+      token = _scanner.advance()!;
     }
 
     if (token.type != TokenType.versionDirective &&
@@ -163,7 +163,7 @@ class Parser {
     var pair = _processDirectives();
     var versionDirective = pair.first;
     var tagDirectives = pair.last;
-    token = _scanner.peek();
+    token = _scanner.peek()!;
     if (token.type != TokenType.documentStart) {
       throw YamlException('Expected document start.', token.span);
     }
@@ -183,7 +183,7 @@ class Parser {
   ///       DIRECTIVE* DOCUMENT-START block_node? DOCUMENT-END*
   ///                                 ***********
   Event _parseDocumentContent() {
-    var token = _scanner.peek();
+    var token = _scanner.peek()!;
 
     switch (token.type) {
       case TokenType.versionDirective:
@@ -209,7 +209,7 @@ class Parser {
     _tagDirectives.clear();
     _state = _State.DOCUMENT_START;
 
-    var token = _scanner.peek();
+    var token = _scanner.peek()!;
     if (token.type == TokenType.documentEnd) {
       _scanner.scan();
       return DocumentEndEvent(token.span, isImplicit: false);
@@ -246,7 +246,7 @@ class Parser {
   ///     flow_content         ::= flow_collection | SCALAR
   ///                                                ******
   Event _parseNode({bool block = false, bool indentlessSequence = false}) {
-    var token = _scanner.peek();
+    var token = _scanner.peek()!;
 
     if (token is AliasToken) {
       _scanner.scan();
@@ -254,40 +254,40 @@ class Parser {
       return AliasEvent(token.span, token.name);
     }
 
-    String anchor;
-    TagToken tagToken;
+    String? anchor;
+    TagToken? tagToken;
     var span = token.span.start.pointSpan();
     Token parseAnchor(AnchorToken token) {
       anchor = token.name;
       span = span.expand(token.span);
-      return _scanner.advance();
+      return _scanner.advance()!;
     }
 
     Token parseTag(TagToken token) {
       tagToken = token;
       span = span.expand(token.span);
-      return _scanner.advance();
+      return _scanner.advance()!;
     }
 
     if (token is AnchorToken) {
-      token = parseAnchor(token as AnchorToken);
-      if (token is TagToken) token = parseTag(token as TagToken);
+      token = parseAnchor(token);
+      if (token is TagToken) token = parseTag(token);
     } else if (token is TagToken) {
-      token = parseTag(token as TagToken);
-      if (token is AnchorToken) token = parseAnchor(token as AnchorToken);
+      token = parseTag(token);
+      if (token is AnchorToken) token = parseAnchor(token);
     }
 
-    String tag;
+    String? tag;
     if (tagToken != null) {
-      if (tagToken.handle == null) {
-        tag = tagToken.suffix;
+      if (tagToken!.handle == null) {
+        tag = tagToken!.suffix;
       } else {
-        var tagDirective = _tagDirectives[tagToken.handle];
+        var tagDirective = _tagDirectives[tagToken!.handle];
         if (tagDirective == null) {
-          throw YamlException('Undefined tag handle.', tagToken.span);
+          throw YamlException('Undefined tag handle.', tagToken!.span);
         }
 
-        tag = tagDirective.prefix + tagToken.suffix;
+        tag = tagDirective.prefix + tagToken!.suffix;
       }
     }
 
@@ -345,11 +345,11 @@ class Parser {
   ///       BLOCK-SEQUENCE-START (BLOCK-ENTRY block_node?)* BLOCK-END
   ///       ********************  *********** *             *********
   Event _parseBlockSequenceEntry() {
-    var token = _scanner.peek();
+    var token = _scanner.peek()!;
 
     if (token.type == TokenType.blockEntry) {
       var start = token.span.start;
-      token = _scanner.advance();
+      token = _scanner.advance()!;
 
       if (token.type == TokenType.blockEntry ||
           token.type == TokenType.blockEnd) {
@@ -376,7 +376,7 @@ class Parser {
   ///     indentless_sequence  ::= (BLOCK-ENTRY block_node?)+
   ///                               *********** *
   Event _parseIndentlessSequenceEntry() {
-    var token = _scanner.peek();
+    var token = _scanner.peek()!;
 
     if (token.type != TokenType.blockEntry) {
       _state = _states.removeLast();
@@ -384,7 +384,7 @@ class Parser {
     }
 
     var start = token.span.start;
-    token = _scanner.advance();
+    token = _scanner.advance()!;
 
     if (token.type == TokenType.blockEntry ||
         token.type == TokenType.key ||
@@ -409,10 +409,10 @@ class Parser {
   ///                              BLOCK-END
   ///                              *********
   Event _parseBlockMappingKey() {
-    var token = _scanner.peek();
+    var token = _scanner.peek()!;
     if (token.type == TokenType.key) {
       var start = token.span.start;
-      token = _scanner.advance();
+      token = _scanner.advance()!;
 
       if (token.type == TokenType.key ||
           token.type == TokenType.value ||
@@ -454,7 +454,7 @@ class Parser {
   ///                              BLOCK-END
   ///
   Event _parseBlockMappingValue() {
-    var token = _scanner.peek();
+    var token = _scanner.peek()!;
 
     if (token.type != TokenType.value) {
       _state = _State.BLOCK_MAPPING_KEY;
@@ -462,7 +462,7 @@ class Parser {
     }
 
     var start = token.span.start;
-    token = _scanner.advance();
+    token = _scanner.advance()!;
     if (token.type == TokenType.key ||
         token.type == TokenType.value ||
         token.type == TokenType.blockEnd) {
@@ -489,7 +489,7 @@ class Parser {
   ///       *
   Event _parseFlowSequenceEntry({bool first = false}) {
     if (first) _scanner.scan();
-    var token = _scanner.peek();
+    var token = _scanner.peek()!;
 
     if (token.type != TokenType.flowSequenceEnd) {
       if (!first) {
@@ -499,7 +499,7 @@ class Parser {
               token.span.start.pointSpan());
         }
 
-        token = _scanner.advance();
+        token = _scanner.advance()!;
       }
 
       if (token.type == TokenType.key) {
@@ -523,7 +523,7 @@ class Parser {
   ///       flow_node | KEY flow_node? (VALUE flow_node?)?
   ///                   *** *
   Event _parseFlowSequenceEntryMappingKey() {
-    var token = _scanner.peek();
+    var token = _scanner.peek()!;
 
     if (token.type == TokenType.value ||
         token.type == TokenType.flowEntry ||
@@ -547,10 +547,10 @@ class Parser {
   ///       flow_node | KEY flow_node? (VALUE flow_node?)?
   ///                                   ***** *
   Event _parseFlowSequenceEntryMappingValue() {
-    var token = _scanner.peek();
+    var token = _scanner.peek()!;
 
     if (token.type == TokenType.value) {
-      token = _scanner.advance();
+      token = _scanner.advance()!;
       if (token.type != TokenType.flowEntry &&
           token.type != TokenType.flowSequenceEnd) {
         _states.add(_State.FLOW_SEQUENCE_ENTRY_MAPPING_END);
@@ -569,7 +569,7 @@ class Parser {
   ///                                                   *
   Event _parseFlowSequenceEntryMappingEnd() {
     _state = _State.FLOW_SEQUENCE_ENTRY;
-    return Event(EventType.mappingEnd, _scanner.peek().span.start.pointSpan());
+    return Event(EventType.mappingEnd, _scanner.peek()!.span.start.pointSpan());
   }
 
   /// Parses the productions:
@@ -587,7 +587,7 @@ class Parser {
   ///       *           *** *
   Event _parseFlowMappingKey({bool first = false}) {
     if (first) _scanner.scan();
-    var token = _scanner.peek();
+    var token = _scanner.peek()!;
 
     if (token.type != TokenType.flowMappingEnd) {
       if (!first) {
@@ -597,11 +597,11 @@ class Parser {
               token.span.start.pointSpan());
         }
 
-        token = _scanner.advance();
+        token = _scanner.advance()!;
       }
 
       if (token.type == TokenType.key) {
-        token = _scanner.advance();
+        token = _scanner.advance()!;
         if (token.type != TokenType.value &&
             token.type != TokenType.flowEntry &&
             token.type != TokenType.flowMappingEnd) {
@@ -628,7 +628,7 @@ class Parser {
   ///       flow_node | KEY flow_node? (VALUE flow_node?)?
   ///                *                  ***** *
   Event _parseFlowMappingValue({bool empty = false}) {
-    var token = _scanner.peek();
+    var token = _scanner.peek()!;
 
     if (empty) {
       _state = _State.FLOW_MAPPING_KEY;
@@ -636,7 +636,7 @@ class Parser {
     }
 
     if (token.type == TokenType.value) {
-      token = _scanner.advance();
+      token = _scanner.advance()!;
       if (token.type != TokenType.flowEntry &&
           token.type != TokenType.flowMappingEnd) {
         _states.add(_State.FLOW_MAPPING_KEY);
@@ -654,9 +654,9 @@ class Parser {
 
   /// Parses directives.
   Pair<VersionDirective, List<TagDirective>> _processDirectives() {
-    var token = _scanner.peek();
+    var token = _scanner.peek()!;
 
-    VersionDirective versionDirective;
+    VersionDirective? versionDirective;
     var tagDirectives = <TagDirective>[];
     while (token.type == TokenType.versionDirective ||
         token.type == TokenType.tagDirective) {
@@ -684,7 +684,7 @@ class Parser {
         tagDirectives.add(tagDirective);
       }
 
-      token = _scanner.advance();
+      token = _scanner.advance()!;
     }
 
     _appendTagDirective(TagDirective('!', '!'), token.span.start.pointSpan(),

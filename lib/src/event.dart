@@ -26,7 +26,7 @@ class DocumentStartEvent implements Event {
   final FileSpan span;
 
   /// The document's `%YAML` directive, or `null` if there was none.
-  final VersionDirective versionDirective;
+  final VersionDirective? versionDirective;
 
   /// The document's `%TAG` directives, if any.
   final List<TagDirective> tagDirectives;
@@ -37,7 +37,7 @@ class DocumentStartEvent implements Event {
 
   DocumentStartEvent(this.span,
       {this.versionDirective,
-      List<TagDirective> tagDirectives,
+      List<TagDirective>? tagDirectives,
       this.isImplicit = true})
       : tagDirectives = tagDirectives ?? [];
 
@@ -81,10 +81,10 @@ class AliasEvent implements Event {
 /// An event that can have associated anchor and tag properties.
 abstract class _ValueEvent implements Event {
   /// The name of the value's anchor, or `null` if it wasn't anchored.
-  String get anchor;
+  String? get anchor;
 
   /// The text of the value's tag, or `null` if it wasn't tagged.
-  String get tag;
+  String? get tag;
 
   @override
   String toString() {
@@ -102,9 +102,9 @@ class ScalarEvent extends _ValueEvent {
   @override
   final FileSpan span;
   @override
-  final String anchor;
+  final String? anchor;
   @override
-  final String tag;
+  final String? tag;
 
   /// The contents of the scalar.
   final String value;
@@ -125,9 +125,9 @@ class SequenceStartEvent extends _ValueEvent {
   @override
   final FileSpan span;
   @override
-  final String anchor;
+  final String? anchor;
   @override
-  final String tag;
+  final String? tag;
 
   /// The style of the collection in the original source.
   final CollectionStyle style;
@@ -142,9 +142,9 @@ class MappingStartEvent extends _ValueEvent {
   @override
   final FileSpan span;
   @override
-  final String anchor;
+  final String? anchor;
   @override
-  final String tag;
+  final String? tag;
 
   /// The style of the collection in the original source.
   final CollectionStyle style;

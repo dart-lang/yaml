@@ -61,8 +61,8 @@ void main() {
     expect(map['map']['nested'], TypeMatcher<YamlList>());
     expect(map['map'].span, isNullSpan(isNull));
     expect(map.nodes['scalar'], TypeMatcher<YamlScalar>());
-    expect(map.nodes['scalar'].value, 'value');
-    expect(map.nodes['scalar'].span, isNullSpan(isNull));
+    expect(map.nodes['scalar']!.value, 'value');
+    expect(map.nodes['scalar']!.span, isNullSpan(isNull));
     expect(map['scalar'], 'value');
     expect(map.keys, unorderedEquals(['list', 'map', 'scalar']));
     expect(map.nodes.keys, everyElement(TypeMatcher<YamlScalar>()));
@@ -88,7 +88,7 @@ void main() {
     expect(map.span, isNullSpan(source));
     expect(map['list'].span, isNullSpan(source));
     expect(map['map'].span, isNullSpan(source));
-    expect(map.nodes['scalar'].span, isNullSpan(source));
+    expect(map.nodes['scalar']!.span, isNullSpan(source));
   });
 
   test('YamlMap.wrap() with a sourceUrl and style', () {
@@ -217,7 +217,7 @@ void main() {
   });
 }
 
-Matcher isNullSpan(sourceUrl) => predicate((span) {
+Matcher isNullSpan(sourceUrl) => predicate((SourceSpan span) {
       expect(span, TypeMatcher<SourceSpan>());
       expect(span.length, equals(0));
       expect(span.text, isEmpty);

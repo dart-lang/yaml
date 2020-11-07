@@ -12,6 +12,7 @@ import 'package:source_span/source_span.dart';
 class NullSpan extends SourceSpanMixin {
   @override
   final SourceLocation start;
+
   @override
   SourceLocation get end => start;
   @override
