@@ -1,7 +1,6 @@
 language: dart
 
 dart:
-  - 2.4.0
   - dev
 
 dart_task:
