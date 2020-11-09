@@ -6,8 +6,8 @@ import 'package:source_span/source_span.dart';
 
 /// A pair of values.
 class Pair<E, F> {
-  final E? first;
-  final F? last;
+  final E first;
+  final F last;
 
   Pair(this.first, this.last);
 

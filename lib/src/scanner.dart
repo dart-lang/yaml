@@ -1146,8 +1146,8 @@ class Scanner {
     // Scan the leading line breaks to determine the indentation level if
     // needed.
     var pair = _scanBlockScalarBreaks(indent);
-    indent = pair.first!;
-    var trailingBreaks = pair.last!;
+    indent = pair.first;
+    var trailingBreaks = pair.last;
 
     // Scan the block scalar contents.
     var buffer = StringBuffer();
@@ -1198,8 +1198,8 @@ class Scanner {
 
       // Eat the following indentation and spaces.
       var pair = _scanBlockScalarBreaks(indent);
-      indent = pair.first!;
-      trailingBreaks = pair.last!;
+      indent = pair.first;
+      trailingBreaks = pair.last;
     }
 
     // Chomp the tail.

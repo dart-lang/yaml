@@ -653,7 +653,7 @@ class Parser {
       ScalarEvent(location.pointSpan() as FileSpan, '', ScalarStyle.PLAIN);
 
   /// Parses directives.
-  Pair<VersionDirective, List<TagDirective>> _processDirectives() {
+  Pair<VersionDirective?, List<TagDirective>> _processDirectives() {
     var token = _scanner.peek()!;
 
     VersionDirective? versionDirective;
