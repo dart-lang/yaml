@@ -8,8 +8,8 @@ import 'package:source_span/source_span.dart';
 import 'package:test/test.dart';
 import 'package:yaml/yaml.dart';
 
-void _expectSpan(SourceSpan? source, String expected) {
-  final result = source!.message('message');
+void _expectSpan(SourceSpan source, String expected) {
+  final result = source.message('message');
   printOnFailure("r'''\n$result'''");
 
   expect(result, expected);
