@@ -96,7 +96,7 @@ class TagToken implements Token {
   final String? handle;
 
   /// The tag suffix, or `null`.
-  final String suffix;
+  final String? suffix;
 
   TagToken(this.span, this.handle, this.suffix);
 

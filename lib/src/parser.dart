@@ -287,7 +287,7 @@ class Parser {
           throw YamlException('Undefined tag handle.', tagToken!.span);
         }
 
-        tag = tagDirective.prefix + tagToken!.suffix;
+        tag = tagDirective.prefix + (tagToken?.suffix ?? '');
       }
     }
 
