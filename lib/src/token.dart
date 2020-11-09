@@ -127,21 +127,26 @@ class ScalarToken implements Token {
 enum TokenType {
   streamStart,
   streamEnd,
+
   versionDirective,
   tagDirective,
   documentStart,
   documentEnd,
+
   blockSequenceStart,
   blockMappingStart,
   blockEnd,
+
   flowSequenceStart,
   flowSequenceEnd,
   flowMappingStart,
   flowMappingEnd,
+
   blockEntry,
   flowEntry,
   key,
   value,
+
   alias,
   anchor,
   tag,
