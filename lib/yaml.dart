@@ -30,7 +30,7 @@ export 'src/yaml_node.dart' hide setSpan;
 ///
 /// If [sourceUrl] is passed, it's used as the URL from which the YAML
 /// originated for error reporting. It can be a [String], a [Uri], or `null`.
-dynamic loadYaml(String yaml, {sourceUrl}) =>
+dynamic loadYaml(String yaml, {Uri? sourceUrl}) =>
     loadYamlNode(yaml, sourceUrl: sourceUrl).value;
 
 /// Loads a single document from a YAML string as a [YamlNode].
@@ -38,7 +38,7 @@ dynamic loadYaml(String yaml, {sourceUrl}) =>
 /// This is just like [loadYaml], except that where [loadYaml] would return a
 /// normal Dart value this returns a [YamlNode] instead. This allows the caller
 /// to be confident that the return value will always be a [YamlNode].
-YamlNode loadYamlNode(String yaml, {sourceUrl}) =>
+YamlNode loadYamlNode(String yaml, {Uri? sourceUrl}) =>
     loadYamlDocument(yaml, sourceUrl: sourceUrl).contents;
 
 /// Loads a single document from a YAML string as a [YamlDocument].
@@ -46,7 +46,7 @@ YamlNode loadYamlNode(String yaml, {sourceUrl}) =>
 /// This is just like [loadYaml], except that where [loadYaml] would return a
 /// normal Dart value this returns a [YamlDocument] instead. This allows the
 /// caller to access document metadata.
-YamlDocument loadYamlDocument(String yaml, {sourceUrl}) {
+YamlDocument loadYamlDocument(String yaml, {Uri? sourceUrl}) {
   var loader = Loader(yaml, sourceUrl: sourceUrl);
   var document = loader.load();
   if (document == null) {
@@ -75,7 +75,7 @@ YamlDocument loadYamlDocument(String yaml, {sourceUrl}) {
 ///
 /// If [sourceUrl] is passed, it's used as the URL from which the YAML
 /// originated for error reporting. It can be a [String], a [Uri], or `null`.
-YamlList loadYamlStream(String yaml, {sourceUrl}) {
+YamlList loadYamlStream(String yaml, {Uri? sourceUrl}) {
   var loader = Loader(yaml, sourceUrl: sourceUrl);
 
   var documents = <YamlDocument>[];
@@ -97,7 +97,7 @@ YamlList loadYamlStream(String yaml, {sourceUrl}) {
 ///
 /// This is like [loadYamlStream], except that it returns [YamlDocument]s with
 /// metadata wrapping the document contents.
-List<YamlDocument> loadYamlDocuments(String yaml, {sourceUrl}) {
+List<YamlDocument> loadYamlDocuments(String yaml, {Uri? sourceUrl}) {
   var loader = Loader(yaml, sourceUrl: sourceUrl);
 
   var documents = <YamlDocument>[];

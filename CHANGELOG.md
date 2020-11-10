@@ -1,6 +1,9 @@
 ## 3.0.0-nullsafety
+
 * Updated to support 2.12.0 and null safety.
 * Allow `YamlNode`s to be wrapped with an optional `style` parameter.
+* **BREAKING** The `sourceUrl` named argument is statically typed as `Uri`
+  instead of allowing `String` or `Uri`.
 
 ## 2.2.1
 

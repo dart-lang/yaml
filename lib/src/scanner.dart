@@ -288,9 +288,7 @@ class Scanner {
   }
 
   /// Creates a scanner that scans [source].
-  ///
-  /// [sourceUrl] can be a String or a [Uri].
-  Scanner(String source, {sourceUrl})
+  Scanner(String source, {Uri? sourceUrl})
       : _scanner = SpanScanner.eager(source, sourceUrl: sourceUrl);
 
   /// Consumes and returns the next token.
