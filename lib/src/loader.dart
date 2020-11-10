@@ -30,8 +30,6 @@ class Loader {
   FileSpan _span;
 
   /// Creates a loader that loads [source].
-  ///
-  /// [sourceUrl] can be a String or a [Uri].
   factory Loader(String source, {Uri? sourceUrl}) {
     var parser = Parser(source, sourceUrl: sourceUrl);
     var event = parser.parse();

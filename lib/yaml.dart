@@ -29,7 +29,7 @@ export 'src/yaml_node.dart' hide setSpan;
 /// operation.
 ///
 /// If [sourceUrl] is passed, it's used as the URL from which the YAML
-/// originated for error reporting. It can be a [String], a [Uri], or `null`.
+/// originated for error reporting.
 dynamic loadYaml(String yaml, {Uri? sourceUrl}) =>
     loadYamlNode(yaml, sourceUrl: sourceUrl).value;
 
@@ -74,7 +74,7 @@ YamlDocument loadYamlDocument(String yaml, {Uri? sourceUrl}) {
 /// operation.
 ///
 /// If [sourceUrl] is passed, it's used as the URL from which the YAML
-/// originated for error reporting. It can be a [String], a [Uri], or `null`.
+/// originated for error reporting.
 YamlList loadYamlStream(String yaml, {Uri? sourceUrl}) {
   var loader = Loader(yaml, sourceUrl: sourceUrl);
 
