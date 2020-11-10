@@ -27,8 +27,9 @@ abstract class YamlNode {
   /// [SourceSpan.message] can be used to produce a human-friendly message about
   /// this node.
   SourceSpan get span => _span;
-
   SourceSpan _span;
+
+  YamlNode._(this._span);
 
   /// The inner value of this node.
   ///
@@ -83,9 +84,8 @@ class YamlMap extends YamlNode with collection.MapMixin, UnmodifiableMapMixin {
 
   /// Users of the library should not use this constructor.
   YamlMap.internal(Map<dynamic, YamlNode> nodes, SourceSpan span, this.style)
-      : nodes = UnmodifiableMapView<dynamic, YamlNode>(nodes) {
-    _span = span;
-  }
+      : nodes = UnmodifiableMapView<dynamic, YamlNode>(nodes),
+        super._(span);
 
   @override
   dynamic operator [](key) => nodes[key]?.value;
@@ -134,9 +134,8 @@ class YamlList extends YamlNode with collection.ListMixin {
 
   /// Users of the library should not use this constructor.
   YamlList.internal(List<YamlNode> nodes, SourceSpan span, this.style)
-      : nodes = UnmodifiableListView<YamlNode>(nodes) {
-    _span = span;
-  }
+      : nodes = UnmodifiableListView<YamlNode>(nodes),
+        super._(span);
 
   @override
   dynamic operator [](int index) => nodes[index].value;
@@ -162,21 +161,20 @@ class YamlScalar extends YamlNode {
   /// [sourceUrl] is passed, it's used as the [SourceSpan.sourceUrl].
   ///
   /// [sourceUrl] may be either a [String], a [Uri], or `null`.
-  YamlScalar.wrap(this.value, {sourceUrl, this.style = ScalarStyle.ANY}) {
+  YamlScalar.wrap(this.value, {sourceUrl, this.style = ScalarStyle.ANY})
+      : super._(NullSpan(sourceUrl)) {
     ArgumentError.checkNotNull(style, 'style');
-    _span = NullSpan(sourceUrl);
   }
 
   /// Users of the library should not use this constructor.
-  YamlScalar.internal(this.value, ScalarEvent scalar) : style = scalar.style {
-    _span = scalar.span;
-  }
+  YamlScalar.internal(this.value, ScalarEvent scalar)
+      : style = scalar.style,
+        super._(scalar.span);
 
   /// Users of the library should not use this constructor.
   YamlScalar.internalWithSpan(this.value, SourceSpan span)
-      : style = ScalarStyle.ANY {
-    _span = span;
-  }
+      : style = ScalarStyle.ANY,
+        super._(span);
 
   @override
   String toString() => value.toString();

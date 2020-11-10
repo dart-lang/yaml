@@ -16,7 +16,7 @@ void _expectSpan(SourceSpan source, String expected) {
 }
 
 void main() {
-  YamlMap yaml;
+  late YamlMap yaml;
 
   setUpAll(() {
     yaml = loadYaml(const JsonEncoder.withIndent(' ').convert({
@@ -31,7 +31,7 @@ void main() {
 
   test('first root key', () {
     _expectSpan(
-      yaml.nodes['num'].span,
+      yaml.nodes['num']!.span,
       r'''
 line 2, column 9: message
   ╷
@@ -43,7 +43,7 @@ line 2, column 9: message
 
   test('first root key', () {
     _expectSpan(
-      yaml.nodes['null'].span,
+      yaml.nodes['null']!.span,
       r'''
 line 7, column 10: message
   ╷
@@ -54,7 +54,7 @@ line 7, column 10: message
   });
 
   group('nested', () {
-    YamlMap nestedMap;
+    late YamlMap nestedMap;
 
     setUpAll(() {
       nestedMap = yaml.nodes['nested'] as YamlMap;
@@ -62,7 +62,7 @@ line 7, column 10: message
 
     test('first root key', () {
       _expectSpan(
-        nestedMap.nodes['null'].span,
+        nestedMap.nodes['null']!.span,
         r'''
 line 4, column 11: message
   ╷
@@ -74,7 +74,7 @@ line 4, column 11: message
 
     test('first root key', () {
       _expectSpan(
-        nestedMap.nodes['num'].span,
+        nestedMap.nodes['num']!.span,
         r'''
 line 5, column 10: message
   ╷
@@ -88,7 +88,7 @@ line 5, column 10: message
   });
 
   group('block', () {
-    YamlList list, nestedList;
+    late YamlList list, nestedList;
 
     setUpAll(() {
       const yamlStr = '''

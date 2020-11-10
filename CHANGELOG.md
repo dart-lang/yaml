@@ -1,5 +1,5 @@
-## 2.3.0-dev
-
+## 3.0.0-nullsafety
+* Updated to support 2.12.0 and null safety.
 * Allow `YamlNode`s to be wrapped with an optional `style` parameter.
 
 ## 2.2.1

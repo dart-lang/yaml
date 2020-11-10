@@ -32,17 +32,19 @@ class Loader {
   /// Creates a loader that loads [source].
   ///
   /// [sourceUrl] can be a String or a [Uri].
-  Loader(String source, {sourceUrl})
-      : _parser = Parser(source, sourceUrl: sourceUrl) {
-    var event = _parser.parse();
-    _span = event.span;
+  factory Loader(String source, {sourceUrl}) {
+    var parser = Parser(source, sourceUrl: sourceUrl);
+    var event = parser.parse();
     assert(event.type == EventType.streamStart);
+    return Loader._(parser, event.span);
   }
+
+  Loader._(this._parser, this._span);
 
   /// Loads the next document from the stream.
   ///
   /// If there are no more documents, returns `null`.
-  YamlDocument load() {
+  YamlDocument? load() {
     if (_parser.isDone) return null;
 
     var event = _parser.parse();
@@ -90,7 +92,7 @@ class Loader {
   }
 
   /// Registers an anchor.
-  void _registerAnchor(String anchor, YamlNode node) {
+  void _registerAnchor(String? anchor, YamlNode node) {
     if (anchor == null) return;
 
     // libyaml throws an error for duplicate anchors, but example 7.1 makes it
@@ -207,7 +209,7 @@ class Loader {
   ///
   /// If parsing fails, this returns `null`, indicating that the scalar should
   /// be parsed as a string.
-  YamlScalar _tryParseScalar(ScalarEvent scalar) {
+  YamlScalar? _tryParseScalar(ScalarEvent scalar) {
     // Quickly check for the empty string, which means null.
     var length = scalar.value.length;
     if (length == 0) return YamlScalar.internal(null, scalar);
@@ -239,7 +241,7 @@ class Loader {
   /// Parse a null scalar.
   ///
   /// Returns a Dart `null` if parsing fails.
-  YamlScalar _parseNull(ScalarEvent scalar) {
+  YamlScalar? _parseNull(ScalarEvent scalar) {
     switch (scalar.value) {
       case '':
       case 'null':
@@ -255,7 +257,7 @@ class Loader {
   /// Parse a boolean scalar.
   ///
   /// Returns `null` if parsing fails.
-  YamlScalar _parseBool(ScalarEvent scalar) {
+  YamlScalar? _parseBool(ScalarEvent scalar) {
     switch (scalar.value) {
       case 'true':
       case 'True':
@@ -273,7 +275,7 @@ class Loader {
   /// Parses a numeric scalar.
   ///
   /// Returns `null` if parsing fails.
-  YamlScalar _parseNumber(ScalarEvent scalar,
+  YamlScalar? _parseNumber(ScalarEvent scalar,
       {bool allowInt = true, bool allowFloat = true}) {
     var value = _parseNumberValue(scalar.value,
         allowInt: allowInt, allowFloat: allowFloat);
@@ -283,7 +285,7 @@ class Loader {
   /// Parses the value of a number.
   ///
   /// Returns the number if it's parsed successfully, or `null` if it's not.
-  num _parseNumberValue(String contents,
+  num? _parseNumberValue(String contents,
       {bool allowInt = true, bool allowFloat = true}) {
     assert(allowInt || allowFloat);
 
@@ -315,7 +317,7 @@ class Loader {
             secondChar >= $0 &&
             secondChar <= $9)) {
       // Try to parse an int or, failing that, a double.
-      num result;
+      num? result;
       if (allowInt) {
         // Pass "radix: 10" explicitly to ensure that "-0x10", which is valid
         // Dart but invalid YAML, doesn't get parsed.

@@ -139,7 +139,7 @@ class Scanner {
   /// When a ":" is parsed and there's a simple key available, a [TokenType.key]
   /// token is inserted in [_tokens] before that key's token. This allows the
   /// parser to tell that the key is intended to be a mapping key.
-  final _simpleKeys = <_SimpleKey>[null];
+  final _simpleKeys = <_SimpleKey?>[null];
 
   /// The current indentation level.
   int get _indent => _indents.last;
@@ -306,13 +306,13 @@ class Scanner {
   }
 
   /// Consumes the next token and returns the one after that.
-  Token advance() {
+  Token? advance() {
     scan();
     return peek();
   }
 
   /// Returns the next token without consuming it.
-  Token peek() {
+  Token? peek() {
     if (_streamEndProduced) return null;
     if (!_tokenAvailable) _fetchMoreTokens();
     return _tokens.first;
@@ -548,7 +548,7 @@ class Scanner {
   /// [tokenNumber] is provided, the corresponding token will be replaced;
   /// otherwise, the token will be added at the end.
   void _rollIndent(int column, TokenType type, SourceLocation location,
-      {int tokenNumber}) {
+      {int? tokenNumber}) {
     if (!_inBlockContext) return;
     if (_indent != -1 && _indent >= column) return;
 
@@ -822,7 +822,7 @@ class Scanner {
   ///     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
   ///     %TAG    !yaml!  tag:yaml.org,2002:  \n
   ///     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  Token _scanDirective() {
+  Token? _scanDirective() {
     var start = _scanner.state;
 
     // Eat '%'.
@@ -979,7 +979,7 @@ class Scanner {
 
   /// Scans a [TokenType.tag] token.
   Token _scanTag() {
-    String handle;
+    String? handle;
     String suffix;
     var start = _scanner.state;
 
@@ -1052,14 +1052,14 @@ class Scanner {
   /// [head] is the initial portion of the tag that's already been scanned.
   /// [flowSeparators] indicates whether the tag URI can contain flow
   /// separators.
-  String _scanTagUri({String head, bool flowSeparators = true}) {
+  String _scanTagUri({String? head, bool flowSeparators = true}) {
     var length = head == null ? 0 : head.length;
     var buffer = StringBuffer();
 
     // Copy the head if needed.
     //
     // Note that we don't copy the leading '!' character.
-    if (length > 1) buffer.write(head.substring(1));
+    if (length > 1) buffer.write(head!.substring(1));
 
     // The set of characters that may appear in URI is as follows:
     //
@@ -1287,7 +1287,7 @@ class Scanner {
           var escapeStart = _scanner.state;
 
           // An escape sequence.
-          int codeLength;
+          int? codeLength;
           switch (_scanner.peekChar(1)) {
             case NUMBER_0:
               buffer.writeCharCode(NULL);
@@ -1324,7 +1324,7 @@ class Scanner {
               // libyaml doesn't support an escaped forward slash, but it was
               // added in YAML 1.2. See section 5.7:
               // http://yaml.org/spec/1.2/spec.html#id2776092
-              buffer.writeCharCode(_scanner.peekChar(1));
+              buffer.writeCharCode(_scanner.peekChar(1)!);
               break;
             case LETTER_CAP_N:
               buffer.writeCharCode(NEL);
@@ -1658,7 +1658,7 @@ class _SimpleKey {
   final bool required;
 
   _SimpleKey(this.tokenNumber, this.line, this.column, this.location,
-      {bool required})
+      {required bool required})
       : required = required;
 }
 

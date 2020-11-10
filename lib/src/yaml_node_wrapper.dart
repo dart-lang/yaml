@@ -45,7 +45,7 @@ class YamlMapWrapper extends MapBase
   }
 
   @override
-  dynamic operator [](Object key) {
+  dynamic operator [](Object? key) {
     var value = _dartMap[key];
     if (value is Map) return YamlMapWrapper._(value, span);
     if (value is List) return YamlListWrapper._(value, span);
@@ -75,9 +75,9 @@ class _YamlMapNodes extends MapBase<dynamic, YamlNode>
   _YamlMapNodes(this._dartMap, this._span);
 
   @override
-  YamlNode operator [](Object key) {
+  YamlNode? operator [](Object? key) {
     // Use "as" here because key being assigned to invalidates type propagation.
-    if (key is YamlScalar) key = (key as YamlScalar).value;
+    if (key is YamlScalar) key = key.value;
     if (!_dartMap.containsKey(key)) return null;
     return _nodeForValue(_dartMap[key], _span);
   }
