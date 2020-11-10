@@ -27,17 +27,19 @@ class Loader {
 
   /// The span of the entire stream emitted so far.
   FileSpan get span => _span;
-  late FileSpan _span;
+  FileSpan _span;
 
   /// Creates a loader that loads [source].
   ///
   /// [sourceUrl] can be a String or a [Uri].
-  Loader(String source, {sourceUrl})
-      : _parser = Parser(source, sourceUrl: sourceUrl) {
-    var event = _parser.parse();
-    _span = event.span;
+  factory Loader(String source, {sourceUrl}) {
+    var parser = Parser(source, sourceUrl: sourceUrl);
+    var event = parser.parse();
     assert(event.type == EventType.streamStart);
+    return Loader._(parser, event.span);
   }
+
+  Loader._(this._parser, this._span);
 
   /// Loads the next document from the stream.
   ///
