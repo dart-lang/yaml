@@ -35,9 +35,7 @@ class Parser {
   bool get isDone => _state == _State.END;
 
   /// Creates a parser that parses [source].
-  ///
-  /// [sourceUrl] can be a String or a [Uri].
-  Parser(String source, {sourceUrl})
+  Parser(String source, {Uri? sourceUrl})
       : _scanner = Scanner(source, sourceUrl: sourceUrl);
 
   /// Consumes and returns the next event.
