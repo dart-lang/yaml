@@ -61,6 +61,69 @@ void main() {
     });
   });
 
+  group('recovers', () {
+    test('from incomplete leading keys', () {
+      final yaml = cleanUpLiteral(r'''
+        dependencies:
+          zero
+          one: any
+          ''');
+      var result = loadYaml(yaml, recover: true);
+      expect(
+          result,
+          deepEquals({
+            'dependencies': {
+              'zero': null,
+              'one': 'any',
+            }
+          }));
+      // Skipped because this case is not currently handled. If it's the first
+      // package without the colon, because the value is indented from the line
+      // above, the whole `zero\n     one` is treated as a scalar value.
+    }, skip: true);
+    test('from incomplete keys', () {
+      final yaml = cleanUpLiteral(r'''
+        dependencies:
+          one: any
+          two
+          three:
+          four
+          five:
+            1.2.3
+          six: 5.4.3
+          ''');
+      var result = loadYaml(yaml, recover: true);
+      expect(
+          result,
+          deepEquals({
+            'dependencies': {
+              'one': 'any',
+              'two': null,
+              'three': null,
+              'four': null,
+              'five': '1.2.3',
+              'six': '5.4.3',
+            }
+          }));
+    });
+    test('from incomplete trailing keys', () {
+      final yaml = cleanUpLiteral(r'''
+        dependencies:
+          six: 5.4.3
+          seven
+          ''');
+      var result = loadYaml(yaml, recover: true);
+      expect(
+          result,
+          deepEquals({
+            'dependencies': {
+              'six': '5.4.3',
+              'seven': null,
+            }
+          }));
+    });
+  });
+
   test('includes source span information', () {
     var yaml = loadYamlNode(r'''
 - foo:

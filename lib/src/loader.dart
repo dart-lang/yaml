@@ -30,8 +30,8 @@ class Loader {
   FileSpan _span;
 
   /// Creates a loader that loads [source].
-  factory Loader(String source, {Uri? sourceUrl}) {
-    var parser = Parser(source, sourceUrl: sourceUrl);
+  factory Loader(String source, {Uri? sourceUrl, bool recover = false}) {
+    var parser = Parser(source, sourceUrl: sourceUrl, recover: recover);
     var event = parser.parse();
     assert(event.type == EventType.streamStart);
     return Loader._(parser, event.span);

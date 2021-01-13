@@ -89,6 +89,9 @@ class Scanner {
   static const LETTER_CAP_X = 0x58;
   static const LETTER_CAP_Z = 0x5A;
 
+  /// Whether this scanner should attempt to recover when parsing invalid YAML.
+  final bool _recover;
+
   /// The underlying [SpanScanner] used to read characters from the source text.
   ///
   /// This is also used to track line and column information and to generate
@@ -288,8 +291,9 @@ class Scanner {
   }
 
   /// Creates a scanner that scans [source].
-  Scanner(String source, {Uri? sourceUrl})
-      : _scanner = SpanScanner.eager(source, sourceUrl: sourceUrl);
+  Scanner(String source, {Uri? sourceUrl, bool recover = false})
+      : _recover = recover,
+        _scanner = SpanScanner.eager(source, sourceUrl: sourceUrl);
 
   /// Consumes and returns the next token.
   Token scan() {
@@ -486,7 +490,12 @@ class Scanner {
       if (key.line == _scanner.line) continue;
 
       if (key.required) {
-        throw YamlException("Expected ':'.", _scanner.emptySpan);
+        if (_recover) {
+          _tokens.insert(key.tokenNumber - _tokensParsed,
+              Token(TokenType.key, key.location.pointSpan() as FileSpan));
+        } else {
+          throw YamlException("Expected ':'.", _scanner.emptySpan);
+        }
       }
 
       _simpleKeys[i] = null;

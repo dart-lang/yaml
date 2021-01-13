@@ -30,24 +30,28 @@ export 'src/yaml_node.dart' hide setSpan;
 ///
 /// If [sourceUrl] is passed, it's used as the URL from which the YAML
 /// originated for error reporting.
-dynamic loadYaml(String yaml, {Uri? sourceUrl}) =>
-    loadYamlNode(yaml, sourceUrl: sourceUrl).value;
+///
+/// If [recover] is true, will attempt to recover from parse errors and may return
+/// invalid or synthetic nodes.
+dynamic loadYaml(String yaml, {Uri? sourceUrl, bool recover = false}) =>
+    loadYamlNode(yaml, sourceUrl: sourceUrl, recover: recover).value;
 
 /// Loads a single document from a YAML string as a [YamlNode].
 ///
 /// This is just like [loadYaml], except that where [loadYaml] would return a
 /// normal Dart value this returns a [YamlNode] instead. This allows the caller
 /// to be confident that the return value will always be a [YamlNode].
-YamlNode loadYamlNode(String yaml, {Uri? sourceUrl}) =>
-    loadYamlDocument(yaml, sourceUrl: sourceUrl).contents;
+YamlNode loadYamlNode(String yaml, {Uri? sourceUrl, bool recover = false}) =>
+    loadYamlDocument(yaml, sourceUrl: sourceUrl, recover: recover).contents;
 
 /// Loads a single document from a YAML string as a [YamlDocument].
 ///
 /// This is just like [loadYaml], except that where [loadYaml] would return a
 /// normal Dart value this returns a [YamlDocument] instead. This allows the
 /// caller to access document metadata.
-YamlDocument loadYamlDocument(String yaml, {Uri? sourceUrl}) {
-  var loader = Loader(yaml, sourceUrl: sourceUrl);
+YamlDocument loadYamlDocument(String yaml,
+    {Uri? sourceUrl, bool recover = false}) {
+  var loader = Loader(yaml, sourceUrl: sourceUrl, recover: recover);
   var document = loader.load();
   if (document == null) {
     return YamlDocument.internal(YamlScalar.internalWithSpan(null, loader.span),
