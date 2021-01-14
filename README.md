@@ -1,7 +1,7 @@
 A parser for [YAML](https://yaml.org/).
 
 [![Pub Package](https://img.shields.io/pub/v/yaml.svg)](https://pub.dev/packages/yaml)
-[![Build Status](https://travis-ci.org/dart-lang/yaml.svg?branch=master)](https://travis-ci.org/dart-lang/yaml)
+[![Build Status](https://github.com/dart-lang/yaml/workflows/Dart%20CI/badge.svg)](https://github.com/dart-lang/yaml/actions?query=workflow%3A"Dart+CI"+branch%3Amaster)
 
 Use `loadYaml` to load a single document, or `loadYamlStream` to load a
 stream of documents. For example:
