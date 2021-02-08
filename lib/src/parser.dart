@@ -4,6 +4,7 @@
 
 import 'package:source_span/source_span.dart';
 import 'package:string_scanner/string_scanner.dart';
+import 'package:yaml/src/error_listener.dart';
 
 import 'event.dart';
 import 'scanner.dart';
@@ -35,8 +36,12 @@ class Parser {
   bool get isDone => _state == _State.END;
 
   /// Creates a parser that parses [source].
-  Parser(String source, {Uri? sourceUrl, bool recover = false})
-      : _scanner = Scanner(source, sourceUrl: sourceUrl, recover: recover);
+  Parser(String source,
+      {Uri? sourceUrl, bool recover = false, ErrorListener? errorListener})
+      : _scanner = Scanner(source,
+            sourceUrl: sourceUrl,
+            recover: recover,
+            errorListener: errorListener);
 
   /// Consumes and returns the next event.
   Event parse() {

@@ -4,6 +4,7 @@
 
 import 'package:charcode/ascii.dart';
 import 'package:source_span/source_span.dart';
+import 'package:yaml/src/error_listener.dart';
 
 import 'equality.dart';
 import 'event.dart';
@@ -30,8 +31,10 @@ class Loader {
   FileSpan _span;
 
   /// Creates a loader that loads [source].
-  factory Loader(String source, {Uri? sourceUrl, bool recover = false}) {
-    var parser = Parser(source, sourceUrl: sourceUrl, recover: recover);
+  factory Loader(String source,
+      {Uri? sourceUrl, bool recover = false, ErrorListener? errorListener}) {
+    var parser = Parser(source,
+        sourceUrl: sourceUrl, recover: recover, errorListener: errorListener);
     var event = parser.parse();
     assert(event.type == EventType.streamStart);
     return Loader._(parser, event.span);

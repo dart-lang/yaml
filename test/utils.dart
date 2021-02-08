@@ -4,6 +4,7 @@
 
 import 'package:test/test.dart';
 import 'package:yaml/src/equality.dart' as equality;
+import 'package:yaml/src/error_listener.dart' show YamlError;
 import 'package:yaml/yaml.dart';
 
 /// A matcher that validates that a closure or Future throws a [YamlException].
@@ -20,6 +21,13 @@ Map deepEqualsMap([Map? from]) {
   var map = equality.deepEqualsMap();
   if (from != null) map.addAll(from);
   return map;
+}
+
+/// Asserts that an error has the given message and starts at the given line/col.
+void expectErrorAtLineCol(YamlError error, String message, int line, int col) {
+  expect(error.message, equals(message));
+  expect(error.span.start.line, equals(line));
+  expect(error.span.start.column, equals(col));
 }
 
 /// Asserts that a string containing a single YAML document produces a given
