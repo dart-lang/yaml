@@ -496,13 +496,9 @@ class Scanner {
       if (key.line == _scanner.line) continue;
 
       if (key.required) {
-        final error = _reportError("Expected ':'.", _scanner.emptySpan);
-        if (_recover) {
-          _tokens.insert(key.tokenNumber - _tokensParsed,
-              Token(TokenType.key, key.location.pointSpan() as FileSpan));
-        } else {
-          throw error.toException();
-        }
+        _reportError(YamlException("Expected ':'.", _scanner.emptySpan));
+        _tokens.insert(key.tokenNumber - _tokensParsed,
+            Token(TokenType.key, key.location.pointSpan() as FileSpan));
       }
 
       _simpleKeys[i] = null;
@@ -1641,11 +1637,13 @@ class Scanner {
     }
   }
 
-  /// Reports an error to [_errorListener] and returns the [YamlError].
-  YamlError _reportError(String message, FileSpan span) {
-    final error = YamlError("Expected ':'.", _scanner.emptySpan);
-    _errorListener?.onError(error);
-    return error;
+  /// Reports a [YamlException] to [_errorListener] and if [_recover] is false,
+  /// throw the exception.
+  void _reportError(YamlException exception) {
+    _errorListener?.onError(exception);
+    if (!_recover) {
+      throw exception;
+    }
   }
 }
 
