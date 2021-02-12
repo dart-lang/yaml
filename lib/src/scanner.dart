@@ -1637,13 +1637,13 @@ class Scanner {
     }
   }
 
-  /// Reports a [YamlException] to [_errorListener] and if [_recover] is false,
-  /// throw the exception.
+  /// Reports a [YamlException] to [_errorListener] if [_recover] is true,
+  /// otherwise throws the exception.
   void _reportError(YamlException exception) {
-    _errorListener?.onError(exception);
     if (!_recover) {
       throw exception;
     }
+    _errorListener?.onError(exception);
   }
 }
 
