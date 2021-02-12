@@ -5,6 +5,7 @@
 import 'package:collection/collection.dart';
 import 'package:source_span/source_span.dart';
 import 'package:string_scanner/string_scanner.dart';
+import 'package:yaml/src/error_listener.dart';
 
 import 'style.dart';
 import 'token.dart';
@@ -88,6 +89,12 @@ class Scanner {
   static const LETTER_CAP_U = 0x55;
   static const LETTER_CAP_X = 0x58;
   static const LETTER_CAP_Z = 0x5A;
+
+  /// Whether this scanner should attempt to recover when parsing invalid YAML.
+  final bool _recover;
+
+  /// A listener to report YAML errors to.
+  final ErrorListener? _errorListener;
 
   /// The underlying [SpanScanner] used to read characters from the source text.
   ///
@@ -288,8 +295,11 @@ class Scanner {
   }
 
   /// Creates a scanner that scans [source].
-  Scanner(String source, {Uri? sourceUrl})
-      : _scanner = SpanScanner.eager(source, sourceUrl: sourceUrl);
+  Scanner(String source,
+      {Uri? sourceUrl, bool recover = false, ErrorListener? errorListener})
+      : _recover = recover,
+        _errorListener = errorListener,
+        _scanner = SpanScanner.eager(source, sourceUrl: sourceUrl);
 
   /// Consumes and returns the next token.
   Token scan() {
@@ -486,7 +496,9 @@ class Scanner {
       if (key.line == _scanner.line) continue;
 
       if (key.required) {
-        throw YamlException("Expected ':'.", _scanner.emptySpan);
+        _reportError(YamlException("Expected ':'.", _scanner.emptySpan));
+        _tokens.insert(key.tokenNumber - _tokensParsed,
+            Token(TokenType.key, key.location.pointSpan() as FileSpan));
       }
 
       _simpleKeys[i] = null;
@@ -1623,6 +1635,15 @@ class Scanner {
     while (!_isBreakOrEnd) {
       _scanner.readChar();
     }
+  }
+
+  /// Reports a [YamlException] to [_errorListener] if [_recover] is true,
+  /// otherwise throws the exception.
+  void _reportError(YamlException exception) {
+    if (!_recover) {
+      throw exception;
+    }
+    _errorListener?.onError(exception);
   }
 }
 

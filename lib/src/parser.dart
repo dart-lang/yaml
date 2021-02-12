@@ -4,6 +4,7 @@
 
 import 'package:source_span/source_span.dart';
 import 'package:string_scanner/string_scanner.dart';
+import 'package:yaml/src/error_listener.dart';
 
 import 'event.dart';
 import 'scanner.dart';
@@ -35,8 +36,18 @@ class Parser {
   bool get isDone => _state == _State.END;
 
   /// Creates a parser that parses [source].
-  Parser(String source, {Uri? sourceUrl})
-      : _scanner = Scanner(source, sourceUrl: sourceUrl);
+  ///
+  /// If [recover] is true, will attempt to recover from parse errors and may return
+  /// invalid or synthetic nodes. If [errorListener] is also supplied, its onError
+  /// method will be called for each error recovered from. It is not valid to
+  /// provide [errorListener] if [recover] is false.
+  Parser(String source,
+      {Uri? sourceUrl, bool recover = false, ErrorListener? errorListener})
+      : assert(recover || errorListener == null),
+        _scanner = Scanner(source,
+            sourceUrl: sourceUrl,
+            recover: recover,
+            errorListener: errorListener);
 
   /// Consumes and returns the next event.
   Event parse() {

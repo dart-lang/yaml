@@ -22,6 +22,14 @@ Map deepEqualsMap([Map? from]) {
   return map;
 }
 
+/// Asserts that an error has the given message and starts at the given line/col.
+void expectErrorAtLineCol(
+    YamlException error, String message, int line, int col) {
+  expect(error.message, equals(message));
+  expect(error.span!.start.line, equals(line));
+  expect(error.span!.start.column, equals(col));
+}
+
 /// Asserts that a string containing a single YAML document produces a given
 /// value when loaded.
 void expectYamlLoads(expected, String source) {
