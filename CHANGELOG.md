@@ -1,3 +1,7 @@
+## 3.0.1
+
+* Drop dependency on `package:charcode`.
+
 ## 3.0.0
 
 * Stable null safety release.
