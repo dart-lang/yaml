@@ -2,10 +2,10 @@
 // for details. All rights reserved. Use of this source code is governed by a
 // BSD-style license that can be found in the LICENSE file.
 
-import 'package:charcode/ascii.dart';
 import 'package:source_span/source_span.dart';
 import 'package:yaml/src/error_listener.dart';
 
+import 'charcodes.dart';
 import 'equality.dart';
 import 'event.dart';
 import 'parser.dart';

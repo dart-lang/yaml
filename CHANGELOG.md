@@ -1,9 +1,10 @@
-## 3.1.0-dev
+## 3.1.0
 
-`loadYaml` and related functions now accept a `recover` flag instructing the parser
+* `loadYaml` and related functions now accept a `recover` flag instructing the parser
   to attempt to recover from parse errors and may return invalid or synthetic nodes.
   When recovering, an `ErrorListener` can also be supplied to listen for errors that
   are recovered from.
+* Drop dependency on `package:charcode`.
 
 ## 3.0.0
 
