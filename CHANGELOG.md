@@ -1,4 +1,4 @@
-## 3.1.0-dev
+## 3.1.0
 
 `loadYaml` and related functions now accept a `recover` flag instructing the parser
   to attempt to recover from parse errors and may return invalid or synthetic nodes.
