@@ -41,7 +41,7 @@ line 2, column 9: message
     );
   });
 
-  test('first root key', () {
+  test('last root key', () {
     _expectSpan(
       yaml.nodes['null']!.span,
       r'''
@@ -60,7 +60,7 @@ line 7, column 10: message
       nestedMap = yaml.nodes['nested'] as YamlMap;
     });
 
-    test('first root key', () {
+    test('first nested key', () {
       _expectSpan(
         nestedMap.nodes['null']!.span,
         r'''
@@ -72,16 +72,14 @@ line 4, column 11: message
       );
     });
 
-    test('first root key', () {
+    test('last nested key', () {
       _expectSpan(
         nestedMap.nodes['num']!.span,
         r'''
 line 5, column 10: message
   ╷
-5 │     "num": 42
-  │ ┌──────────^
-6 │ │  },
-  │ └─^
+5 │   "num": 42
+  │          ^^
   ╵''',
       );
     });
@@ -164,6 +162,101 @@ line 8, column 3: message
   ╷
 8 │   -
   │   ^
+  ╵''');
+    });
+  });
+
+  group('flow', () {
+    YamlMap yamlN0, yamlN1, yamlN2, yamlN3;
+
+    setUpAll(() {
+      const dtr = '''
+  'nested_0': {
+    'nested_1': {
+      'nested_2': {
+        'n2k1': null
+        ,
+        'n2k2': a
+        ,
+        'n2k3':                        4     
+      },
+      'n1k2': 425
+    },
+    'n0k2': aval      
+
+                      ,
+  }
+  'rk2': 44
+        ,
+  ''';
+
+      yamlN0 = loadYaml(dtr) as YamlMap;
+      yamlN1 = yamlN0.nodes['nested_0'] as YamlMap;
+      yamlN2 = yamlN1.nodes['nested_1'] as YamlMap;
+      yamlN3 = yamlN2.nodes['nested_2'] as YamlMap;
+    });
+
+    test('root last key', () {
+      _expectSpan(yamlN0.nodes['rk2'].span, r'''
+line 16, column 10: message
+   ╷
+16 │     'rk2': 44
+   │ ┌──────────^
+17 │ └         ,
+   ╵''');
+    });
+
+    test('nested level 1 last key', () {
+      _expectSpan(yamlN1.nodes['n0k2'].span, r'''
+line 12, column 13: message
+   ╷
+12 │       'n0k2': aval      
+   │ ┌─────────────^
+13 │ │ 
+14 │ │                       ,
+   │ └──────────────────────^
+   ╵''');
+    });
+
+//  TODO : Uncomment after resolving of issue #81
+//
+//     test('nested level 2 last key', () {
+//       _expectSpan(yamlN2.nodes['n1k2'].span, r'''
+// line 10, column 15: message
+//    ╷
+// 10 │       'n1k2': 425
+//    │               ^^^
+//    ╵''');
+//     });
+
+    test('nested level 3 first key', () {
+      _expectSpan(yamlN3.nodes['n2k1'].span, r'''
+line 4, column 17: message
+  ╷
+4 │           'n2k1': null
+  │ ┌─────────────────^
+5 │ │         ,
+  │ └────────^
+  ╵''');
+    });
+
+    test('nested level 3 mid key', () {
+      _expectSpan(yamlN3.nodes['n2k2'].span, r'''
+line 6, column 17: message
+  ╷
+6 │           'n2k2': a
+  │ ┌─────────────────^
+7 │ │         ,
+  │ └────────^
+  ╵''');
+    });
+
+    test('nested level 3 last key', () {
+      _expectSpan(yamlN3.nodes['n2k3'].span, r'''
+line 8, column 40: message
+  ╷
+8 │         'n2k3':                        4     
+  │                                        ^
   ╵''');
     });
   });
