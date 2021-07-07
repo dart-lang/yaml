@@ -123,6 +123,25 @@ class ScalarToken implements Token {
   String toString() => 'SCALAR $style "$value"';
 }
 
+/// A comment token
+class CommentToken implements Token {
+  @override
+  TokenType get type => TokenType.comment;
+  @override
+  final FileSpan span;
+
+  /// Comment string
+  final String comment;
+
+  /// Style of the comment
+  final CommentStyle style;
+
+  CommentToken(this.span, this.comment, this.style);
+
+  @override
+  String toString() => 'Comment $style "$comment"';
+}
+
 /// The types of [Token] objects.
 enum TokenType {
   streamStart,
@@ -146,6 +165,7 @@ enum TokenType {
   flowEntry,
   key,
   value,
+  comment,
 
   alias,
   anchor,

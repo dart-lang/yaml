@@ -58,7 +58,9 @@ class YamlMap extends YamlNode with collection.MapMixin, UnmodifiableMapMixin {
   Map get value => this;
 
   @override
-  Iterable get keys => nodes.keys.map((node) => node.value);
+  Iterable get keys => nodes.keys
+      .map((node) => node.value)
+      .where((node) => !(node is YamlComment));
 
   /// Creates an empty YamlMap.
   ///
@@ -89,6 +91,12 @@ class YamlMap extends YamlNode with collection.MapMixin, UnmodifiableMapMixin {
 
   @override
   dynamic operator [](key) => nodes[key]?.value;
+
+  @override
+  String toString() {
+    var temp = Map.from(nodes)..removeWhere((k, v) => k is YamlComment);
+    return temp.toString();
+  }
 }
 
 // TODO(nweiz): Use UnmodifiableListMixin when issue 18970 is fixed.
@@ -144,6 +152,12 @@ class YamlList extends YamlNode with collection.ListMixin {
   operator []=(int index, value) {
     throw UnsupportedError('Cannot modify an unmodifiable List');
   }
+
+  @override
+  String toString() {
+    var temp = List.from(nodes)..removeWhere((item) => item is YamlComment);
+    return temp.toString();
+  }
 }
 
 /// A wrapped scalar value parsed from YAML.
@@ -175,6 +189,33 @@ class YamlScalar extends YamlNode {
   YamlScalar.internalWithSpan(this.value, SourceSpan span)
       : style = ScalarStyle.ANY,
         super._(span);
+
+  @override
+  String toString() => value.toString();
+}
+
+/// A wrapped comment parsed from YAML.
+class YamlComment extends YamlNode {
+  @override
+  final String value;
+
+  final CommentStyle style;
+
+  YamlComment.wrap(this.value, {sourceUrl}) : style = CommentStyle.SINGLE_LINE {
+    _span = NullSpan(sourceUrl);
+  }
+
+  /// Users of the library should not use this constructor.
+  YamlComment.internal(this.value, CommentEvent comment)
+      : style = CommentStyle.SINGLE_LINE {
+    _span = comment.span;
+  }
+
+  /// Users of the library should not use this constructor.
+  YamlComment.internalWithSpan(this.value, SourceSpan span)
+      : style = CommentStyle.SINGLE_LINE {
+    _span = span;
+  }
 
   @override
   String toString() => value.toString();

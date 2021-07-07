@@ -809,8 +809,10 @@ class Scanner {
             length: 1);
       }
 
-      // Eat a comment until a line break.
-      _skipComment();
+      // Scan comments
+      if (_scanner.peekChar() == HASH) {
+        _tokens.add(_scanComment());
+      }
 
       // If we're at a line break, eat it.
       if (_isBreak) {
@@ -858,7 +860,7 @@ class Scanner {
 
     // Eat the rest of the line, including any comments.
     _skipBlanks();
-    _skipComment();
+    _scanComment();
 
     if (!_isBreakOrEnd) {
       throw YamlException('Expected comment or line break after directive.',
@@ -1135,7 +1137,9 @@ class Scanner {
 
     // Eat whitespace and comments to the end of the line.
     _skipBlanks();
-    _skipComment();
+
+    // TODO: Handle _scanComment
+    _scanComment();
 
     // Check if we're at the end of the line.
     if (!_isBreakOrEnd) {
@@ -1630,11 +1634,19 @@ class Scanner {
   }
 
   /// Moves the scanner past a comment, if one starts at the current position.
-  void _skipComment() {
-    if (_scanner.peekChar() != HASH) return;
+  Token _scanComment() {
+    var start = _scanner.state;
+    var ch = _scanner.peekChar();
+    var comment = '';
+
     while (!_isBreakOrEnd) {
-      _scanner.readChar();
+      ch = _scanner.readChar();
+      if (ch != null) {
+        comment += String.fromCharCode(ch);
+      }
     }
+
+    return CommentToken(_scanner.spanFrom(start), comment, CommentStyle.INLINE);
   }
 
   /// Reports a [YamlException] to [_errorListener] if [_recover] is true,
