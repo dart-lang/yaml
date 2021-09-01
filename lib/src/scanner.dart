@@ -309,7 +309,7 @@ class Scanner {
     var token = _tokens.removeFirst();
     _tokenAvailable = false;
     _tokensParsed++;
-    _streamEndProduced = token is Token && token.type == TokenType.streamEnd;
+    _streamEndProduced = token.type == TokenType.streamEnd;
     return token;
   }
 
