@@ -14,6 +14,7 @@ export 'src/utils.dart' show YamlWarningCallback, yamlWarningCallback;
 export 'src/yaml_document.dart';
 export 'src/yaml_exception.dart';
 export 'src/yaml_node.dart' hide setSpan;
+export 'src/codec/codec.dart';
 
 /// Loads a single document from a YAML string.
 ///
