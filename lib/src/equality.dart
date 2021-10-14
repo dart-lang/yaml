@@ -19,7 +19,7 @@ Map<K, V> deepEqualsMap<K, V>() =>
 ///
 /// This considers `NaN` values to be equivalent, handles self-referential
 /// structures, and considers [YamlScalar]s to be equal to their values.
-bool deepEquals(obj1, obj2) => _DeepEquals().equals(obj1, obj2);
+bool deepEquals(Object? obj1, Object? obj2) => _DeepEquals().equals(obj1, obj2);
 
 /// A class that provides access to the list of parent objects used for loop
 /// detection.
@@ -28,7 +28,7 @@ class _DeepEquals {
   final _parents2 = [];
 
   /// Returns whether [obj1] and [obj2] are structurally equivalent.
-  bool equals(obj1, obj2) {
+  bool equals(Object? obj1, Object? obj2) {
     if (obj1 is YamlScalar) obj1 = obj1.value;
     if (obj2 is YamlScalar) obj2 = obj2.value;
 
@@ -100,7 +100,7 @@ class _DeepEquals {
 /// This supports deep equality for maps and lists, including those with
 /// self-referential structures, and returns the same hash code for
 /// [YamlScalar]s and their values.
-int deepHashCode(obj) {
+int deepHashCode(Object? obj) {
   var parents = [];
 
   int _deepHashCode(value) {

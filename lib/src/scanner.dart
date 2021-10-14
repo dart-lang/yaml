@@ -5,11 +5,13 @@
 // license that can be found in the LICENSE file or at
 // https://opensource.org/licenses/MIT.
 
+// ignore_for_file: constant_identifier_names
+
 import 'package:collection/collection.dart';
 import 'package:source_span/source_span.dart';
 import 'package:string_scanner/string_scanner.dart';
-import 'package:yaml/src/error_listener.dart';
 
+import 'error_listener.dart';
 import 'style.dart';
 import 'token.dart';
 import 'utils.dart';
@@ -291,11 +293,10 @@ class Scanner {
   /// indicator.
   ///
   /// If so, this sets the scanner's last match to that indicator.
-  bool get _isDocumentIndicator {
-    return _scanner.column == 0 &&
-        _isBlankOrEndAt(3) &&
-        (_scanner.matches('---') || _scanner.matches('...'));
-  }
+  bool get _isDocumentIndicator =>
+      _scanner.column == 0 &&
+      _isBlankOrEndAt(3) &&
+      (_scanner.matches('---') || _scanner.matches('...'));
 
   /// Creates a scanner that scans [source].
   Scanner(String source,
@@ -407,7 +408,7 @@ class Scanner {
         _fetchAnchor(anchor: false);
         return;
       case AMPERSAND:
-        _fetchAnchor(anchor: true);
+        _fetchAnchor();
         return;
       case EXCLAMATION:
         _fetchTag();
@@ -416,7 +417,7 @@ class Scanner {
         _fetchFlowScalar(singleQuote: true);
         return;
       case DOUBLE_QUOTE:
-        _fetchFlowScalar(singleQuote: false);
+        _fetchFlowScalar();
         return;
       case VERTICAL_BAR:
         if (!_inBlockContext) _invalidScalarCharacter();
@@ -424,7 +425,7 @@ class Scanner {
         return;
       case RIGHT_ANGLE:
         if (!_inBlockContext) _invalidScalarCharacter();
-        _fetchBlockScalar(literal: false);
+        _fetchBlockScalar();
         return;
       case PERCENT:
       case AT:
@@ -1679,9 +1680,13 @@ class _SimpleKey {
   /// Whether this key must exist for the document to be scanned.
   final bool required;
 
-  _SimpleKey(this.tokenNumber, this.line, this.column, this.location,
-      {required bool required})
-      : required = required;
+  _SimpleKey(
+    this.tokenNumber,
+    this.line,
+    this.column,
+    this.location, {
+    required this.required,
+  });
 }
 
 /// The ways to handle trailing whitespace for a block scalar.

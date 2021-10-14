@@ -29,13 +29,14 @@ void warn(String message, [SourceSpan? span]) =>
 /// [message] is the text of the warning. If [span] is passed, it's the portion
 /// of the document that the warning is associated with and should be included
 /// in the printed warning.
-typedef YamlWarningCallback = Function(String message, [SourceSpan? span]);
+typedef YamlWarningCallback = void Function(String message, [SourceSpan? span]);
 
 /// A callback for emitting a warning.
 ///
 /// In a very few cases, the YAML spec indicates that an implementation should
 /// emit a warning. To do so, it calls this callback. The default implementation
 /// prints a message using [print].
+// ignore: prefer_function_declarations_over_variables
 YamlWarningCallback yamlWarningCallback = (message, [SourceSpan? span]) {
   // TODO(nweiz): Print to stderr with color when issue 6943 is fixed and
   // dart:io is available.

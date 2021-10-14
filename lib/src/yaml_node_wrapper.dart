@@ -19,7 +19,7 @@ class YamlMapWrapper extends MapBase
     with pkg_collection.UnmodifiableMapMixin
     implements YamlMap {
   @override
-  final style;
+  final CollectionStyle style;
 
   final Map _dartMap;
 
@@ -39,10 +39,8 @@ class YamlMapWrapper extends MapBase
       {CollectionStyle style = CollectionStyle.ANY})
       : this._(dartMap, NullSpan(sourceUrl), style: style);
 
-  YamlMapWrapper._(Map dartMap, SourceSpan span,
-      {this.style = CollectionStyle.ANY})
+  YamlMapWrapper._(Map dartMap, this.span, {this.style = CollectionStyle.ANY})
       : _dartMap = dartMap,
-        span = span,
         nodes = _YamlMapNodes(dartMap, span) {
     ArgumentError.checkNotNull(style, 'style');
   }
@@ -97,7 +95,7 @@ class _YamlMapNodes extends MapBase<dynamic, YamlNode>
 /// A wrapper that makes a normal Dart list behave like a [YamlList].
 class YamlListWrapper extends ListBase implements YamlList {
   @override
-  final style;
+  final CollectionStyle style;
 
   final List _dartList;
 
@@ -122,10 +120,9 @@ class YamlListWrapper extends ListBase implements YamlList {
       {CollectionStyle style = CollectionStyle.ANY})
       : this._(dartList, NullSpan(sourceUrl), style: style);
 
-  YamlListWrapper._(List dartList, SourceSpan span,
+  YamlListWrapper._(List dartList, this.span,
       {this.style = CollectionStyle.ANY})
       : _dartList = dartList,
-        span = span,
         nodes = _YamlListNodes(dartList, span) {
     ArgumentError.checkNotNull(style, 'style');
   }
@@ -139,7 +136,7 @@ class YamlListWrapper extends ListBase implements YamlList {
   }
 
   @override
-  operator []=(int index, value) {
+  void operator []=(int index, Object? value) {
     throw UnsupportedError('Cannot modify an unmodifiable List.');
   }
 
@@ -173,7 +170,7 @@ class _YamlListNodes extends ListBase<YamlNode> {
   YamlNode operator [](int index) => _nodeForValue(_dartList[index], _span);
 
   @override
-  operator []=(int index, value) {
+  void operator []=(int index, Object? value) {
     throw UnsupportedError('Cannot modify an unmodifiable List.');
   }
 
