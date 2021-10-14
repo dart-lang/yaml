@@ -119,7 +119,7 @@ class Parser {
       case _State.FLOW_MAPPING_EMPTY_VALUE:
         return _parseFlowMappingValue(empty: true);
       default:
-        throw UnsupportedError('Unreachable');
+        throw StateError('Unreachable');
     }
   }
 

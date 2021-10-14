@@ -91,7 +91,7 @@ class Loader {
       case EventType.mappingStart:
         return _loadMapping(firstEvent as MappingStartEvent);
       default:
-        throw UnsupportedError('Unreachable');
+        throw StateError('Unreachable');
     }
   }
 
