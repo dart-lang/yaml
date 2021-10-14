@@ -91,7 +91,7 @@ class YamlMap extends YamlNode with collection.MapMixin, UnmodifiableMapMixin {
         super._(span);
 
   @override
-  dynamic operator [](key) => nodes[key]?.value;
+  dynamic operator [](Object? key) => nodes[key]?.value;
 }
 
 // TODO(nweiz): Use UnmodifiableListMixin when issue 18970 is fixed.
@@ -144,7 +144,7 @@ class YamlList extends YamlNode with collection.ListMixin {
   dynamic operator [](int index) => nodes[index].value;
 
   @override
-  operator []=(int index, value) {
+  void operator []=(int index, Object? value) {
     throw UnsupportedError('Cannot modify an unmodifiable List');
   }
 }

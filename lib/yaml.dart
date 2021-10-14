@@ -35,10 +35,10 @@ export 'src/yaml_node.dart' hide setSpan;
 /// If [sourceUrl] is passed, it's used as the URL from which the YAML
 /// originated for error reporting.
 ///
-/// If [recover] is true, will attempt to recover from parse errors and may return
-/// invalid or synthetic nodes. If [errorListener] is also supplied, its onError
-/// method will be called for each error recovered from. It is not valid to
-/// provide [errorListener] if [recover] is false.
+/// If [recover] is true, will attempt to recover from parse errors and may
+/// return invalid or synthetic nodes. If [errorListener] is also supplied, its
+/// onError method will be called for each error recovered from. It is not valid
+/// to provide [errorListener] if [recover] is false.
 dynamic loadYaml(String yaml,
         {Uri? sourceUrl, bool recover = false, ErrorListener? errorListener}) =>
     loadYamlNode(yaml,

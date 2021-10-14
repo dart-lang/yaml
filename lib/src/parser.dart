@@ -5,10 +5,12 @@
 // license that can be found in the LICENSE file or at
 // https://opensource.org/licenses/MIT.
 
+// ignore_for_file: constant_identifier_names
+
 import 'package:source_span/source_span.dart';
 import 'package:string_scanner/string_scanner.dart';
-import 'package:yaml/src/error_listener.dart';
 
+import 'error_listener.dart';
 import 'event.dart';
 import 'scanner.dart';
 import 'style.dart';
@@ -40,10 +42,10 @@ class Parser {
 
   /// Creates a parser that parses [source].
   ///
-  /// If [recover] is true, will attempt to recover from parse errors and may return
-  /// invalid or synthetic nodes. If [errorListener] is also supplied, its onError
-  /// method will be called for each error recovered from. It is not valid to
-  /// provide [errorListener] if [recover] is false.
+  /// If [recover] is true, will attempt to recover from parse errors and may
+  /// return invalid or synthetic nodes. If [errorListener] is also supplied,
+  /// its onError method will be called for each error recovered from. It is not
+  /// valid to provide [errorListener] if [recover] is false.
   Parser(String source,
       {Uri? sourceUrl, bool recover = false, ErrorListener? errorListener})
       : assert(recover || errorListener == null),
@@ -117,7 +119,7 @@ class Parser {
       case _State.FLOW_MAPPING_EMPTY_VALUE:
         return _parseFlowMappingValue(empty: true);
       default:
-        throw 'Unreachable';
+        throw StateError('Unreachable');
     }
   }
 
@@ -226,7 +228,7 @@ class Parser {
       _scanner.scan();
       return DocumentEndEvent(token.span, isImplicit: false);
     } else {
-      return DocumentEndEvent(token.span.start.pointSpan(), isImplicit: true);
+      return DocumentEndEvent(token.span.start.pointSpan());
     }
   }
 

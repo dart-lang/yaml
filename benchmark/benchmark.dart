@@ -11,14 +11,13 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:path/path.dart' as p;
-
 import 'package:yaml/yaml.dart';
 
 const numTrials = 100;
 const runsPerTrial = 1000;
 
-final source = loadFile('input.yaml');
-final expected = loadFile('output.json');
+final source = _loadFile('input.yaml');
+final expected = _loadFile('output.json');
 
 void main(List<String> args) {
   var best = double.infinity;
@@ -29,7 +28,7 @@ void main(List<String> args) {
     var start = DateTime.now();
 
     // For a single benchmark, convert the source multiple times.
-    var result;
+    Object? result;
     for (var j = 0; j < runsPerTrial; j++) {
       result = loadYaml(source);
     }
@@ -51,27 +50,18 @@ void main(List<String> args) {
     // Don't print the first run. It's always terrible since the VM hasn't
     // warmed up yet.
     if (i == 0) continue;
-    printResult("Run ${padLeft('#$i', 3)}", elapsed);
+    _printResult("Run ${'#$i'.padLeft(3, '')}", elapsed);
   }
 
-  printResult('Best   ', best);
+  _printResult('Best   ', best);
 }
 
-String loadFile(String name) {
+String _loadFile(String name) {
   var path = p.join(p.dirname(p.fromUri(Platform.script)), name);
   return File(path).readAsStringSync();
 }
 
-void printResult(String label, double time) {
-  print('$label: ${padLeft(time.toStringAsFixed(3), 4)}ms '
+void _printResult(String label, double time) {
+  print('$label: ${time.toStringAsFixed(3).padLeft(4, '0')}ms '
       "${'=' * ((time * 100).toInt())}");
-}
-
-String padLeft(input, int length) {
-  var result = input.toString();
-  if (result.length < length) {
-    result = ' ' * (length - result.length) + result;
-  }
-
-  return result;
 }

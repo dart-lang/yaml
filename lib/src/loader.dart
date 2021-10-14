@@ -6,10 +6,10 @@
 // https://opensource.org/licenses/MIT.
 
 import 'package:source_span/source_span.dart';
-import 'package:yaml/src/error_listener.dart';
 
 import 'charcodes.dart';
 import 'equality.dart';
+import 'error_listener.dart';
 import 'event.dart';
 import 'parser.dart';
 import 'yaml_document.dart';
@@ -91,7 +91,7 @@ class Loader {
       case EventType.mappingStart:
         return _loadMapping(firstEvent as MappingStartEvent);
       default:
-        throw 'Unreachable';
+        throw StateError('Unreachable');
     }
   }
 

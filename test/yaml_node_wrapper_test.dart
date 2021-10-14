@@ -220,7 +220,7 @@ void main() {
   });
 }
 
-Matcher isNullSpan(sourceUrl) => predicate((SourceSpan span) {
+Matcher isNullSpan(Object sourceUrl) => predicate((SourceSpan span) {
       expect(span, TypeMatcher<SourceSpan>());
       expect(span.length, equals(0));
       expect(span.text, isEmpty);

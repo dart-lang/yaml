@@ -5,6 +5,8 @@
 // license that can be found in the LICENSE file or at
 // https://opensource.org/licenses/MIT.
 
+// ignore_for_file: constant_identifier_names
+
 /// An enum of source scalar styles.
 class ScalarStyle {
   /// No source style was specified.

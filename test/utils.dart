@@ -15,7 +15,7 @@ final Matcher throwsYamlException = throwsA(TypeMatcher<YamlException>());
 /// Returns a matcher that asserts that the value equals [expected].
 ///
 /// This handles recursive loops and considers `NaN` to equal itself.
-Matcher deepEquals(expected) => predicate(
+Matcher deepEquals(Object? expected) => predicate(
     (actual) => equality.deepEquals(actual, expected), 'equals $expected');
 
 /// Constructs a new yaml.YamlMap, optionally from a normal Map.
@@ -35,7 +35,7 @@ void expectErrorAtLineCol(
 
 /// Asserts that a string containing a single YAML document produces a given
 /// value when loaded.
-void expectYamlLoads(expected, String source) {
+void expectYamlLoads(Object? expected, String source) {
   var actual = loadYaml(cleanUpLiteral(source));
   expect(actual, deepEquals(expected));
 }
