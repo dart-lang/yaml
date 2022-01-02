@@ -259,10 +259,10 @@ class Scanner {
       case NEL:
         return true;
       default:
-        return (char >= 0x00020 && char <= 0x00007E) ||
-            (char >= 0x000A0 && char <= 0x00D7FF) ||
-            (char >= 0x0E000 && char <= 0x00FFFD) ||
-            (char >= 0x10000 && char <= 0x10FFFF);
+        return (char >= 0x0020 && char <= 0x007E) ||
+            (char >= 0x00A0 && char <= 0xD7FF) ||
+            (char >= 0xE000 && char <= 0xFFFD) ||
+            (char >= 0xD800 && char <= 0xDFFF);
     }
   }
 
@@ -1612,10 +1612,10 @@ class Scanner {
         return true;
       default:
         return char != null &&
-            ((char >= 0x00020 && char <= 0x00007E) ||
-                (char >= 0x000A0 && char <= 0x00D7FF) ||
-                (char >= 0x0E000 && char <= 0x00FFFD) ||
-                (char >= 0x10000 && char <= 0x10FFFF));
+            ((char >= 0x0020 && char <= 0x007E) ||
+                (char >= 0x00A0 && char <= 0xD7FF) ||
+                (char >= 0xE000 && char <= 0xFFFD) ||
+                (char >= 0xD800 && char <= 0xDFFF));
     }
   }
 
