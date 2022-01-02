@@ -1611,7 +1611,8 @@ class Scanner {
       case NEL:
         return true;
       default:
-        return char != null&&(         (char >= 0x0020 && char <= 0x007E) ||
+        return char != null &&
+            ((char >= 0x0020 && char <= 0x007E) ||
             (char >= 0x00A0 && char <= 0xD7FF) ||
             (char >= 0xE000 && char <= 0xFFFD) ||
             (char >= 0xD800 && char <= 0xDFFF));
