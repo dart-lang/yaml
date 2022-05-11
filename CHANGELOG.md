@@ -1,3 +1,8 @@
+## 3.1.1
+
+* Switch to using package:lints.
+* Populate the pubspec `repository` field.
+
 ## 3.1.0
 
 * `loadYaml` and related functions now accept a `recover` flag instructing the parser
