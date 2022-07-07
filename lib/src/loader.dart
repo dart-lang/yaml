@@ -174,6 +174,18 @@ class Loader {
       children[key] = value;
       event = _parser.parse();
     }
+    if (children.containsKey('<<')) {
+      final mergeVal = children['<<']!;
+      if (mergeVal is! YamlMap) {
+        throw YamlException('Merge key is not a map', mergeVal.span);
+      }
+      for (final e in mergeVal.nodes.entries) {
+        if (!children.containsKey(e.key)) {
+          children[e.key] = e.value;
+        }
+      }
+      children.remove('<<');
+    }
 
     setSpan(node, firstEvent.span.expand(event.span));
     return node;
