@@ -5,6 +5,8 @@
 // license that can be found in the LICENSE file or at
 // https://opensource.org/licenses/MIT.
 
+// ignore_for_file: avoid_dynamic_calls
+
 import 'package:source_span/source_span.dart';
 import 'package:test/test.dart';
 import 'package:yaml/yaml.dart';

@@ -61,7 +61,7 @@ class YamlMap extends YamlNode with collection.MapMixin, UnmodifiableMapMixin {
   Map get value => this;
 
   @override
-  Iterable get keys => nodes.keys.map((node) => node.value);
+  Iterable get keys => nodes.keys.map((node) => (node as YamlNode).value);
 
   /// Creates an empty YamlMap.
   ///
@@ -86,9 +86,9 @@ class YamlMap extends YamlNode with collection.MapMixin, UnmodifiableMapMixin {
       YamlMapWrapper(dartMap, sourceUrl, style: style);
 
   /// Users of the library should not use this constructor.
-  YamlMap.internal(Map<dynamic, YamlNode> nodes, SourceSpan span, this.style)
+  YamlMap.internal(Map<dynamic, YamlNode> nodes, super.span, this.style)
       : nodes = UnmodifiableMapView<dynamic, YamlNode>(nodes),
-        super._(span);
+        super._();
 
   @override
   dynamic operator [](Object? key) => nodes[key]?.value;
@@ -136,9 +136,9 @@ class YamlList extends YamlNode with collection.ListMixin {
       YamlListWrapper(dartList, sourceUrl, style: style);
 
   /// Users of the library should not use this constructor.
-  YamlList.internal(List<YamlNode> nodes, SourceSpan span, this.style)
+  YamlList.internal(List<YamlNode> nodes, super.span, this.style)
       : nodes = UnmodifiableListView<YamlNode>(nodes),
-        super._(span);
+        super._();
 
   @override
   dynamic operator [](int index) => nodes[index].value;
@@ -152,7 +152,7 @@ class YamlList extends YamlNode with collection.ListMixin {
 /// A wrapped scalar value parsed from YAML.
 class YamlScalar extends YamlNode {
   @override
-  final dynamic value;
+  final Object? value;
 
   /// The style used for the scalar in the original document.
   final ScalarStyle style;

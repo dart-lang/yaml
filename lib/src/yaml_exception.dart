@@ -9,5 +9,5 @@ import 'package:source_span/source_span.dart';
 
 /// An error thrown by the YAML processor.
 class YamlException extends SourceSpanFormatException {
-  YamlException(String message, SourceSpan? span) : super(message, span);
+  YamlException(super.message, super.span);
 }
