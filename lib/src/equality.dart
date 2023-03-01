@@ -103,15 +103,15 @@ class _DeepEquals {
 int deepHashCode(Object? obj) {
   var parents = [];
 
-  int _deepHashCode(value) {
+  int deepHashCodeInner(value) {
     if (parents.any((parent) => identical(parent, value))) return -1;
 
     parents.add(value);
     try {
       if (value is Map) {
         var equality = const UnorderedIterableEquality();
-        return equality.hash(value.keys.map(_deepHashCode)) ^
-            equality.hash(value.values.map(_deepHashCode));
+        return equality.hash(value.keys.map(deepHashCodeInner)) ^
+            equality.hash(value.values.map(deepHashCodeInner));
       } else if (value is Iterable) {
         return const IterableEquality().hash(value.map(deepHashCode));
       } else if (value is YamlScalar) {
@@ -124,5 +124,5 @@ int deepHashCode(Object? obj) {
     }
   }
 
-  return _deepHashCode(obj);
+  return deepHashCodeInner(obj);
 }

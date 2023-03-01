@@ -5,8 +5,6 @@
 // license that can be found in the LICENSE file or at
 // https://opensource.org/licenses/MIT.
 
-library yaml.benchmark.benchmark;
-
 import 'dart:convert';
 import 'dart:io';
 
