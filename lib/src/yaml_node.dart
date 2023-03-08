@@ -152,7 +152,7 @@ class YamlList extends YamlNode with collection.ListMixin {
 /// A wrapped scalar value parsed from YAML.
 class YamlScalar extends YamlNode {
   @override
-  final Object? value;
+  final dynamic value;
 
   /// The style used for the scalar in the original document.
   final ScalarStyle style;
