@@ -1804,70 +1804,66 @@ void main() {
   });
 
   group('10.2: JSON Schema', () {
-    // test('[Example 10.4]', () {
-    //   var doc = deepEqualsMap({"key with null value": null});
-    //   doc[null] = "value for null key";
-    //   expectYamlStreamLoads(doc,
-    //     """
-    //     !!null null: value for null key
-    //     key with null value: !!null null""");
-    // });
+    test('[Example 10.4]', () {
+      var doc = deepEqualsMap({'key with null value': null});
+      doc[null] = 'value for null key';
+      expectYamlStreamLoads([doc], '''
+        !!null null: value for null key
+        key with null value: !!null null''');
+    });
 
-    // test('[Example 10.5]', () {
-    //   expectYamlStreamLoads({
-    //     "YAML is a superset of JSON": true,
-    //     "Pluto is a planet": false
-    //   },
-    //     """
-    //     YAML is a superset of JSON: !!bool true
-    //     Pluto is a planet: !!bool false""");
-    // });
+    test('[Example 10.5]', () {
+      expectYamlStreamLoads([
+        {'YAML is a superset of JSON': true, 'Pluto is a planet': false}
+      ], '''
+        YAML is a superset of JSON: !!bool true
+        Pluto is a planet: !!bool false''');
+    });
 
-    // test('[Example 10.6]', () {
-    //   expectYamlStreamLoads({
-    //     "negative": -12,
-    //     "zero": 0,
-    //     "positive": 34
-    //   },
-    //     """
-    //     negative: !!int -12
-    //     zero: !!int 0
-    //     positive: !!int 34""");
-    // });
+    test('[Example 10.6]', () {
+      expectYamlStreamLoads([
+        {'negative': -12, 'zero': 0, 'positive': 34}
+      ], '''
+        negative: !!int -12
+        zero: !!int 0
+        positive: !!int 34''');
+    });
 
-    // test('[Example 10.7]', () {
-    //   expectYamlStreamLoads({
-    //     "negative": -1,
-    //     "zero": 0,
-    //     "positive": 23000,
-    //     "infinity": infinity,
-    //     "not a number": nan
-    //   },
-    //     """
-    //     negative: !!float -1
-    //     zero: !!float 0
-    //     positive: !!float 2.3e4
-    //     infinity: !!float .inf
-    //     not a number: !!float .nan""");
-    // });
+    test('[Example 10.7]', () {
+      expectYamlStreamLoads([
+        {
+          'negative': -1,
+          'zero': 0,
+          'positive': 23000,
+          'infinity': infinity,
+          'not a number': nan
+        }
+      ], '''
+        negative: !!float -1
+        zero: !!float 0
+        positive: !!float 2.3e4
+        infinity: !!float .inf
+        not a number: !!float .nan''');
+    }, skip: 'Fails for single digit float');
 
-    // test('[Example 10.8]', () {
-    //   expectYamlStreamLoads({
-    //     "A null": null,
-    //     "Booleans": [true, false],
-    //     "Integers": [0, -0, 3, -19],
-    //     "Floats": [0, 0, 12000, -200000],
-    //     // Despite being invalid in the JSON schema, these values are valid in
-    //     // the core schema which this implementation supports.
-    //     "Invalid": [ true, null, 7, 0x3A, 12.3]
-    //   },
-    //     """
-    //     A null: null
-    //     Booleans: [ true, false ]
-    //     Integers: [ 0, -0, 3, -19 ]
-    //     Floats: [ 0., -0.0, 12e03, -2E+05 ]
-    //     Invalid: [ True, Null, 0o7, 0x3A, +12.3 ]""");
-    // });
+    test('[Example 10.8]', () {
+      expectYamlStreamLoads([
+        {
+          'A null': null,
+          'Booleans': [true, false],
+          'Integers': [0, -0, 3, -19],
+          'Floats': [0, 0, 12000, -200000],
+          // Despite being invalid in the JSON schema, these values are valid in
+          // the core schema which this implementation supports.
+          'Invalid': [true, null, 7, 0x3A, 12.3]
+        }
+      ], '''
+        A null: null
+        Booleans: [ true, false ]
+        Integers: [ 0, -0, 3, -19 ]
+        Floats: [ 0., -0.0, 12e03, -2E+05 ]
+        Invalid: [ True, Null, 0o7, 0x3A, +12.3 ]''');
+    });
   });
 
   group('10.3: Core Schema', () {
