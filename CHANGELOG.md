@@ -1,5 +1,8 @@
 ## 3.1.3-wip
 
+* Add support for `merge` type.
+  See https://yaml.org/type/merge.html for examples.
+
 ## 3.1.2
 
 * Require Dart 2.19
