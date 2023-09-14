@@ -1899,6 +1899,87 @@ void main() {
         List.generate(keys.length, (i) => i + 1).reduce((n, i) => n * i);
     expect(sanityCheckCount, expectedPermutationCount);
   });
+
+  group('merge', () {
+    test('supports one map', () {
+      expectYamlLoads([
+        {
+          'x': 1,
+          'y': 2,
+        },
+        {
+          'x': 1,
+          'y': 2,
+          'r': 10,
+          'label': 'center/big',
+        },
+      ], '''
+        - &CENTER { x: 1, y: 2 }
+        - # Merge one map
+          << : *CENTER
+          r: 10
+          label: center/big''');
+    });
+
+    test('supports multiple maps', () {
+      expectYamlLoads([
+        {
+          'x': 1,
+          'y': 2,
+        },
+        {
+          'r': 10,
+        },
+        {
+          'x': 1,
+          'y': 2,
+          'r': 10,
+          'label': 'center/big',
+        },
+      ], '''
+        - &CENTER { x: 1, y: 2 }
+        - &BIG { r: 10 }
+        - # Merge multiple maps
+          << : [ *CENTER, *BIG ]
+          label: center/big''');
+    });
+    test('supports override', () {
+      expectYamlLoads([
+        {
+          'x': 0,
+          'y': 2,
+        },
+        {
+          'r': 10,
+        },
+        {
+          'r': 1,
+        },
+        {
+          'x': 1,
+          'y': 2,
+          'r': 10,
+          'label': 'center/big',
+        },
+      ], '''
+        - &LEFT { x: 0, y: 2 }
+        - &BIG { r: 10 }
+        - &SMALL { r: 1 }
+        - # Override
+          << : [ *BIG, *LEFT, *SMALL ]
+          x: 1
+          label: center/big''');
+    });
+    test('duplicate merge throws', () {
+      expectYamlFails('''
+        - &TEST { x: 0 }
+        - &TEST_2 { x: 0 }
+        - << : *TEST
+          << : *TEST_2
+          x: 10
+      ''');
+    });
+  });
 }
 
 Iterable<List<String>> _generatePermutations(List<String> keys) sync* {
