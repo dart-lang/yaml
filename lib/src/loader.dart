@@ -151,6 +151,43 @@ class Loader {
     return node;
   }
 
+  /// Loads merge type and returns resulting merge map.
+  /// Merge map must be applied via [_applyMergeMap] after all map keys are
+  /// loaded.
+  Map<dynamic, YamlNode> _loadMerge(Event event) {
+    final children = deepEqualsMap<dynamic, YamlNode>();
+    if (event is AliasEvent) {
+      final value = _loadAlias(event);
+      _loadMergeMap(event, value, children);
+    } else if (event is SequenceStartEvent) {
+      final values = _loadSequence(event) as YamlList;
+      for (final value in values.nodes) {
+        _loadMergeMap(event, value, children);
+      }
+    }
+    return children;
+  }
+
+  /// Loads and applies merge map to children map.
+  void _loadMergeMap(
+      Event event, YamlNode value, Map<dynamic, YamlNode> children) {
+    if (value is! YamlMap) {
+      throw YamlException('Merge accepts only aliases to mappings', event.span);
+    }
+
+    _applyMergeMap(value.nodes, children);
+  }
+
+  /// Applies merge map to children map.
+  void _applyMergeMap(
+      Map<dynamic, YamlNode> mergeMap, Map<dynamic, YamlNode> children) {
+    mergeMap.forEach((key, value) {
+      if (!children.containsKey(key as YamlNode)) {
+        children[key] = value;
+      }
+    });
+  }
+
   /// Composes a mapping node.
   YamlNode _loadMapping(MappingStartEvent firstEvent) {
     if (firstEvent.tag != '!' &&
@@ -164,15 +201,38 @@ class Loader {
     _registerAnchor(firstEvent.anchor, node);
 
     var event = _parser.parse();
+
+    // Support Merge type - https://yaml.org/type/merge.html
+    // Merge is done in a after-pass manner, because you must first know all
+    // map keys, as they override what we would like to merge.
+    Map<dynamic, YamlNode>? mergeMap;
+
     while (event.type != EventType.mappingEnd) {
+      // Merge node check
+      if (event is ScalarEvent &&
+          (event.value == '<<' || event.tag == 'tag:yaml.org,2002:merge')) {
+        if (mergeMap != null) {
+          throw YamlException('Duplicate mapping key.', event.span);
+        }
+        mergeMap = _loadMerge(_parser.parse());
+
+        event = _parser.parse();
+        continue;
+      }
       var key = _loadNode(event);
       var value = _loadNode(_parser.parse());
+
       if (children.containsKey(key)) {
         throw YamlException('Duplicate mapping key.', key.span);
       }
 
       children[key] = value;
       event = _parser.parse();
+    }
+
+    // Merge must be done after all keys are loaded.
+    if (mergeMap != null) {
+      _applyMergeMap(mergeMap, children);
     }
 
     setSpan(node, firstEvent.span.expand(event.span));
