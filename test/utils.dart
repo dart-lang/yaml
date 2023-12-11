@@ -10,7 +10,7 @@ import 'package:yaml/src/equality.dart' as equality;
 import 'package:yaml/yaml.dart';
 
 /// A matcher that validates that a closure or Future throws a [YamlException].
-final Matcher throwsYamlException = throwsA(TypeMatcher<YamlException>());
+final Matcher throwsYamlException = throwsA(isA<YamlException>());
 
 /// Returns a matcher that asserts that the value equals [expected].
 ///
@@ -20,7 +20,7 @@ Matcher deepEquals(Object? expected) => predicate(
 
 /// Constructs a new yaml.YamlMap, optionally from a normal Map.
 Map deepEqualsMap([Map? from]) {
-  var map = equality.deepEqualsMap();
+  var map = equality.deepEqualsMap<Object?, Object?>();
   if (from != null) map.addAll(from);
   return map;
 }

@@ -1,5 +1,7 @@
 ## 3.1.3-wip
 
+* Require Dart 3.0
+
 ## 3.1.2
 
 * Require Dart 2.19

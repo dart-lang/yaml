@@ -24,8 +24,8 @@ bool deepEquals(Object? obj1, Object? obj2) => _DeepEquals().equals(obj1, obj2);
 /// A class that provides access to the list of parent objects used for loop
 /// detection.
 class _DeepEquals {
-  final _parents1 = [];
-  final _parents2 = [];
+  final _parents1 = <Object?>[];
+  final _parents2 = <Object?>[];
 
   /// Returns whether [obj1] and [obj2] are structurally equivalent.
   bool equals(Object? obj1, Object? obj2) {
@@ -101,7 +101,7 @@ class _DeepEquals {
 /// self-referential structures, and returns the same hash code for
 /// [YamlScalar]s and their values.
 int deepHashCode(Object? obj) {
-  var parents = [];
+  var parents = <Object?>[];
 
   int deepHashCodeInner(Object? value) {
     if (parents.any((parent) => identical(parent, value))) return -1;
@@ -109,11 +109,11 @@ int deepHashCode(Object? obj) {
     parents.add(value);
     try {
       if (value is Map) {
-        var equality = const UnorderedIterableEquality();
+        var equality = const UnorderedIterableEquality<Object?>();
         return equality.hash(value.keys.map(deepHashCodeInner)) ^
             equality.hash(value.values.map(deepHashCodeInner));
       } else if (value is Iterable) {
-        return const IterableEquality().hash(value.map(deepHashCode));
+        return const IterableEquality<Object?>().hash(value.map(deepHashCode));
       } else if (value is YamlScalar) {
         return (value.value as Object?).hashCode;
       } else {

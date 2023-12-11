@@ -29,9 +29,6 @@ export 'src/yaml_node.dart' hide setSpan;
 /// These have a few small behavioral differences from the default Map
 /// implementation; for details, see the [YamlMap] class.
 ///
-/// In future versions, maps will instead be [HashMap]s with a custom equality
-/// operation.
-///
 /// If [sourceUrl] is passed, it's used as the URL from which the YAML
 /// originated for error reporting.
 ///
@@ -90,9 +87,6 @@ YamlDocument loadYamlDocument(String yaml,
 /// (NaN, lists, and maps), all maps in the returned document are [YamlMap]s.
 /// These have a few small behavioral differences from the default Map
 /// implementation; for details, see the [YamlMap] class.
-///
-/// In future versions, maps will instead be [HashMap]s with a custom equality
-/// operation.
 ///
 /// If [sourceUrl] is passed, it's used as the URL from which the YAML
 /// originated for error reporting.

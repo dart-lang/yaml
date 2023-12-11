@@ -58,19 +58,19 @@ void main() {
         }));
 
     expect(map.span, isNullSpan(isNull));
-    expect(map['list'], TypeMatcher<YamlList>());
-    expect(map['list'].nodes[0], TypeMatcher<YamlScalar>());
+    expect(map['list'], isA<YamlList>());
+    expect(map['list'].nodes[0], isA<YamlScalar>());
     expect(map['list'].span, isNullSpan(isNull));
-    expect(map['map'], TypeMatcher<YamlMap>());
-    expect(map['map'].nodes['foo'], TypeMatcher<YamlScalar>());
-    expect(map['map']['nested'], TypeMatcher<YamlList>());
+    expect(map['map'], isA<YamlMap>());
+    expect(map['map'].nodes['foo'], isA<YamlScalar>());
+    expect(map['map']['nested'], isA<YamlList>());
     expect(map['map'].span, isNullSpan(isNull));
-    expect(map.nodes['scalar'], TypeMatcher<YamlScalar>());
+    expect(map.nodes['scalar'], isA<YamlScalar>());
     expect(map.nodes['scalar']!.value, 'value');
     expect(map.nodes['scalar']!.span, isNullSpan(isNull));
     expect(map['scalar'], 'value');
     expect(map.keys, unorderedEquals(['list', 'map', 'scalar']));
-    expect(map.nodes.keys, everyElement(TypeMatcher<YamlScalar>()));
+    expect(map.nodes.keys, everyElement(isA<YamlScalar>()));
     expect(map.nodes[YamlScalar.wrap('list')], equals([1, 2, 3]));
     expect(map.style, equals(CollectionStyle.ANY));
     expect((map.nodes['list'] as YamlList).style, equals(CollectionStyle.ANY));
@@ -135,14 +135,14 @@ void main() {
         ]));
 
     expect(list.span, isNullSpan(isNull));
-    expect(list[0], TypeMatcher<YamlList>());
-    expect(list[0].nodes[0], TypeMatcher<YamlScalar>());
+    expect(list[0], isA<YamlList>());
+    expect(list[0].nodes[0], isA<YamlScalar>());
     expect(list[0].span, isNullSpan(isNull));
-    expect(list[1], TypeMatcher<YamlMap>());
-    expect(list[1].nodes['foo'], TypeMatcher<YamlScalar>());
-    expect(list[1]['nested'], TypeMatcher<YamlList>());
+    expect(list[1], isA<YamlMap>());
+    expect(list[1].nodes['foo'], isA<YamlScalar>());
+    expect(list[1]['nested'], isA<YamlList>());
     expect(list[1].span, isNullSpan(isNull));
-    expect(list.nodes[2], TypeMatcher<YamlScalar>());
+    expect(list.nodes[2], isA<YamlScalar>());
     expect(list.nodes[2].value, 'value');
     expect(list.nodes[2].span, isNullSpan(isNull));
     expect(list[2], 'value');
@@ -223,7 +223,7 @@ void main() {
 }
 
 Matcher isNullSpan(Object sourceUrl) => predicate((SourceSpan span) {
-      expect(span, TypeMatcher<SourceSpan>());
+      expect(span, isA<SourceSpan>());
       expect(span.length, equals(0));
       expect(span.text, isEmpty);
       expect(span.start, equals(span.end));

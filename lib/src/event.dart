@@ -7,6 +7,7 @@
 
 import 'package:source_span/source_span.dart';
 
+import 'parser.dart';
 import 'style.dart';
 import 'yaml_document.dart';
 

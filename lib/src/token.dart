@@ -7,6 +7,7 @@
 
 import 'package:source_span/source_span.dart';
 
+import 'scanner.dart';
 import 'style.dart';
 
 /// A token emitted by a [Scanner].

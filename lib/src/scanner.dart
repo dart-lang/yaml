@@ -124,7 +124,7 @@ class Scanner {
 
   /// The number of tokens that have been emitted.
   ///
-  /// This doesn't count tokens in [tokens].
+  /// This doesn't count tokens in [_tokens].
   var _tokensParsed = 0;
 
   /// Whether the next token in [_tokens] is ready to be returned.
@@ -830,7 +830,7 @@ class Scanner {
     }
   }
 
-  /// Scans a [TokenType.YAML_DIRECTIVE] or [TokenType.tagDirective] token.
+  /// Scans a [TokenType.versionDirective] or [TokenType.tagDirective] token.
   ///
   ///     %YAML    1.2    # a comment \n
   ///     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -1656,7 +1656,7 @@ class _SimpleKey {
   /// The index of the token that begins the simple key.
   ///
   /// This is the index relative to all tokens emitted, rather than relative to
-  /// [_tokens].
+  /// [location].
   final int tokenNumber;
 
   /// The source location of the beginning of the simple key.
