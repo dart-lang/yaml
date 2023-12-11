@@ -249,21 +249,15 @@ class Scanner {
   /// See http://yaml.org/spec/1.2/spec.html#nb-char.
   bool get _isNonBreak {
     var char = _scanner.peekChar();
-    if (char == null) return false;
-    switch (char) {
-      case LF:
-      case CR:
-      case BOM:
-        return false;
-      case TAB:
-      case NEL:
-        return true;
-      default:
-        return (char >= 0x00020 && char <= 0x00007E) ||
-            (char >= 0x000A0 && char <= 0x00D7FF) ||
-            (char >= 0x0E000 && char <= 0x00FFFD) ||
-            (char >= 0x10000 && char <= 0x10FFFF);
-    }
+    return switch (char) {
+      null => false,
+      LF || CR || BOM => false,
+      TAB || NEL => true,
+      _ => (char >= 0x00020 && char <= 0x00007E) ||
+          (char >= 0x000A0 && char <= 0x00D7FF) ||
+          (char >= 0x0E000 && char <= 0x00FFFD) ||
+          (char >= 0x10000 && char <= 0x10FFFF)
+    };
   }
 
   /// Whether the character at the current position is a printable character
@@ -272,21 +266,15 @@ class Scanner {
   /// See http://yaml.org/spec/1.2/spec.html#nb-char.
   bool get _isNonSpace {
     var char = _scanner.peekChar();
-    if (char == null) return false;
-    switch (char) {
-      case LF:
-      case CR:
-      case BOM:
-      case SP:
-        return false;
-      case NEL:
-        return true;
-      default:
-        return (char >= 0x00020 && char <= 0x00007E) ||
-            (char >= 0x000A0 && char <= 0x00D7FF) ||
-            (char >= 0x0E000 && char <= 0x00FFFD) ||
-            (char >= 0x10000 && char <= 0x10FFFF);
-    }
+    return switch (char) {
+      null => false,
+      LF || CR || BOM || SP => false,
+      NEL => true,
+      _ => (char >= 0x00020 && char <= 0x00007E) ||
+          (char >= 0x000A0 && char <= 0x00D7FF) ||
+          (char >= 0x0E000 && char <= 0x00FFFD) ||
+          (char >= 0x10000 && char <= 0x10FFFF)
+    };
   }
 
   /// Returns Whether or not the current character begins a documentation
