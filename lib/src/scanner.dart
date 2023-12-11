@@ -253,10 +253,7 @@ class Scanner {
       null => false,
       LF || CR || BOM => false,
       TAB || NEL => true,
-      _ => (char >= 0x00020 && char <= 0x00007E) ||
-          (char >= 0x000A0 && char <= 0x00D7FF) ||
-          (char >= 0x0E000 && char <= 0x00FFFD) ||
-          (char >= 0x10000 && char <= 0x10FFFF)
+      _ => _isStandardCharacter(char),
     };
   }
 
@@ -270,10 +267,7 @@ class Scanner {
       null => false,
       LF || CR || BOM || SP => false,
       NEL => true,
-      _ => (char >= 0x00020 && char <= 0x00007E) ||
-          (char >= 0x000A0 && char <= 0x00D7FF) ||
-          (char >= 0x0E000 && char <= 0x00FFFD) ||
-          (char >= 0x10000 && char <= 0x10FFFF)
+      _ => _isStandardCharacter(char),
     };
   }
 
@@ -1581,31 +1575,27 @@ class Scanner {
   /// See http://yaml.org/spec/1.2/spec.html#ns-plain-safe(c).
   bool _isPlainSafeAt(int offset) {
     var char = _scanner.peekChar(offset);
-    switch (char) {
-      case COMMA:
-      case LEFT_SQUARE:
-      case RIGHT_SQUARE:
-      case LEFT_CURLY:
-      case RIGHT_CURLY:
+    return switch (char) {
+      null => false,
+      COMMA ||
+      LEFT_SQUARE ||
+      RIGHT_SQUARE ||
+      LEFT_CURLY ||
+      RIGHT_CURLY =>
         // These characters are delimiters in a flow context and thus are only
         // safe in a block context.
-        return _inBlockContext;
-      case SP:
-      case TAB:
-      case LF:
-      case CR:
-      case BOM:
-        return false;
-      case NEL:
-        return true;
-      default:
-        return char != null &&
-            ((char >= 0x00020 && char <= 0x00007E) ||
-                (char >= 0x000A0 && char <= 0x00D7FF) ||
-                (char >= 0x0E000 && char <= 0x00FFFD) ||
-                (char >= 0x10000 && char <= 0x10FFFF));
-    }
+        _inBlockContext,
+      SP || TAB || LF || CR || BOM => false,
+      NEL => true,
+      _ => _isStandardCharacter(char)
+    };
   }
+
+  bool _isStandardCharacter(int char) =>
+      (char >= 0x00020 && char <= 0x00007E) ||
+      (char >= 0x000A0 && char <= 0x00D7FF) ||
+      (char >= 0x0E000 && char <= 0x00FFFD) ||
+      (char >= 0x10000 && char <= 0x10FFFF);
 
   /// Returns the hexidecimal value of [char].
   int _asHex(int char) {
