@@ -35,7 +35,7 @@ class YamlMapWrapper extends MapBase
   @override
   Iterable get keys => _dartMap.keys;
 
-  YamlMapWrapper(Map dartMap, sourceUrl,
+  YamlMapWrapper(Map dartMap, Object? sourceUrl,
       {CollectionStyle style = CollectionStyle.ANY})
       : this._(dartMap, NullSpan(sourceUrl), style: style);
 
@@ -116,7 +116,7 @@ class YamlListWrapper extends ListBase implements YamlList {
     throw UnsupportedError('Cannot modify an unmodifiable List.');
   }
 
-  YamlListWrapper(List dartList, sourceUrl,
+  YamlListWrapper(List dartList, Object? sourceUrl,
       {CollectionStyle style = CollectionStyle.ANY})
       : this._(dartList, NullSpan(sourceUrl), style: style);
 
@@ -182,7 +182,7 @@ class _YamlListNodes extends ListBase<YamlNode> {
       other is _YamlListNodes && other._dartList == _dartList;
 }
 
-YamlNode _nodeForValue(value, SourceSpan span) {
+YamlNode _nodeForValue(Object? value, SourceSpan span) {
   if (value is Map) return YamlMapWrapper._(value, span);
   if (value is List) return YamlListWrapper._(value, span);
   return YamlScalar.internalWithSpan(value, span);

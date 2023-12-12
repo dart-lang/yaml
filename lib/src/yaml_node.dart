@@ -37,14 +37,14 @@ abstract class YamlNode {
   /// The inner value of this node.
   ///
   /// For [YamlScalar]s, this will return the wrapped value. For [YamlMap] and
-  /// [YamlList], it will return [this], since they already implement [Map] and
+  /// [YamlList], it will return `this`, since they already implement [Map] and
   /// [List], respectively.
   dynamic get value;
 }
 
 /// A read-only [Map] parsed from YAML.
 class YamlMap extends YamlNode with collection.MapMixin, UnmodifiableMapMixin {
-  /// A view of [this] where the keys and values are guaranteed to be
+  /// A view of `this` where the keys and values are guaranteed to be
   /// [YamlNode]s.
   ///
   /// The key type is `dynamic` to allow values to be accessed using
@@ -70,19 +70,19 @@ class YamlMap extends YamlNode with collection.MapMixin, UnmodifiableMapMixin {
   /// is passed, it's used as the [SourceSpan.sourceUrl].
   ///
   /// [sourceUrl] may be either a [String], a [Uri], or `null`.
-  factory YamlMap({sourceUrl}) => YamlMapWrapper(const {}, sourceUrl);
+  factory YamlMap({Object? sourceUrl}) => YamlMapWrapper(const {}, sourceUrl);
 
   /// Wraps a Dart map so that it can be accessed (recursively) like a
   /// [YamlMap].
   ///
   /// Any [SourceSpan]s returned by this map or its children will be dummies
   /// without useful location information. However, they will have a reasonable
-  /// implementation of [SourceSpan.getLocationMessage]. If [sourceUrl] is
+  /// implementation of [SourceSpan.message]. If [sourceUrl] is
   /// passed, it's used as the [SourceSpan.sourceUrl].
   ///
   /// [sourceUrl] may be either a [String], a [Uri], or `null`.
   factory YamlMap.wrap(Map dartMap,
-          {sourceUrl, CollectionStyle style = CollectionStyle.ANY}) =>
+          {Object? sourceUrl, CollectionStyle style = CollectionStyle.ANY}) =>
       YamlMapWrapper(dartMap, sourceUrl, style: style);
 
   /// Users of the library should not use this constructor.
@@ -120,19 +120,19 @@ class YamlList extends YamlNode with collection.ListMixin {
   /// [sourceUrl] is passed, it's used as the [SourceSpan.sourceUrl].
   ///
   /// [sourceUrl] may be either a [String], a [Uri], or `null`.
-  factory YamlList({sourceUrl}) => YamlListWrapper(const [], sourceUrl);
+  factory YamlList({Object? sourceUrl}) => YamlListWrapper(const [], sourceUrl);
 
   /// Wraps a Dart list so that it can be accessed (recursively) like a
   /// [YamlList].
   ///
   /// Any [SourceSpan]s returned by this list or its children will be dummies
   /// without useful location information. However, they will have a reasonable
-  /// implementation of [SourceSpan.getLocationMessage]. If [sourceUrl] is
+  /// implementation of [SourceSpan.message]. If [sourceUrl] is
   /// passed, it's used as the [SourceSpan.sourceUrl].
   ///
   /// [sourceUrl] may be either a [String], a [Uri], or `null`.
   factory YamlList.wrap(List dartList,
-          {sourceUrl, CollectionStyle style = CollectionStyle.ANY}) =>
+          {Object? sourceUrl, CollectionStyle style = CollectionStyle.ANY}) =>
       YamlListWrapper(dartList, sourceUrl, style: style);
 
   /// Users of the library should not use this constructor.
@@ -164,7 +164,7 @@ class YamlScalar extends YamlNode {
   /// [sourceUrl] is passed, it's used as the [SourceSpan.sourceUrl].
   ///
   /// [sourceUrl] may be either a [String], a [Uri], or `null`.
-  YamlScalar.wrap(this.value, {sourceUrl, this.style = ScalarStyle.ANY})
+  YamlScalar.wrap(this.value, {Object? sourceUrl, this.style = ScalarStyle.ANY})
       : super._(NullSpan(sourceUrl)) {
     ArgumentError.checkNotNull(style, 'style');
   }

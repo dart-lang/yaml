@@ -16,7 +16,4 @@ linter:
     - package_api_docs
     - prefer_const_declarations
     - prefer_expression_function_bodies
-    - prefer_relative_imports
-    - test_types_in_equals
     - use_string_buffers
-    - use_super_parameters

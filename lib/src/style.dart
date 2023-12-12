@@ -7,6 +7,8 @@
 
 // ignore_for_file: constant_identifier_names
 
+import 'yaml_node.dart';
+
 /// An enum of source scalar styles.
 class ScalarStyle {
   /// No source style was specified.

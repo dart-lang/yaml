@@ -124,7 +124,7 @@ class Scanner {
 
   /// The number of tokens that have been emitted.
   ///
-  /// This doesn't count tokens in [tokens].
+  /// This doesn't count tokens in [_tokens].
   var _tokensParsed = 0;
 
   /// Whether the next token in [_tokens] is ready to be returned.
@@ -249,21 +249,12 @@ class Scanner {
   /// See http://yaml.org/spec/1.2/spec.html#nb-char.
   bool get _isNonBreak {
     var char = _scanner.peekChar();
-    if (char == null) return false;
-    switch (char) {
-      case LF:
-      case CR:
-      case BOM:
-        return false;
-      case TAB:
-      case NEL:
-        return true;
-      default:
-        return (char >= 0x00020 && char <= 0x00007E) ||
-            (char >= 0x000A0 && char <= 0x00D7FF) ||
-            (char >= 0x0E000 && char <= 0x00FFFD) ||
-            (char >= 0x10000 && char <= 0x10FFFF);
-    }
+    return switch (char) {
+      null => false,
+      LF || CR || BOM => false,
+      TAB || NEL => true,
+      _ => _isStandardCharacter(char),
+    };
   }
 
   /// Whether the character at the current position is a printable character
@@ -272,21 +263,12 @@ class Scanner {
   /// See http://yaml.org/spec/1.2/spec.html#nb-char.
   bool get _isNonSpace {
     var char = _scanner.peekChar();
-    if (char == null) return false;
-    switch (char) {
-      case LF:
-      case CR:
-      case BOM:
-      case SP:
-        return false;
-      case NEL:
-        return true;
-      default:
-        return (char >= 0x00020 && char <= 0x00007E) ||
-            (char >= 0x000A0 && char <= 0x00D7FF) ||
-            (char >= 0x0E000 && char <= 0x00FFFD) ||
-            (char >= 0x10000 && char <= 0x10FFFF);
-    }
+    return switch (char) {
+      null => false,
+      LF || CR || BOM || SP => false,
+      NEL => true,
+      _ => _isStandardCharacter(char),
+    };
   }
 
   /// Returns Whether or not the current character begins a documentation
@@ -830,7 +812,7 @@ class Scanner {
     }
   }
 
-  /// Scans a [TokenType.YAML_DIRECTIVE] or [TokenType.tagDirective] token.
+  /// Scans a [TokenType.versionDirective] or [TokenType.tagDirective] token.
   ///
   ///     %YAML    1.2    # a comment \n
   ///     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -1593,31 +1575,27 @@ class Scanner {
   /// See http://yaml.org/spec/1.2/spec.html#ns-plain-safe(c).
   bool _isPlainSafeAt(int offset) {
     var char = _scanner.peekChar(offset);
-    switch (char) {
-      case COMMA:
-      case LEFT_SQUARE:
-      case RIGHT_SQUARE:
-      case LEFT_CURLY:
-      case RIGHT_CURLY:
+    return switch (char) {
+      null => false,
+      COMMA ||
+      LEFT_SQUARE ||
+      RIGHT_SQUARE ||
+      LEFT_CURLY ||
+      RIGHT_CURLY =>
         // These characters are delimiters in a flow context and thus are only
         // safe in a block context.
-        return _inBlockContext;
-      case SP:
-      case TAB:
-      case LF:
-      case CR:
-      case BOM:
-        return false;
-      case NEL:
-        return true;
-      default:
-        return char != null &&
-            ((char >= 0x00020 && char <= 0x00007E) ||
-                (char >= 0x000A0 && char <= 0x00D7FF) ||
-                (char >= 0x0E000 && char <= 0x00FFFD) ||
-                (char >= 0x10000 && char <= 0x10FFFF));
-    }
+        _inBlockContext,
+      SP || TAB || LF || CR || BOM => false,
+      NEL => true,
+      _ => _isStandardCharacter(char)
+    };
   }
+
+  bool _isStandardCharacter(int char) =>
+      (char >= 0x00020 && char <= 0x00007E) ||
+      (char >= 0x000A0 && char <= 0x00D7FF) ||
+      (char >= 0x0E000 && char <= 0x00FFFD) ||
+      (char >= 0x10000 && char <= 0x10FFFF);
 
   /// Returns the hexidecimal value of [char].
   int _asHex(int char) {
@@ -1656,7 +1634,7 @@ class _SimpleKey {
   /// The index of the token that begins the simple key.
   ///
   /// This is the index relative to all tokens emitted, rather than relative to
-  /// [_tokens].
+  /// [location].
   final int tokenNumber;
 
   /// The source location of the beginning of the simple key.

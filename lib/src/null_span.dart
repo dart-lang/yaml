@@ -7,6 +7,8 @@
 
 import 'package:source_span/source_span.dart';
 
+import 'yaml_node.dart';
+
 /// A [SourceSpan] with no location information.
 ///
 /// This is used with [YamlMap.wrap] and [YamlList.wrap] to provide means of
@@ -20,5 +22,5 @@ class NullSpan extends SourceSpanMixin {
   @override
   final text = '';
 
-  NullSpan(sourceUrl) : start = SourceLocation(0, sourceUrl: sourceUrl);
+  NullSpan(Object? sourceUrl) : start = SourceLocation(0, sourceUrl: sourceUrl);
 }

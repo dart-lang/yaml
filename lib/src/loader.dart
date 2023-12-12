@@ -80,20 +80,14 @@ class Loader {
   }
 
   /// Composes a node.
-  YamlNode _loadNode(Event firstEvent) {
-    switch (firstEvent.type) {
-      case EventType.alias:
-        return _loadAlias(firstEvent as AliasEvent);
-      case EventType.scalar:
-        return _loadScalar(firstEvent as ScalarEvent);
-      case EventType.sequenceStart:
-        return _loadSequence(firstEvent as SequenceStartEvent);
-      case EventType.mappingStart:
-        return _loadMapping(firstEvent as MappingStartEvent);
-      default:
-        throw StateError('Unreachable');
-    }
-  }
+  YamlNode _loadNode(Event firstEvent) => switch (firstEvent.type) {
+        EventType.alias => _loadAlias(firstEvent as AliasEvent),
+        EventType.scalar => _loadScalar(firstEvent as ScalarEvent),
+        EventType.sequenceStart =>
+          _loadSequence(firstEvent as SequenceStartEvent),
+        EventType.mappingStart => _loadMapping(firstEvent as MappingStartEvent),
+        _ => throw StateError('Unreachable')
+      };
 
   /// Registers an anchor.
   void _registerAnchor(String? anchor, YamlNode node) {
@@ -220,61 +214,37 @@ class Loader {
 
     // Dispatch on the first character.
     var firstChar = scalar.value.codeUnitAt(0);
-    switch (firstChar) {
-      case $dot:
-      case $plus:
-      case $minus:
-        return _parseNumber(scalar);
-      case $n:
-      case $N:
-        return length == 4 ? _parseNull(scalar) : null;
-      case $t:
-      case $T:
-        return length == 4 ? _parseBool(scalar) : null;
-      case $f:
-      case $F:
-        return length == 5 ? _parseBool(scalar) : null;
-      case $tilde:
-        return length == 1 ? YamlScalar.internal(null, scalar) : null;
-      default:
-        if (firstChar >= $0 && firstChar <= $9) return _parseNumber(scalar);
-        return null;
-    }
+    return switch (firstChar) {
+      $dot || $plus || $minus => _parseNumber(scalar),
+      $n || $N => length == 4 ? _parseNull(scalar) : null,
+      $t || $T => length == 4 ? _parseBool(scalar) : null,
+      $f || $F => length == 5 ? _parseBool(scalar) : null,
+      $tilde => length == 1 ? YamlScalar.internal(null, scalar) : null,
+      _ => (firstChar >= $0 && firstChar <= $9) ? _parseNumber(scalar) : null
+    };
   }
 
   /// Parse a null scalar.
   ///
   /// Returns a Dart `null` if parsing fails.
-  YamlScalar? _parseNull(ScalarEvent scalar) {
-    switch (scalar.value) {
-      case '':
-      case 'null':
-      case 'Null':
-      case 'NULL':
-      case '~':
-        return YamlScalar.internal(null, scalar);
-      default:
-        return null;
-    }
-  }
+  YamlScalar? _parseNull(ScalarEvent scalar) => switch (scalar.value) {
+        '' ||
+        'null' ||
+        'Null' ||
+        'NULL' ||
+        '~' =>
+          YamlScalar.internal(null, scalar),
+        _ => null
+      };
 
   /// Parse a boolean scalar.
   ///
   /// Returns `null` if parsing fails.
-  YamlScalar? _parseBool(ScalarEvent scalar) {
-    switch (scalar.value) {
-      case 'true':
-      case 'True':
-      case 'TRUE':
-        return YamlScalar.internal(true, scalar);
-      case 'false':
-      case 'False':
-      case 'FALSE':
-        return YamlScalar.internal(false, scalar);
-      default:
-        return null;
-    }
-  }
+  YamlScalar? _parseBool(ScalarEvent scalar) => switch (scalar.value) {
+        'true' || 'True' || 'TRUE' => YamlScalar.internal(true, scalar),
+        'false' || 'False' || 'FALSE' => YamlScalar.internal(false, scalar),
+        _ => null
+      };
 
   /// Parses a numeric scalar.
   ///
