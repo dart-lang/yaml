@@ -1,6 +1,7 @@
 ## 3.1.3-wip
 
 * Require Dart 3.0
+* Fix UTF-16 surrogate pair handling.
 
 ## 3.1.2
 

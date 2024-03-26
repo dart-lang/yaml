@@ -425,7 +425,9 @@ void main() {
         'hex esc': '\r\n is \r\n',
         'single': '"Howdy!" he cried.',
         'quoted': " # Not a 'comment'.",
-        'tie-fighter': '|\\-*-/|'
+        'tie-fighter': '|\\-*-/|',
+        'surrogate-pair': 'I \u{D83D}\u{DE03}  ️Dart!',
+        'key-\u{D83D}\u{DD11}': 'Look\u{D83D}\u{DE03}\u{D83C}\u{DF89}surprise!',
       }, """
         unicode: "Sosa did fine.\\u263A"
         control: "\\b1998\\t1999\\t2000\\n"
@@ -433,7 +435,10 @@ void main() {
 
         single: '"Howdy!" he cried.'
         quoted: ' # Not a ''comment''.'
-        tie-fighter: '|\\-*-/|'""");
+        tie-fighter: '|\\-*-/|'
+        
+        surrogate-pair: I \u{D83D}\u{DE03}  ️Dart!
+        key-\u{D83D}\u{DD11}: Look\u{D83D}\u{DE03}\u{D83C}\u{DF89}surprise!""");
     });
 
     test('[Example 2.18]', () {
