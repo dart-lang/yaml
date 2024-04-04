@@ -420,7 +420,7 @@ void main() {
 
     test('[Example 2.17]', () {
       expectYamlLoads({
-        'unicode': 'Sosa did fine.\u263A',
+        'unicode': 'Sosa did fine.\u263A \u{1F680}',
         'control': '\b1998\t1999\t2000\n',
         'hex esc': '\r\n is \r\n',
         'single': '"Howdy!" he cried.',
@@ -429,7 +429,7 @@ void main() {
         'surrogate-pair': 'I \u{D83D}\u{DE03}  ️Dart!',
         'key-\u{D83D}\u{DD11}': 'Look\u{D83D}\u{DE03}\u{D83C}\u{DF89}surprise!',
       }, """
-        unicode: "Sosa did fine.\\u263A"
+        unicode: "Sosa did fine.\\u263A \\U0001F680"
         control: "\\b1998\\t1999\\t2000\\n"
         hex esc: "\\x0d\\x0a is \\r\\n"
 

@@ -787,7 +787,7 @@ class Scanner {
       while (_scanner.peekChar() == SP ||
           ((!_inBlockContext || !afterLineBreak) &&
               _scanner.peekChar() == TAB)) {
-        _scanner.readCodePoint();
+        _scanner.readChar();
       }
 
       if (_scanner.peekChar() == TAB) {
@@ -822,7 +822,7 @@ class Scanner {
     var start = _scanner.state;
 
     // Eat '%'.
-    _scanner.readCodePoint();
+    _scanner.readChar();
 
     Token token;
     var name = _scanDirectiveName();
@@ -903,7 +903,7 @@ class Scanner {
   int _scanVersionDirectiveNumber() {
     var start = _scanner.position;
     while (_isDigit) {
-      _scanner.readCodePoint();
+      _scanner.readChar();
     }
 
     var number = _scanner.substring(start);
@@ -982,8 +982,8 @@ class Scanner {
     // Check if the tag is in the canonical form.
     if (_scanner.peekChar(1) == LEFT_ANGLE) {
       // Eat '!<'.
-      _scanner.readCodePoint();
-      _scanner.readCodePoint();
+      _scanner.readChar();
+      _scanner.readChar();
 
       handle = '';
       suffix = _scanTagUri();
@@ -1027,7 +1027,7 @@ class Scanner {
     // http://yaml.org/spec/1.2/spec.html#ns-tag-char.
     var start = _scanner.position;
     while (_isTagChar) {
-      _scanner.readCodePoint();
+      _scanner.readChar();
     }
     buffer.write(_scanner.substring(start));
 
@@ -1070,7 +1070,7 @@ class Scanner {
     while (_isTagChar ||
         (flowSeparators &&
             (char == COMMA || char == LEFT_SQUARE || char == RIGHT_SQUARE))) {
-      _scanner.readCodePoint();
+      _scanner.readChar();
       char = _scanner.peekChar();
     }
 
@@ -1217,7 +1217,7 @@ class Scanner {
     while (true) {
       while ((indent == 0 || _scanner.column < indent) &&
           _scanner.peekChar() == SP) {
-        _scanner.readCodePoint();
+        _scanner.readChar();
       }
 
       if (_scanner.column > maxIndent) maxIndent = _scanner.column;
@@ -1247,7 +1247,7 @@ class Scanner {
     var buffer = StringBuffer();
 
     // Eat the left quote.
-    _scanner.readCodePoint();
+    _scanner.readChar();
 
     while (true) {
       // Check that there are no document indicators at the beginning of the
@@ -1267,15 +1267,15 @@ class Scanner {
             char == SINGLE_QUOTE &&
             _scanner.peekChar(1) == SINGLE_QUOTE) {
           // An escaped single quote.
-          _scanner.readCodePoint();
-          _scanner.readCodePoint();
+          _scanner.readChar();
+          _scanner.readChar();
           buffer.writeCharCode(SINGLE_QUOTE);
         } else if (char == (singleQuote ? SINGLE_QUOTE : DOUBLE_QUOTE)) {
           // The closing quote.
           break;
         } else if (!singleQuote && char == BACKSLASH && _isBreakAt(1)) {
           // An escaped newline.
-          _scanner.readCodePoint();
+          _scanner.readChar();
           _skipLine();
           leadingBlanks = true;
           break;
@@ -1348,20 +1348,20 @@ class Scanner {
                   'Unknown escape character.', _scanner.spanFrom(escapeStart));
           }
 
-          _scanner.readCodePoint();
-          _scanner.readCodePoint();
+          _scanner.readChar();
+          _scanner.readChar();
 
           if (codeLength != null) {
             var value = 0;
             for (var i = 0; i < codeLength; i++) {
               if (!_isHex) {
-                _scanner.readCodePoint();
+                _scanner.readChar();
                 throw YamlException(
                     'Expected $codeLength-digit hexidecimal number.',
                     _scanner.spanFrom(escapeStart));
               }
 
-              value = (value << 4) + _asHex(_scanner.readCodePoint());
+              value = (value << 4) + _asHex(_scanner.readChar());
             }
 
             // Check the value and write the character.
@@ -1389,9 +1389,9 @@ class Scanner {
         if (_isBlank) {
           // Consume a space or a tab.
           if (!leadingBlanks) {
-            whitespace.writeCharCode(_scanner.readCodePoint());
+            whitespace.writeCharCode(_scanner.readChar());
           } else {
-            _scanner.readCodePoint();
+            _scanner.readChar();
           }
         } else {
           // Check if it's a first line break.
@@ -1419,7 +1419,7 @@ class Scanner {
     }
 
     // Eat the right quote.
-    _scanner.readCodePoint();
+    _scanner.readChar();
 
     return ScalarToken(_scanner.spanFrom(start), buffer.toString(),
         singleQuote ? ScalarStyle.SINGLE_QUOTED : ScalarStyle.DOUBLE_QUOTED);
@@ -1480,9 +1480,9 @@ class Scanner {
           }
 
           if (leadingBreak.isEmpty) {
-            whitespace.writeCharCode(_scanner.readCodePoint());
+            whitespace.writeCharCode(_scanner.readChar());
           } else {
-            _scanner.readCodePoint();
+            _scanner.readChar();
           }
         } else {
           // Check if it's a first line break.
@@ -1510,8 +1510,8 @@ class Scanner {
   void _skipLine() {
     var char = _scanner.peekChar();
     if (char != CR && char != LF) return;
-    _scanner.readCodePoint();
-    if (char == CR && _scanner.peekChar() == LF) _scanner.readCodePoint();
+    _scanner.readChar();
+    if (char == CR && _scanner.peekChar() == LF) _scanner.readChar();
   }
 
   // Moves past the current line break and returns a newline.
@@ -1524,9 +1524,9 @@ class Scanner {
       throw YamlException('Expected newline.', _scanner.emptySpan);
     }
 
-    _scanner.readCodePoint();
+    _scanner.readChar();
     // CR LF | CR | LF -> LF
-    if (char == CR && _scanner.peekChar() == LF) _scanner.readCodePoint();
+    if (char == CR && _scanner.peekChar() == LF) _scanner.readChar();
     return '\n';
   }
 
@@ -1597,19 +1597,18 @@ class Scanner {
 
     if (isHighSurrogate(first)) {
       var next = _scanner.peekChar(offset + 1);
-      if (next != null && isLowSurrogate(next)) {
-        return _isStandardCharacter(decodeSurrogatePair(first, next));
-      }
+      // A surrogate pair encodes code points from U+010000 to U+10FFFF, so it
+      // must be a standard character.
+      return next != null && isLowSurrogate(next);
     }
 
     return _isStandardCharacter(first);
   }
 
   bool _isStandardCharacter(int char) =>
-      (char >= 0x00020 && char <= 0x00007E) ||
-      (char >= 0x000A0 && char <= 0x00D7FF) ||
-      (char >= 0x0E000 && char <= 0x00FFFD) ||
-      (char >= 0x10000 && char <= 0x10FFFF);
+      (char >= 0x0020 && char <= 0x007E) ||
+      (char >= 0x00A0 && char <= 0xD7FF) ||
+      (char >= 0xE000 && char <= 0xFFFD);
 
   /// Returns the hexidecimal value of [char].
   int _asHex(int char) {
@@ -1621,7 +1620,7 @@ class Scanner {
   /// Moves the scanner past any blank characters.
   void _skipBlanks() {
     while (_isBlank) {
-      _scanner.readCodePoint();
+      _scanner.readChar();
     }
   }
 
@@ -1629,7 +1628,7 @@ class Scanner {
   void _skipComment() {
     if (_scanner.peekChar() != HASH) return;
     while (!_isBreakOrEnd) {
-      _scanner.readCodePoint();
+      _scanner.readChar();
     }
   }
 
