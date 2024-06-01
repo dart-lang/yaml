@@ -43,3 +43,9 @@ YamlWarningCallback yamlWarningCallback = (message, [SourceSpan? span]) {
   if (span != null) message = span.message(message);
   print(message);
 };
+
+/// Whether [codeUnit] is a UTF-16 high surrogate.
+bool isHighSurrogate(int codeUnit) => codeUnit >>> 10 == 0x36;
+
+/// Whether [codeUnit] is a UTF-16 low surrogate.
+bool isLowSurrogate(int codeUnit) => codeUnit >>> 10 == 0x37;
