@@ -12,7 +12,7 @@ environment:
 dependencies:
   collection: ^1.15.0
   source_span: ^1.8.0
-  string_scanner: ^1.1.0
+  string_scanner: ^1.2.0
 
 dev_dependencies:
   dart_flutter_team_lints: ^3.0.0

@@ -253,7 +253,7 @@ class Scanner {
       null => false,
       LF || CR || BOM => false,
       TAB || NEL => true,
-      _ => _isStandardCharacter(char),
+      _ => _isStandardCharacterAt(0),
     };
   }
 
@@ -267,7 +267,7 @@ class Scanner {
       null => false,
       LF || CR || BOM || SP => false,
       NEL => true,
-      _ => _isStandardCharacter(char),
+      _ => _isStandardCharacterAt(0),
     };
   }
 
@@ -614,9 +614,9 @@ class Scanner {
 
     // Consume the indicator token.
     var start = _scanner.state;
-    _scanner.readChar();
-    _scanner.readChar();
-    _scanner.readChar();
+    _scanner.readCodePoint();
+    _scanner.readCodePoint();
+    _scanner.readCodePoint();
 
     _tokens.add(Token(type, _scanner.spanFrom(start)));
   }
@@ -732,7 +732,7 @@ class Scanner {
   /// The span of the new token is the current character.
   void _addCharToken(TokenType type) {
     var start = _scanner.state;
-    _scanner.readChar();
+    _scanner.readCodePoint();
     _tokens.add(Token(type, _scanner.spanFrom(start)));
   }
 
@@ -836,7 +836,7 @@ class Scanner {
       // libyaml doesn't support unknown directives, but the spec says to ignore
       // them and warn: http://yaml.org/spec/1.2/spec.html#id2781147.
       while (!_isBreakOrEnd) {
-        _scanner.readChar();
+        _scanner.readCodePoint();
       }
 
       return null;
@@ -866,7 +866,7 @@ class Scanner {
     // disagrees: http://yaml.org/spec/1.2/spec.html#ns-directive-name.
     var start = _scanner.position;
     while (_isNonSpace) {
-      _scanner.readChar();
+      _scanner.readCodePoint();
     }
 
     var name = _scanner.substring(start);
@@ -941,13 +941,13 @@ class Scanner {
     var start = _scanner.state;
 
     // Eat the indicator character.
-    _scanner.readChar();
+    _scanner.readCodePoint();
 
     // libyaml only allows word characters in anchor names, but the spec
     // disagrees: http://yaml.org/spec/1.2/spec.html#ns-anchor-char.
     var startPosition = _scanner.position;
     while (_isAnchorChar) {
-      _scanner.readChar();
+      _scanner.readCodePoint();
     }
     var name = _scanner.substring(startPosition);
 
@@ -1032,7 +1032,7 @@ class Scanner {
     buffer.write(_scanner.substring(start));
 
     if (_scanner.peekChar() == EXCLAMATION) {
-      buffer.writeCharCode(_scanner.readChar());
+      buffer.writeCharCode(_scanner.readCodePoint());
     } else {
       // It's either the '!' tag or not really a tag handle. If it's a %TAG
       // directive, it's an error. If it's a tag token, it must be part of a
@@ -1083,7 +1083,7 @@ class Scanner {
     var start = _scanner.state;
 
     // Eat the indicator '|' or '>'.
-    _scanner.readChar();
+    _scanner.readCodePoint();
 
     // Check for a chomping indicator.
     var chomping = _Chomping.clip;
@@ -1091,7 +1091,7 @@ class Scanner {
     var char = _scanner.peekChar();
     if (char == PLUS || char == HYPHEN) {
       chomping = char == PLUS ? _Chomping.keep : _Chomping.strip;
-      _scanner.readChar();
+      _scanner.readCodePoint();
 
       // Check for an indentation indicator.
       if (_isDigit) {
@@ -1101,7 +1101,7 @@ class Scanner {
               _scanner.spanFrom(start));
         }
 
-        increment = _scanner.readChar() - NUMBER_0;
+        increment = _scanner.readCodePoint() - NUMBER_0;
       }
     } else if (_isDigit) {
       // Do the same as above, but in the opposite order.
@@ -1110,12 +1110,12 @@ class Scanner {
             _scanner.spanFrom(start));
       }
 
-      increment = _scanner.readChar() - NUMBER_0;
+      increment = _scanner.readCodePoint() - NUMBER_0;
 
       char = _scanner.peekChar();
       if (char == PLUS || char == HYPHEN) {
         chomping = char == PLUS ? _Chomping.keep : _Chomping.strip;
-        _scanner.readChar();
+        _scanner.readCodePoint();
       }
     }
 
@@ -1182,7 +1182,7 @@ class Scanner {
 
       var startPosition = _scanner.position;
       while (!_isBreakOrEnd) {
-        _scanner.readChar();
+        _scanner.readCodePoint();
       }
       buffer.write(_scanner.substring(startPosition));
       end = _scanner.state;
@@ -1373,7 +1373,7 @@ class Scanner {
             buffer.writeCharCode(value);
           }
         } else {
-          buffer.writeCharCode(_scanner.readChar());
+          buffer.writeCharCode(_scanner.readCodePoint());
         }
       }
 
@@ -1462,7 +1462,7 @@ class Scanner {
       // 1.2's. We use [_isPlainChar] instead of libyaml's character here.
       var startPosition = _scanner.position;
       while (_isPlainChar) {
-        _scanner.readChar();
+        _scanner.readCodePoint();
       }
       buffer.write(_scanner.substring(startPosition));
       end = _scanner.state;
@@ -1587,15 +1587,28 @@ class Scanner {
         _inBlockContext,
       SP || TAB || LF || CR || BOM => false,
       NEL => true,
-      _ => _isStandardCharacter(char)
+      _ => _isStandardCharacterAt(offset)
     };
   }
 
+  bool _isStandardCharacterAt(int offset) {
+    var first = _scanner.peekChar(offset);
+    if (first == null) return false;
+
+    if (isHighSurrogate(first)) {
+      var next = _scanner.peekChar(offset + 1);
+      // A surrogate pair encodes code points from U+010000 to U+10FFFF, so it
+      // must be a standard character.
+      return next != null && isLowSurrogate(next);
+    }
+
+    return _isStandardCharacter(first);
+  }
+
   bool _isStandardCharacter(int char) =>
-      (char >= 0x00020 && char <= 0x00007E) ||
-      (char >= 0x000A0 && char <= 0x00D7FF) ||
-      (char >= 0x0E000 && char <= 0x00FFFD) ||
-      (char >= 0x10000 && char <= 0x10FFFF);
+      (char >= 0x0020 && char <= 0x007E) ||
+      (char >= 0x00A0 && char <= 0xD7FF) ||
+      (char >= 0xE000 && char <= 0xFFFD);
 
   /// Returns the hexidecimal value of [char].
   int _asHex(int char) {
