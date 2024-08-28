@@ -7,17 +7,6 @@
 
 import 'package:source_span/source_span.dart';
 
-/// A pair of values.
-class Pair<E, F> {
-  final E first;
-  final F last;
-
-  Pair(this.first, this.last);
-
-  @override
-  String toString() => '($first, $last)';
-}
-
 /// Print a warning.
 ///
 /// If [span] is passed, associates the warning with that span.

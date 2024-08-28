@@ -174,9 +174,7 @@ class Parser {
 
     // Parse an explicit document.
     var start = token.span;
-    var pair = _processDirectives();
-    var versionDirective = pair.first;
-    var tagDirectives = pair.last;
+    var (versionDirective, tagDirectives) = _processDirectives();
     token = _scanner.peek()!;
     if (token.type != TokenType.documentStart) {
       throw YamlException('Expected document start.', token.span);
@@ -667,7 +665,7 @@ class Parser {
       ScalarEvent(location.pointSpan() as FileSpan, '', ScalarStyle.PLAIN);
 
   /// Parses directives.
-  Pair<VersionDirective?, List<TagDirective>> _processDirectives() {
+  (VersionDirective?, List<TagDirective>) _processDirectives() {
     var token = _scanner.peek()!;
 
     VersionDirective? versionDirective;
@@ -707,7 +705,7 @@ class Parser {
         TagDirective('!!', 'tag:yaml.org,2002:'), token.span.start.pointSpan(),
         allowDuplicates: true);
 
-    return Pair(versionDirective, tagDirectives);
+    return (versionDirective, tagDirectives);
   }
 
   /// Adds a tag directive to the directives stack.

@@ -1142,8 +1142,8 @@ class Scanner {
     // Scan the leading line breaks to determine the indentation level if
     // needed.
     var pair = _scanBlockScalarBreaks(indent);
-    indent = pair.first;
-    var trailingBreaks = pair.last;
+    indent = pair.indent;
+    var trailingBreaks = pair.trailingBreaks;
 
     // Scan the block scalar contents.
     var buffer = StringBuffer();
@@ -1194,8 +1194,8 @@ class Scanner {
 
       // Eat the following indentation and spaces.
       var pair = _scanBlockScalarBreaks(indent);
-      indent = pair.first;
-      trailingBreaks = pair.last;
+      indent = pair.indent;
+      trailingBreaks = pair.trailingBreaks;
     }
 
     // Chomp the tail.
@@ -1210,7 +1210,7 @@ class Scanner {
   ///
   /// Determines the intendation level if needed. Returns the new indentation
   /// level and the text of the line breaks.
-  Pair<int, String> _scanBlockScalarBreaks(int indent) {
+  ({int indent, String trailingBreaks}) _scanBlockScalarBreaks(int indent) {
     var maxIndent = 0;
     var breaks = StringBuffer();
 
@@ -1238,7 +1238,7 @@ class Scanner {
       // be supported by the spec.
     }
 
-    return Pair(indent, breaks.toString());
+    return (indent: indent, trailingBreaks: breaks.toString());
   }
 
   // Scans a quoted scalar.
