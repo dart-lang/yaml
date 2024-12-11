@@ -1,3 +1,6 @@
+> [!IMPORTANT]  
+> This repo has moved to https://github.com/dart-lang/tools/tree/main/pkgs/yaml
+
 [![Build Status](https://github.com/dart-lang/yaml/workflows/Dart%20CI/badge.svg)](https://github.com/dart-lang/yaml/actions?query=workflow%3A"Dart+CI"+branch%3Amaster)
 [![Pub Package](https://img.shields.io/pub/v/yaml.svg)](https://pub.dev/packages/yaml)
 [![package publisher](https://img.shields.io/pub/publisher/yaml.svg)](https://pub.dev/packages/yaml/publisher)
